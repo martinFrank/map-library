@@ -1,4 +1,4 @@
-package de.elite.games.maplib;
+package de.frank.martin.maplib;
 
 
 class Node {

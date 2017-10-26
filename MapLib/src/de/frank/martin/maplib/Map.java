@@ -1,9 +1,9 @@
-package de.elite.games.maplib;
+package de.frank.martin.maplib;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.elite.games.drawlib.PanScale;
+import de.frank.martin.drawlib.PanScale;
 
 public class Map<T> implements PanScale {
 
