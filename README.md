@@ -4,3 +4,7 @@ a map is a geographical 2D representation of fields that are connected somehow t
 
 the major reason for using this library is that it is platform independ and uses onyl java basic functionality (only java.lang and java.util)
 
+requirements
+ + [geometry-library!](https://github.com/martinFrank/geometry-library)
+ + [draw-library!](https://github.com/martinFrank/draw-library)
+
