@@ -202,15 +202,6 @@ public abstract class AbstractField<T> implements Field<T> {
 		return center;
 	}
 
-//	@Override
-//	public int ix() {
-//		return index.x();
-//	}
-//
-//	@Override
-//	public int iy() {
-//		return index.y();
-//	}
 	
 	@Override
 	public Point index() {
