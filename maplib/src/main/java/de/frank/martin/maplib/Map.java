@@ -424,4 +424,42 @@ public class Map<T> implements PanScale {
 	public int getHeight() {
 		return height;
 	}
+	
+	public int getScaledWidth() {
+		int max = 0;
+		int cx = 0;
+		for (Field<T> field: fieldList) {
+			if(field.center().x() > cx) {
+				cx = field.center().x();
+				for(Edge e: field.getEdgeList()) {
+					if (e.a().xScaled() > max ) {
+						max = e.a().xScaled();
+					}
+					if (e.b().xScaled() > max ) {
+						max = e.b().xScaled();
+					}
+				}
+			}
+		}
+		return max;
+	}
+	
+	public int getScaledHeight() {
+		int max = 0;
+		int cy = 0;
+		for (Field<T> field: fieldList) {
+			if(field.center().y() > cy) {
+				cy = field.center().y();
+				for(Edge e: field.getEdgeList()) {
+					if (e.a().yScaled() > max ) {
+						max = e.a().yScaled();
+					}
+					if (e.b().yScaled() > max ) {
+						max = e.b().yScaled();
+					}
+				}
+			}
+		}
+		return max;
+	}
 }
