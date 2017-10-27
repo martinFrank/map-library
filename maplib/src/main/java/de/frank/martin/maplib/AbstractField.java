@@ -214,7 +214,7 @@ public abstract class AbstractField<T> implements Field<T> {
 	
 	@Override
 	public Point index() {
-		return index();
+		return index;
 	}
 	/**
 	 * helper method to create triangle fields
