@@ -359,7 +359,10 @@ public class Map<T> implements PanScale {
 
 	@Override
 	public void draw(Object gObj, int xOff, int yOff) {
-		fieldList.stream().forEach(e -> e.draw(gObj, xOff, yOff));
+//		fieldList.stream().forEach(e -> e.draw(gObj, xOff, yOff));
+		for(Field<T> field: fieldList){
+			field.draw(gObj, xOff, yOff);
+		}
 	}
 
 	private void addNbg(int nbx, int nby, Field<T> center) {
@@ -369,12 +372,18 @@ public class Map<T> implements PanScale {
 
 	@Override
 	public void scale(float scale) {
-		fieldList.stream().forEach(e -> e.scale(scale));
+//		fieldList.stream().forEach(e -> e.scale(scale));
+		for(Field<T> field: fieldList){
+			field.scale(scale);
+		}
 	}
 
 	@Override
-	public void pan(int dx, int dy) {
-		fieldList.stream().forEach(e -> e.pan(dx,dy));
+	public void pan(int dx, int dy){
+//		fieldList.stream().forEach(e -> e.pan(dx,dy));
+		for(Field<T> field: fieldList){
+			field.pan(dx,dy);
+		}
 	}
 
 //	public Field<? extends T> getFieldByIndex(int ix, int iy) {

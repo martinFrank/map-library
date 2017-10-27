@@ -96,7 +96,10 @@ class Astar<T> {
 
 	private List<Node> getNeigbours(Field<? extends T> center) {
 		List<Node> nodeList = new ArrayList<>();
-		center.getNeigbourList().stream().forEach(e -> nodeList.add(new Node(e.ix(),e.iy())));
+		//center.getNeigbourList().stream().forEach(e -> nodeList.add(new Node(e.ix(),e.iy())));
+		for(Field nbgField: center.getNeigbourList() ){
+			nodeList.add(new Node(nbgField.ix(), nbgField.iy()));
+		}
 		return nodeList;
 	}
 
@@ -125,11 +128,23 @@ class Astar<T> {
 	}
 
 	private Node getPos(Node n, ArrayList<Node> list) {
-		return list.stream().filter(e -> e.isSamePos(n)).findFirst().orElse(null);
+//		return list.stream().filter(e -> e.isSamePos(n)).findFirst().orElse(null);
+		for(Node node: list){
+			if (node.isSamePos(n)){
+				return node;
+			}
+		}
+		return null;
 	}
 
 	private boolean isPosInList(Node n, ArrayList<Node> list) {
-		return list.stream().filter(e -> e.isSamePos(n)).findAny().isPresent();
+//		return list.stream().filter(e -> e.isSamePos(n)).findAny().isPresent();
+		for(Node node: list){
+			if(node.isSamePos(n)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Node getLeastF(ArrayList<Node> list) {		
