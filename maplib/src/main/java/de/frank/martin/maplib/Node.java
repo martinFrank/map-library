@@ -10,9 +10,8 @@ class Node {
 	int y;
 	Node from;
 	
-	
-	Node(int x, int y){
-		this.x=x; this.y=y;
+	Node(Point point){
+		this.x=point.x(); this.y=point.y();
 	}
 	
 	boolean isSamePos(Node n){
