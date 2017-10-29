@@ -3,7 +3,6 @@ package de.frank.martin.maplib;
 import java.util.List;
 
 import de.frank.martin.drawlib.PanScale;
-import de.frank.martin.geolib.GeoPoint;
 
 /**
  * a field is the elemental object of a map - all field together represent the

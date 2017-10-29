@@ -54,17 +54,13 @@ class Astar<T> {
 		boolean noWayFound = false;
 		while(true){
 			Node current = getLeastF(oList);			
-			if (current == null){
+			if (current == null || current.g > maxPathLength*10){
 				noWayFound = true;
 				break;
 			}
 			if (current.isSamePos(end) ){
 				noWayFound = false;
 				end.from = current.from;
-				break;
-			}			
-			if (current.g > maxPathLength*10){
-				noWayFound = true;
 				break;
 			}			
 			oList.remove(current);
