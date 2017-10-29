@@ -1,29 +1,45 @@
 package de.frank.martin.maplib;
 
+/**
+ * Edges surround fields, this is a full implementation, only the drawable
+ * interface is not implemented
+ * 
+ * @author martinFrank
+ * 
+ */
+public abstract class AbstractEdge implements Edge {
 
-public abstract class AbstractEdge implements Edge{
-	
+	/**
+	 * an edge goes from a -> b; this is a
+	 */
 	private final Point a;
+	
+	/**
+	 * an edge goes from a -> b; this is b
+	 */
 	private final Point b;
-	
-	
-	public AbstractEdge(Point a, Point b){
+
+	/**
+	 * constructor requires both a and b, because an edge goes from a -> b
+	 * @param a
+	 * @param b
+	 */
+	public AbstractEdge(Point a, Point b) {
 		this.a = a;
 		this.b = b;
 	}
-	
+
 	@Override
-	public void scale(float scale){
+	public void scale(float scale) {
 		a.scale(scale);
 		b.scale(scale);
 	}
 
 	@Override
 	public void pan(int dx, int dy) {
-		a.pan(dx,dy);
-		b.pan(dx,dy);
+		a.pan(dx, dy);
+		b.pan(dx, dy);
 	}
-
 
 	@Override
 	public Point a() {
@@ -34,10 +50,10 @@ public abstract class AbstractEdge implements Edge{
 	public Point b() {
 		return b;
 	}
-	
+
 	@Override
 	public String toString() {
-		return ""+a().toString()+" --> "+b.toString();
+		return  a().toString() + " --> " + b.toString();
 	}
 
 	@Override
@@ -58,16 +74,10 @@ public abstract class AbstractEdge implements Edge{
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractEdge other = (AbstractEdge) obj;
-		if(a.equals(other.a) &&  b.equals(other.b)){
+		if (a.equals(other.a) && b.equals(other.b)) {
 			return true;
 		}
-		if(a.equals(other.b) &&  b.equals(other.a)){
-			return true;
-		}
-		return false;
+		return a.equals(other.b) && b.equals(other.a);
 	}
-	
-	
-	
-	
+
 }

@@ -45,25 +45,22 @@ class Astar<T> {
 		
 		oList.clear();
 		cList.clear();
-				
-		Node start = new Node(startPoint.ix(),startPoint.iy());
-		Node end = new Node(targetPoint.ix(), targetPoint.iy());
+		
+		Node start = new Node(startPoint.index());
+		Node end = new Node(targetPoint.index());
+		
 		oList.add(start);
 		
 		boolean noWayFound = false;
 		while(true){
 			Node current = getLeastF(oList);			
-			if (current == null){
+			if (current == null || current.g > maxPathLength*10){
 				noWayFound = true;
 				break;
 			}
 			if (current.isSamePos(end) ){
 				noWayFound = false;
 				end.from = current.from;
-				break;
-			}			
-			if (current.g > maxPathLength*10){
-				noWayFound = true;
 				break;
 			}			
 			oList.remove(current);
@@ -96,9 +93,9 @@ class Astar<T> {
 
 	private List<Node> getNeigbours(Field<? extends T> center) {
 		List<Node> nodeList = new ArrayList<>();
-		//center.getNeigbourList().stream().forEach(e -> nodeList.add(new Node(e.ix(),e.iy())));
-		for(Field nbgField: center.getNeigbourList() ){
-			nodeList.add(new Node(nbgField.ix(), nbgField.iy()));
+		//center.getNeigbourList().stream().forEach(e -> nodeList.add(new Node(e.ix(),e.iy())))
+		for(Field<? extends T> nbgField: center.getNeigbourList() ){
+			nodeList.add(new Node(nbgField.index()));
 		}
 		return nodeList;
 	}
@@ -107,7 +104,7 @@ class Astar<T> {
 		if ( !isPosInList(nNode, cList) ){				
 			if ( isPosInList(nNode, oList)  ){
 				Node can = getPos(nNode, oList);
-				if (can.g < nNode.g){
+				if (can != null && can.g < nNode.g){
 					can.from = current;
 					can.g = current.g + distance;
 					can.f = can.h + can.g;
@@ -128,7 +125,7 @@ class Astar<T> {
 	}
 
 	private Node getPos(Node n, ArrayList<Node> list) {
-//		return list.stream().filter(e -> e.isSamePos(n)).findFirst().orElse(null);
+//		return list.stream().filter(e -> e.isSamePos(n)).findFirst().orElse(null)
 		for(Node node: list){
 			if (node.isSamePos(n)){
 				return node;
@@ -138,7 +135,7 @@ class Astar<T> {
 	}
 
 	private boolean isPosInList(Node n, ArrayList<Node> list) {
-//		return list.stream().filter(e -> e.isSamePos(n)).findAny().isPresent();
+//		return list.stream().filter(e -> e.isSamePos(n)).findAny().isPresent()
 		for(Node node: list){
 			if(node.isSamePos(n)){
 				return true;

@@ -3,24 +3,61 @@ package de.frank.martin.maplib;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractField<T> implements Field<T>{
+/**
+ * this is an implementation of the map field, merely the drawable interface is
+ * not implemented.
+ *
+ * @param <T>
+ *            any desired object
+ */
+public abstract class AbstractField<T> implements Field<T> {
 
-	private final List <Edge> edgeList = new ArrayList<Edge>();
+	/**
+	 * depending on the map type each field has a certain amount of edges.
+	 */
+	private final List<Edge> edgeList = new ArrayList<>();
+
+	/**
+	 * the center of the field - it's used as uniqe identifier
+	 */
 	private final Point center;
+
+	/**
+	 * the fields are indiced as well - its another unique identifier
+	 */
 	private final Point index;
 
+	/**
+	 * each field is connected (via the edges) to other fields, these are the
+	 * neighbors - all neighbors are listed here
+	 */
 	private final List<Field<? extends T>> nbList = new ArrayList<>();
-	
-	public AbstractField(Point c, MapFactory<? extends T> f){		
-		index = f.createPoint(c.x(),c.y());
-		center = f.createPoint(0,0);
-		setCenter(c, f);		
+
+	/**
+	 * the constructor requires the factory to created it's edges - it also requires
+	 * a center point
+	 * 
+	 * @param c
+	 *            center
+	 * @param f
+	 *            factory
+	 */
+	public AbstractField(Point c, MapFactory<? extends T> f) {
+		index = f.createPoint(c.x(), c.y());
+		center = f.createPoint(0, 0);
+		setCenter(c, f);
 		createShape(f);
 	}
-	
-	private  void createShape(MapFactory<? extends T> factory) {
+
+	/**
+	 * this is where the map magic happens - here are the fields created according
+	 * to the factory's map style.
+	 * 
+	 * @param factory
+	 */
+	private void createShape(MapFactory<? extends T> factory) {
 		switch (factory.getStyle()) {
-		case SQUARE4:			
+		case SQUARE4:
 		case SQUARE8:
 			createSquares(factory);
 			break;
@@ -38,9 +75,19 @@ public abstract class AbstractField<T> implements Field<T>{
 			break;
 		}
 	}
-	
+
+	/**
+	 * before map fields are created you need to create a center of the field.
+	 * according to the factory's map style the center is located on different
+	 * positions.
+	 * 
+	 * @param c
+	 *            temporary center
+	 * @param f
+	 *            factory
+	 */
 	private void setCenter(Point c, MapFactory<? extends T> f) {
-		switch (f.getStyle()) {		
+		switch (f.getStyle()) {
 		case SQUARE4:
 		case SQUARE8:
 			setCenterSquare(c);
@@ -60,293 +107,332 @@ public abstract class AbstractField<T> implements Field<T>{
 		}
 	}
 
+	/**
+	 *  helper method to set triangle center
+	 * @param c temporary center
+	 */
 	private void setCenterTriangleVertical(Point c) {
-		if(index.y() % 2 == 0){
-			if(index.x() % 2 == 0){
-				center.set(1 + (3*c.x()), 2+(2*c.y()) );
-			}else{
-				center.set(2 + (3*c.x()), 2+(2*c.y()) );
-			}				
-		}else{
-			
-			if(index.x() % 2 == 0){
-				center.set(2 + (3*c.x()), 2+(2*c.y()) );
-			}else{
-				center.set(1 + (3*c.x()), 2+(2*c.y()) );
+		if (index.y() % 2 == 0) {
+			if (index.x() % 2 == 0) {
+				center.set(1 + (3 * c.x()), 2 + (2 * c.y()));
+			} else {
+				center.set(2 + (3 * c.x()), 2 + (2 * c.y()));
+			}
+		} else {
+
+			if (index.x() % 2 == 0) {
+				center.set(2 + (3 * c.x()), 2 + (2 * c.y()));
+			} else {
+				center.set(1 + (3 * c.x()), 2 + (2 * c.y()));
 			}
 		}
 	}
 
+	/**
+	 * helper method to create triangle center
+	 * @param c temporary center
+	 */
 	private void setCenterTriangleHorizontal(Point c) {
-		if(index.y() % 2 == 0){
-			if(index.x() % 2 == 0){
-				center.set(2 + (2*c.x()), 2+(3*c.y()) );
-			}else{
-				center.set(2 + (2*c.x()), 1+(3*c.y()) );
-			}				
-		}else{
-			
-			if(index.x() % 2 == 0){
-				center.set(2 + (2*c.x()), 1+(3*c.y()) );
-			}else{
-				center.set(2 + (2*c.x()), 2+(3*c.y()) );
+		if (index.y() % 2 == 0) {
+			if (index.x() % 2 == 0) {
+				center.set(2 + (2 * c.x()), 2 + (3 * c.y()));
+			} else {
+				center.set(2 + (2 * c.x()), 1 + (3 * c.y()));
+			}
+		} else {
+
+			if (index.x() % 2 == 0) {
+				center.set(2 + (2 * c.x()), 1 + (3 * c.y()));
+			} else {
+				center.set(2 + (2 * c.x()), 2 + (3 * c.y()));
 			}
 		}
 	}
 
+	/**
+	 * helper method to create center for hex fields
+	 * @param c temporary center
+	 */
 	private void setCenterHexHorizontal(Point c) {
-		if (c.x() % 2 == 0){
-			center.set(2 + (3*c.x()), 2+(4*c.y()) );	
-		}else{
-			center.set(2 + (3*c.x()), 4+(4*c.y()) );
+		if (c.x() % 2 == 0) {
+			center.set(2 + (3 * c.x()), 2 + (4 * c.y()));
+		} else {
+			center.set(2 + (3 * c.x()), 4 + (4 * c.y()));
 		}
 	}
 
+	/**
+	 * helper method to create center for hex fields
+	 * @param c temporary center
+	 */
 	private void setCenterHexVertical(Point c) {
-		if (c.y() % 2 == 0){
-			center.set(2 + (4*c.x()), 2+(3*c.y()) );	
-		}else{
-			center.set(4 + (4*c.x()), 2+(3*c.y()) );
+		if (c.y() % 2 == 0) {
+			center.set(2 + (4 * c.x()), 2 + (3 * c.y()));
+		} else {
+			center.set(4 + (4 * c.x()), 2 + (3 * c.y()));
 		}
 	}
 
+	/**
+	 * helper method to create center for squared fields
+	 * @param c temporary center
+	 */
 	private void setCenterSquare(Point c) {
-		center.set(1 + (2*c.x()), 1+(2*c.y()) );
+		center.set(1 + (2 * c.x()), 1 + (2 * c.y()));
 	}
 
 	@Override
-	public void scale(float scale){
-		for (Edge e: edgeList){
+	public void scale(float scale) {
+		for (Edge e : edgeList) {
 			e.scale(scale);
 		}
 		center.scale(scale);
 	}
-	
+
 	@Override
 	public void pan(int dx, int dy) {
-		for (Edge e: edgeList) {
-			e.pan(dx,dy);
+		for (Edge e : edgeList) {
+			e.pan(dx, dy);
 		}
 		center.pan(dx, dy);
 	}
 
 	@Override
-	public Point center(){
+	public Point center() {
 		return center;
 	}
+
 	
 	@Override
-	public int ix(){
-		return index.x();
+	public Point index() {
+		return index;
 	}
-	
-	@Override
-	public int iy(){
-		return index.y();
-	}
-	
-
-
+	/**
+	 * helper method to create triangle fields
+	 * @param factory
+	 */
 	private void createTriangleVertical(MapFactory<? extends T> factory) {
 		boolean isPointingLeft = false;
-		if(index.y() % 2 == 0){
-			if(index.x() % 2 == 0){
+		if (index.y() % 2 == 0) {
+			if (index.x() % 2 == 0) {
 				isPointingLeft = false;
-			}else{
+			} else {
 				isPointingLeft = true;
-			}				
-		}else{			
-			if(index.x() % 2 == 0){
+			}
+		} else {
+			if (index.x() % 2 == 0) {
 				isPointingLeft = true;
-			}else{
+			} else {
 				isPointingLeft = false;
 			}
 		}
-		
-		if(isPointingLeft){			
-			for (int i = 0; i < 3; i ++){
-				Point a = factory.createPoint(1,1);
-				Point b = factory.createPoint(1,1);
-				if(i == 0){
-					a.set(center.x()-2, center.y());
-					b.set(center.x()+1, center.y()-2);
+
+		if (isPointingLeft) {
+			for (int i = 0; i < 3; i++) {
+				Point a = factory.createPoint(1, 1);
+				Point b = factory.createPoint(1, 1);
+				if (i == 0) {
+					a.set(center.x() - 2, center.y());
+					b.set(center.x() + 1, center.y() - 2);
 				}
-				if(i == 1){
-					a.set(center.x()+1, center.y()-2);
-					b.set(center.x()+1, center.y()+2);
-				}				
-				if(i == 2){
-					a.set(center.x()+1, center.y()+2);
-					b.set(center.x()-2, center.y());
+				if (i == 1) {
+					a.set(center.x() + 1, center.y() - 2);
+					b.set(center.x() + 1, center.y() + 2);
 				}
-				createAndAddEdge(a,b, factory);
-			}			
-		}else{
-			for (int i = 0; i < 3; i ++){
-				Point a = factory.createPoint(1,1);
-				Point b = factory.createPoint(1,1);
-				if(i == 0){
-					a.set(center.x()-1, center.y()-2);
-					b.set(center.x()+2, center.y());
-				}				
-				if(i == 1){
-					a.set(center.x()+2, center.y());
-					b.set(center.x()-1, center.y()+2);
-				}				
-				if(i == 2){
-					a.set(center.x()-1, center.y()+2);
-					b.set(center.x()-1, center.y()-2);
+				if (i == 2) {
+					a.set(center.x() + 1, center.y() + 2);
+					b.set(center.x() - 2, center.y());
 				}
-				createAndAddEdge(a,b, factory);
+				createAndAddEdge(a, b, factory);
+			}
+		} else {
+			for (int i = 0; i < 3; i++) {
+				Point a = factory.createPoint(1, 1);
+				Point b = factory.createPoint(1, 1);
+				if (i == 0) {
+					a.set(center.x() - 1, center.y() - 2);
+					b.set(center.x() + 2, center.y());
+				}
+				if (i == 1) {
+					a.set(center.x() + 2, center.y());
+					b.set(center.x() - 1, center.y() + 2);
+				}
+				if (i == 2) {
+					a.set(center.x() - 1, center.y() + 2);
+					b.set(center.x() - 1, center.y() - 2);
+				}
+				createAndAddEdge(a, b, factory);
 			}
 		}
 	}
 
-	private void createTriangleHorizontal(MapFactory<? extends T> factory) {		
+	/**
+	 * helper method to create triangle fields
+	 * @param factory
+	 */
+	private void createTriangleHorizontal(MapFactory<? extends T> factory) {
 		boolean isUpside = false;
-		if(index.y() % 2 == 0){
-			if(index.x() % 2 == 0){
+		if (index.y() % 2 == 0) {
+			if (index.x() % 2 == 0) {
 				isUpside = true;
-			}else{
+			} else {
 				isUpside = false;
-			}				
-		}else{			
-			if(index.x() % 2 == 0){
-				isUpside = false;
-			}else{
-				isUpside = true;
 			}
-		}		
-		if(isUpside){			
-			for (int i = 0; i < 3; i ++){
-				Point a = factory.createPoint(1,1);
-				Point b = factory.createPoint(1,1);
-				if(i == 0){
-					a.set(center.x()-2, center.y()+1);
-					b.set(center.x(), center.y()-2);
-				}				
-				if(i == 1){
-					a.set(center.x(), center.y()-2);
-					b.set(center.x()+2, center.y()+1);
-				}				
-				if(i == 2){
-					a.set(center.x()+2, center.y()+1);
-					b.set(center.x()-2, center.y()+1);
-				}
-				createAndAddEdge(a,b, factory);
-			}			
-		}else{
-			for (int i = 0; i < 3; i ++){
-				Point a = factory.createPoint(1,1);
-				Point b = factory.createPoint(1,1);
-				if(i == 0){
-					a.set(center.x()-2, center.y()-1);
-					b.set(center.x()+2, center.y()-1);
-				}				
-				if(i == 1){
-					a.set(center.x()+2, center.y()-1);
-					b.set(center.x(), center.y()+2);
-				}				
-				if(i == 2){
-					a.set(center.x(), center.y()+2);
-					b.set(center.x()-2, center.y()-1);
-				}
-				createAndAddEdge(a,b, factory);
+		} else {
+			if (index.x() % 2 == 0) {
+				isUpside = false;
+			} else {
+				isUpside = true;
 			}
 		}
-			
+		if (isUpside) {
+			for (int i = 0; i < 3; i++) {
+				Point a = factory.createPoint(1, 1);
+				Point b = factory.createPoint(1, 1);
+				if (i == 0) {
+					a.set(center.x() - 2, center.y() + 1);
+					b.set(center.x(), center.y() - 2);
+				}
+				if (i == 1) {
+					a.set(center.x(), center.y() - 2);
+					b.set(center.x() + 2, center.y() + 1);
+				}
+				if (i == 2) {
+					a.set(center.x() + 2, center.y() + 1);
+					b.set(center.x() - 2, center.y() + 1);
+				}
+				createAndAddEdge(a, b, factory);
+			}
+		} else {
+			for (int i = 0; i < 3; i++) {
+				Point a = factory.createPoint(1, 1);
+				Point b = factory.createPoint(1, 1);
+				if (i == 0) {
+					a.set(center.x() - 2, center.y() - 1);
+					b.set(center.x() + 2, center.y() - 1);
+				}
+				if (i == 1) {
+					a.set(center.x() + 2, center.y() - 1);
+					b.set(center.x(), center.y() + 2);
+				}
+				if (i == 2) {
+					a.set(center.x(), center.y() + 2);
+					b.set(center.x() - 2, center.y() - 1);
+				}
+				createAndAddEdge(a, b, factory);
+			}
+		}
+
 	}
 
+	/**
+	 * helper method to create hexagonal fields
+	 * @param factory
+	 */
 	private void createHexesVertical(MapFactory<? extends T> factory) {
-		for (int i = 0; i < 6; i ++){
-			Point a = factory.createPoint(1,1);
-			Point b = factory.createPoint(1,1);			
-			if(i == 0){
-				a.set(center.x()-2, center.y()-1);
-				b.set(center.x(), center.y()-2);
-			}			
-			if(i == 1){
-				a.set(center.x(), center.y()-2);
-				b.set(center.x()+2, center.y()-1);
-			}			
-			if(i == 2){
-				a.set(center.x()+2, center.y()-1);
-				b.set(center.x()+2, center.y()+1);
-			}			
-			if(i == 3){
-				a.set(center.x()+2, center.y()+1);
-				b.set(center.x(), center.y()+2);
+		for (int i = 0; i < 6; i++) {
+			Point a = factory.createPoint(1, 1);
+			Point b = factory.createPoint(1, 1);
+			if (i == 0) {
+				a.set(center.x() - 2, center.y() - 1);
+				b.set(center.x(), center.y() - 2);
 			}
-			if(i == 4){
-				a.set(center.x(), center.y()+2);
-				b.set(center.x()-2, center.y()+1);
-			}			
-			if(i == 5){
-				a.set(center.x()-2, center.y()+1);
-				b.set(center.x()-2, center.y()-1);
-			}			
-			createAndAddEdge(a,b, factory);			
+			if (i == 1) {
+				a.set(center.x(), center.y() - 2);
+				b.set(center.x() + 2, center.y() - 1);
+			}
+			if (i == 2) {
+				a.set(center.x() + 2, center.y() - 1);
+				b.set(center.x() + 2, center.y() + 1);
+			}
+			if (i == 3) {
+				a.set(center.x() + 2, center.y() + 1);
+				b.set(center.x(), center.y() + 2);
+			}
+			if (i == 4) {
+				a.set(center.x(), center.y() + 2);
+				b.set(center.x() - 2, center.y() + 1);
+			}
+			if (i == 5) {
+				a.set(center.x() - 2, center.y() + 1);
+				b.set(center.x() - 2, center.y() - 1);
+			}
+			createAndAddEdge(a, b, factory);
 		}
 	}
-	
-	private void createAndAddEdge(Point a, Point b, MapFactory<? extends T> factory) {		
-		Edge edge = factory.createEdge(a,b);
-		edgeList.add(edge);		
+
+	/**
+	 * helper method to create and add edges
+	 * @param a 
+	 * @param b
+	 * @param factory
+	 */
+	private void createAndAddEdge(Point a, Point b, MapFactory<? extends T> factory) {
+		Edge edge = factory.createEdge(a, b);
+		edgeList.add(edge);
 	}
 
+	/**
+	 * helper method to create hexagonal fields
+	 * @param factory
+	 */
 	private void createHexesHorizontal(MapFactory<? extends T> factory) {
-		for (int i = 0; i < 6; i ++){
-			Point a = factory.createPoint(1,1);
-			Point b = factory.createPoint(1,1);			
-			if(i == 0){
-				a.set(center.x()-2, center.y());
-				b.set(center.x()-1, center.y()-2);
-			}			
-			if(i == 1){
-				a.set(center.x()-1, center.y()-2);
-				b.set(center.x()+1, center.y()-2);
-			}			
-			if(i == 2){
-				a.set(center.x()+1, center.y()-2);
-				b.set(center.x()+2, center.y());
-			}			
-			if(i == 3){
-				a.set(center.x()+2, center.y());
-				b.set(center.x()+1, center.y()+2);
+		for (int i = 0; i < 6; i++) {
+			Point a = factory.createPoint(1, 1);
+			Point b = factory.createPoint(1, 1);
+			if (i == 0) {
+				a.set(center.x() - 2, center.y());
+				b.set(center.x() - 1, center.y() - 2);
 			}
-			if(i == 4){
-				a.set(center.x()+1, center.y()+2);
-				b.set(center.x()-1, center.y()+2);
-			}			
-			if(i == 5){
-				a.set(center.x()-1, center.y()+2);
-				b.set(center.x()-2, center.y());
-			}			
-			createAndAddEdge(a,b, factory);
+			if (i == 1) {
+				a.set(center.x() - 1, center.y() - 2);
+				b.set(center.x() + 1, center.y() - 2);
+			}
+			if (i == 2) {
+				a.set(center.x() + 1, center.y() - 2);
+				b.set(center.x() + 2, center.y());
+			}
+			if (i == 3) {
+				a.set(center.x() + 2, center.y());
+				b.set(center.x() + 1, center.y() + 2);
+			}
+			if (i == 4) {
+				a.set(center.x() + 1, center.y() + 2);
+				b.set(center.x() - 1, center.y() + 2);
+			}
+			if (i == 5) {
+				a.set(center.x() - 1, center.y() + 2);
+				b.set(center.x() - 2, center.y());
+			}
+			createAndAddEdge(a, b, factory);
 		}
 	}
 
+	/**
+	 * helper method to create squared fields
+	 * @param factory
+	 */
 	private void createSquares(MapFactory<? extends T> factory) {
-		for (int i = 0; i < 4; i ++){			
-			Point a = factory.createPoint(1,1);
-			Point b = factory.createPoint(1,1);			
-			if(i == 0){
-				a.set(center.x()-1, center.y()-1);
-				b.set(center.x()+1, center.y()-1);
-			}			
-			if(i == 1){
-				a.set(center.x()+1, center.y()-1);
-				b.set(center.x()+1, center.y()+1);
-			}			
-			if(i == 2){
-				a.set(center.x()+1, center.y()+1);
-				b.set(center.x()-1, center.y()+1);
-			}			
-			if(i == 3){
-				a.set(center.x()-1, center.y()+1);
-				b.set(center.x()-1, center.y()-1);
-			}			
-			createAndAddEdge(a,b, factory);
+		for (int i = 0; i < 4; i++) {
+			Point a = factory.createPoint(1, 1);
+			Point b = factory.createPoint(1, 1);
+			if (i == 0) {
+				a.set(center.x() - 1, center.y() - 1);
+				b.set(center.x() + 1, center.y() - 1);
+			}
+			if (i == 1) {
+				a.set(center.x() + 1, center.y() - 1);
+				b.set(center.x() + 1, center.y() + 1);
+			}
+			if (i == 2) {
+				a.set(center.x() + 1, center.y() + 1);
+				b.set(center.x() - 1, center.y() + 1);
+			}
+			if (i == 3) {
+				a.set(center.x() - 1, center.y() + 1);
+				b.set(center.x() - 1, center.y() - 1);
+			}
+			createAndAddEdge(a, b, factory);
 		}
 	}
 
@@ -354,12 +440,12 @@ public abstract class AbstractField<T> implements Field<T>{
 	public List<Field<? extends T>> getNeigbourList() {
 		return nbList;
 	}
-	
+
 	@Override
 	public List<Edge> getEdgeList() {
 		return edgeList;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -387,9 +473,7 @@ public abstract class AbstractField<T> implements Field<T>{
 
 	@Override
 	public String toString() {
-		return ""+center.toString();
+		return "" + center.toString();
 	}
 
-	
-	
 }

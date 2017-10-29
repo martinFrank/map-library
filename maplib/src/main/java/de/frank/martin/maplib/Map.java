@@ -7,7 +7,7 @@ import de.frank.martin.drawlib.PanScale;
 
 public class Map<T> implements PanScale {
 
-	private final List<Field<T>> fieldList = new ArrayList<Field<T>>();
+	private final List<Field<T>> fieldList = new ArrayList<>();
 
 	private final int width;
 	private final int height;
@@ -141,7 +141,7 @@ public class Map<T> implements PanScale {
 					addNbg(nbx, nby, center);//
 				}
 
-				if (center.ix() % 2 == 0) {
+				if (center.index().x() % 2 == 0) {
 					// links oben
 					nbx = dx - 1;
 					nby = dy - 1;
@@ -223,7 +223,7 @@ public class Map<T> implements PanScale {
 					addNbg(nbx, nby, center);//
 				}
 				
-				if (center.iy() % 2 == 0) {
+				if (center.index().y() % 2 == 0) {
 					// oben links
 					nbx = dx - 1;
 					nby = dy - 1;
@@ -359,7 +359,7 @@ public class Map<T> implements PanScale {
 
 	@Override
 	public void draw(Object gObj, int xOff, int yOff) {
-//		fieldList.stream().forEach(e -> e.draw(gObj, xOff, yOff));
+//		fieldList.stream().forEach(e -> e.draw(gObj, xOff, yOff))
 		for(Field<T> field: fieldList){
 			field.draw(gObj, xOff, yOff);
 		}
@@ -372,7 +372,7 @@ public class Map<T> implements PanScale {
 
 	@Override
 	public void scale(float scale) {
-//		fieldList.stream().forEach(e -> e.scale(scale));
+//		fieldList.stream().forEach(e -> e.scale(scale))
 		for(Field<T> field: fieldList){
 			field.scale(scale);
 		}
@@ -380,16 +380,15 @@ public class Map<T> implements PanScale {
 
 	@Override
 	public void pan(int dx, int dy){
-//		fieldList.stream().forEach(e -> e.pan(dx,dy));
+//		fieldList.stream().forEach(e -> e.pan(dx,dy))
 		for(Field<T> field: fieldList){
 			field.pan(dx,dy);
 		}
 	}
 
-//	public Field<? extends T> getFieldByIndex(int ix, int iy) {
 	public Field<T> getFieldByIndex(int ix, int iy) {
 		int index = iy * width + ix;
-		return (Field<T>) fieldList.get(index);
+		return fieldList.get(index);
 	}
 
 	public List<Field<T>> aStar(Field<T> start, Field<T> destiny, Walker<T> walker, int maxSearchDepth) {
@@ -402,13 +401,13 @@ public class Map<T> implements PanScale {
 
 	public Field<T> getFieldByCenter(int x, int y) {
 		Field<?> anyField = fieldList.get(0);
-		int anyx = anyField.center().xScaled() - anyField.getEdgeList().get(0).a().xScaled(); 
-		int anyy = anyField.center().yScaled() - anyField.getEdgeList().get(0).a().yScaled();
+		double anyx = (double)anyField.center().xPanScaled() - anyField.getEdgeList().get(0).a().xPanScaled(); 
+		double anyy = (double)anyField.center().yPanScaled() - anyField.getEdgeList().get(0).a().yPanScaled();
 		double radius = Math.sqrt(anyx * anyx + anyy * anyy) / Math.sqrt(2);
 				
 		for (Field<T> field : fieldList) {
-			int dx = x - field.center().xScaled();
-			int dy = y - field.center().yScaled();
+			double dx = (double)x - field.center().xPanScaled();
+			double dy = (double)y - field.center().yPanScaled();
 			double distance = Math.sqrt(dx * dx + dy * dy);
 			if (distance < radius) {
 				return field;
@@ -432,11 +431,11 @@ public class Map<T> implements PanScale {
 			if(field.center().x() > cx) {
 				cx = field.center().x();
 				for(Edge e: field.getEdgeList()) {
-					if (e.a().xScaled() > max ) {
-						max = e.a().xScaled();
+					if (e.a().xPanScaled()> max ) {
+						max = e.a().xPanScaled();
 					}
-					if (e.b().xScaled() > max ) {
-						max = e.b().xScaled();
+					if (e.b().xPanScaled() > max ) {
+						max = e.b().xPanScaled();
 					}
 				}
 			}
@@ -451,11 +450,11 @@ public class Map<T> implements PanScale {
 			if(field.center().y() > cy) {
 				cy = field.center().y();
 				for(Edge e: field.getEdgeList()) {
-					if (e.a().yScaled() > max ) {
-						max = e.a().yScaled();
+					if (e.a().yPanScaled() > max ) {
+						max = e.a().yPanScaled();
 					}
-					if (e.b().yScaled() > max ) {
-						max = e.b().yScaled();
+					if (e.b().yPanScaled() > max ) {
+						max = e.b().yPanScaled();
 					}
 				}
 			}
