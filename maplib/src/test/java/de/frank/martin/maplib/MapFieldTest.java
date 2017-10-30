@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class FieldTest {
+public class MapFieldTest {
 
 	@Test
 	public void test() {

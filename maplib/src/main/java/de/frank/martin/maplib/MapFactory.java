@@ -20,7 +20,7 @@ public interface MapFactory<T> {
 	 * @param y
 	 * @return
 	 */
-	Point createPoint(int x, int y);
+	MapPoint createPoint(int x, int y);
 
 	/**
 	 * method to create the field - requires the unique center
@@ -29,7 +29,7 @@ public interface MapFactory<T> {
 	 *            must be uniqe
 	 * @return
 	 */
-	Field<T> createField(Point center);
+	MapField<T> createField(MapPoint center);
 
 	/**
 	 * method to create the edge
@@ -38,7 +38,7 @@ public interface MapFactory<T> {
 	 * @param b
 	 * @return
 	 */
-	Edge createEdge(Point a, Point b);
+	MapEdge createEdge(MapPoint a, MapPoint b);
 
 	/**
 	 * override this method to set the map style

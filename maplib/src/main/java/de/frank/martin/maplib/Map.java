@@ -7,7 +7,7 @@ import de.frank.martin.drawlib.PanScale;
 
 public class Map<T> implements PanScale {
 
-	private final List<Field<T>> fieldList = new ArrayList<>();
+	private final List<MapField<T>> fieldList = new ArrayList<>();
 
 	private final int width;
 	private final int height;
@@ -27,8 +27,8 @@ public class Map<T> implements PanScale {
 	private void generateFields() {
 		for (int dy = 0; dy < height; dy++) {
 			for (int dx = 0; dx < width; dx++) {
-				Point center = factory.createPoint(dx, dy);
-				Field<T> field = factory.createField(center);
+				MapPoint center = factory.createPoint(dx, dy);
+				MapField<T> field = factory.createField(center);
 				fieldList.add(field);
 			}
 		}
@@ -63,7 +63,7 @@ public class Map<T> implements PanScale {
 			for (int dx = 0; dx < width; dx++) {
 				int nbx = 0;
 				int nby = 0;
-				Field<T> center = (Field<T>) getFieldByIndex(dx, dy);
+				MapField<T> center = (MapField<T>) getFieldByIndex(dx, dy);
 
 				nbx = dx;
 				nby = dy - 1;
@@ -94,7 +94,7 @@ public class Map<T> implements PanScale {
 			for (int dx = 0; dx < width; dx++) {
 				int nbx = 0;
 				int nby = 0;
-				Field<T> center = (Field<T>) getFieldByIndex(dx, dy);
+				MapField<T> center = (MapField<T>) getFieldByIndex(dx, dy);
 
 				nbx = dx - 1;
 				nby = dy - 1;
@@ -125,7 +125,7 @@ public class Map<T> implements PanScale {
 			for (int dx = 0; dx < width; dx++) {
 				int nbx = 0;
 				int nby = 0;
-				Field<T> center = (Field<T>) getFieldByIndex(dx, dy);
+				MapField<T> center = (MapField<T>) getFieldByIndex(dx, dy);
 				
 				// oben
 				nbx = dx;
@@ -141,7 +141,7 @@ public class Map<T> implements PanScale {
 					addNbg(nbx, nby, center);//
 				}
 
-				if (center.index().x() % 2 == 0) {
+				if (center.getIndex().getX() % 2 == 0) {
 					// links oben
 					nbx = dx - 1;
 					nby = dy - 1;
@@ -207,7 +207,7 @@ public class Map<T> implements PanScale {
 			for (int dx = 0; dx < width; dx++) {
 				int nbx = 0;
 				int nby = 0;
-				Field<T> center = (Field<T>) getFieldByIndex(dx, dy);
+				MapField<T> center = (MapField<T>) getFieldByIndex(dx, dy);
 
 				// links
 				nbx = dx - 1;
@@ -223,7 +223,7 @@ public class Map<T> implements PanScale {
 					addNbg(nbx, nby, center);//
 				}
 				
-				if (center.index().y() % 2 == 0) {
+				if (center.getIndex().getY() % 2 == 0) {
 					// oben links
 					nbx = dx - 1;
 					nby = dy - 1;
@@ -289,7 +289,7 @@ public class Map<T> implements PanScale {
 			for (int dx = 0; dx < width; dx++) {
 				int nbx = 0;
 				int nby = 0;
-				Field<T> center = (Field<T>) getFieldByIndex(dx, dy);
+				MapField<T> center = (MapField<T>) getFieldByIndex(dx, dy);
 
 				nbx = dx - 1;
 				nby = dy;
@@ -327,7 +327,7 @@ public class Map<T> implements PanScale {
 				int nbx = 0;
 				int nby = 0;
 				
-				Field<T> center = getFieldByIndex(dx, dy);
+				MapField<T> center = getFieldByIndex(dx, dy);
 				nbx = dx;
 				nby = dy - 1;
 				if (nby >= 0) {
@@ -360,20 +360,20 @@ public class Map<T> implements PanScale {
 	@Override
 	public void draw(Object gObj, int xOff, int yOff) {
 //		fieldList.stream().forEach(e -> e.draw(gObj, xOff, yOff))
-		for(Field<T> field: fieldList){
+		for(MapField<T> field: fieldList){
 			field.draw(gObj, xOff, yOff);
 		}
 	}
 
-	private void addNbg(int nbx, int nby, Field<T> center) {
-		Field<? extends T> nb =  getFieldByIndex(nbx, nby);
+	private void addNbg(int nbx, int nby, MapField<T> center) {
+		MapField<? extends T> nb =  getFieldByIndex(nbx, nby);
 		center.getNeigbourList().add(nb);
 	}
 
 	@Override
 	public void scale(float scale) {
 //		fieldList.stream().forEach(e -> e.scale(scale))
-		for(Field<T> field: fieldList){
+		for(MapField<T> field: fieldList){
 			field.scale(scale);
 		}
 	}
@@ -381,17 +381,17 @@ public class Map<T> implements PanScale {
 	@Override
 	public void pan(int dx, int dy){
 //		fieldList.stream().forEach(e -> e.pan(dx,dy))
-		for(Field<T> field: fieldList){
+		for(MapField<T> field: fieldList){
 			field.pan(dx,dy);
 		}
 	}
 
-	public Field<T> getFieldByIndex(int ix, int iy) {
+	public MapField<T> getFieldByIndex(int ix, int iy) {
 		int index = iy * width + ix;
 		return fieldList.get(index);
 	}
 
-	public List<Field<T>> aStar(Field<T> start, Field<T> destiny, Walker<T> walker, int maxSearchDepth) {
+	public List<MapField<T>> aStar(MapField<T> start, MapField<T> destiny, Walker<T> walker, int maxSearchDepth) {
 		return new Astar<T>().getShortestPath(start, destiny, walker, this, maxSearchDepth);
 	}
 
@@ -399,15 +399,15 @@ public class Map<T> implements PanScale {
 		return style;
 	}
 
-	public Field<T> getFieldByCenter(int x, int y) {
-		Field<?> anyField = fieldList.get(0);
-		double anyx = (double)anyField.center().xPanScaled() - anyField.getEdgeList().get(0).a().xPanScaled(); 
-		double anyy = (double)anyField.center().yPanScaled() - anyField.getEdgeList().get(0).a().yPanScaled();
+	public MapField<T> getFieldByCenter(int x, int y) {
+		MapField<?> anyField = fieldList.get(0);
+		double anyx = (double)anyField.getCenter().getTransformedX() - anyField.getEdgeList().get(0).getA().getTransformedX(); 
+		double anyy = (double)anyField.getCenter().getTransformedY() - anyField.getEdgeList().get(0).getA().getTransformedY();
 		double radius = Math.sqrt(anyx * anyx + anyy * anyy) / Math.sqrt(2);
 				
-		for (Field<T> field : fieldList) {
-			double dx = (double)x - field.center().xPanScaled();
-			double dy = (double)y - field.center().yPanScaled();
+		for (MapField<T> field : fieldList) {
+			double dx = (double)x - field.getCenter().getTransformedX();
+			double dy = (double)y - field.getCenter().getTransformedY();
 			double distance = Math.sqrt(dx * dx + dy * dy);
 			if (distance < radius) {
 				return field;
@@ -427,15 +427,15 @@ public class Map<T> implements PanScale {
 	public int getScaledWidth() {
 		int max = 0;
 		int cx = 0;
-		for (Field<T> field: fieldList) {
-			if(field.center().x() > cx) {
-				cx = field.center().x();
-				for(Edge e: field.getEdgeList()) {
-					if (e.a().xPanScaled()> max ) {
-						max = e.a().xPanScaled();
+		for (MapField<T> field: fieldList) {
+			if(field.getCenter().getX() > cx) {
+				cx = field.getCenter().getX();
+				for(MapEdge e: field.getEdgeList()) {
+					if (e.getA().getTransformedX()> max ) {
+						max = e.getA().getTransformedX();
 					}
-					if (e.b().xPanScaled() > max ) {
-						max = e.b().xPanScaled();
+					if (e.getB().getTransformedX() > max ) {
+						max = e.getB().getTransformedX();
 					}
 				}
 			}
@@ -446,15 +446,15 @@ public class Map<T> implements PanScale {
 	public int getScaledHeight() {
 		int max = 0;
 		int cy = 0;
-		for (Field<T> field: fieldList) {
-			if(field.center().y() > cy) {
-				cy = field.center().y();
-				for(Edge e: field.getEdgeList()) {
-					if (e.a().yPanScaled() > max ) {
-						max = e.a().yPanScaled();
+		for (MapField<T> field: fieldList) {
+			if(field.getCenter().getY() > cy) {
+				cy = field.getCenter().getY();
+				for(MapEdge e: field.getEdgeList()) {
+					if (e.getA().getTransformedY() > max ) {
+						max = e.getA().getTransformedY();
 					}
-					if (e.b().yPanScaled() > max ) {
-						max = e.b().yPanScaled();
+					if (e.getB().getTransformedY() > max ) {
+						max = e.getB().getTransformedY();
 					}
 				}
 			}
