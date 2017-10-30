@@ -9,7 +9,7 @@ import de.frank.martin.geolib.GeoPoint;
  * @author martinFrank
  *
  */
-public abstract class AbstractPoint implements Point {
+public abstract class AbstractPoint implements MapPoint {
 
 	/**
 	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's a 2D integer Implementation)
@@ -37,7 +37,7 @@ public abstract class AbstractPoint implements Point {
 
 	@Override
 	public void scale(float s) {
-		scale = new GeoPoint((int)(point.x() * s), (int)(point.y() * s));
+		scale = new GeoPoint((int)(point.getX() * s), (int)(point.getY() * s));
 	}
 
 	@Override
@@ -46,28 +46,28 @@ public abstract class AbstractPoint implements Point {
 	}
 
 	@Override
-	public int xPanScaled() {
-		return scale.x() + pan.x();
+	public int getTransformedX() {
+		return scale.getX() + pan.getX();
 	}
 
 	@Override
-	public int yPanScaled() {
-		return scale.y() + pan.y();
+	public int getTransformedY() {
+		return scale.getY() + pan.getY();
 	}
 
 	@Override
-	public void set(int x, int y) {
+	public void setXY(int x, int y) {
 		point = new GeoPoint(x, y);
 	}
 
 	@Override
-	public int x() {
-		return point.x();
+	public int getX() {
+		return point.getX();
 	}
 
 	@Override
-	public int y() {
-		return point.y();
+	public int getY() {
+		return point.getY();
 	}
 
 	@Override

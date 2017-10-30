@@ -9,38 +9,38 @@ import de.frank.martin.drawlib.PanScale;
  * @author martinFrank
  *
  */
-public interface Point extends PanScale {
+public interface MapPoint extends PanScale {
 
 	/**
 	 * x of the point after scaling and panning
 	 * @return
 	 */
-	int xPanScaled();
+	int getTransformedX();
 
 	/**
 	 * y of the point after scaling and panning
 	 * @return
 	 */
 	
-	int yPanScaled();
+	int getTransformedY();
 
 	/**
 	 * set point location
 	 * @param x
 	 * @param y
 	 */
-	void set(int x, int y);
+	void setXY(int x, int y);
 
 	/**
 	 * the point location 
 	 * @return x
 	 */
-	int x();
+	int getX();
 
 	/**
 	 * the point location
 	 * @return y
 	 */
-	int y();
+	int getY();
 
 }

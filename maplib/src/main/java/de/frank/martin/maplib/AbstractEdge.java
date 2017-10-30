@@ -7,24 +7,24 @@ package de.frank.martin.maplib;
  * @author martinFrank
  * 
  */
-public abstract class AbstractEdge implements Edge {
+public abstract class AbstractEdge implements MapEdge {
 
 	/**
 	 * an edge goes from a -> b; this is a
 	 */
-	private final Point a;
+	private final MapPoint a;
 	
 	/**
 	 * an edge goes from a -> b; this is b
 	 */
-	private final Point b;
+	private final MapPoint b;
 
 	/**
 	 * constructor requires both a and b, because an edge goes from a -> b
 	 * @param a
 	 * @param b
 	 */
-	public AbstractEdge(Point a, Point b) {
+	public AbstractEdge(MapPoint a, MapPoint b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -42,18 +42,18 @@ public abstract class AbstractEdge implements Edge {
 	}
 
 	@Override
-	public Point a() {
+	public MapPoint getA() {
 		return a;
 	}
 
 	@Override
-	public Point b() {
+	public MapPoint getB() {
 		return b;
 	}
 
 	@Override
 	public String toString() {
-		return  a().toString() + " --> " + b.toString();
+		return  getA().toString() + " --> " + b.toString();
 	}
 
 	@Override

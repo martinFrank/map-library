@@ -1,20 +1,20 @@
 package de.frank.martin.maplib;
 
-class Node {
+final class  AStarNode {
 
 	int f;
 	int g;
 	int h;
 	int x;
 	int y;
-	Node from;
+	AStarNode from;
 
-	Node(Point point) {
-		this.x = point.x();
-		this.y = point.y();
+	AStarNode(MapPoint point) {
+		this.x = point.getX();
+		this.y = point.getY();
 	}
 
-	boolean isSamePos(Node n) {
+	boolean isSamePos(AStarNode n) {
 		if (n != null && n.x == x && n.y == y)
 			return true;
 		return false;
