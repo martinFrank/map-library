@@ -2,7 +2,7 @@
 
 a map is a geographical 2D representation of fields that are connected to each other. The concept of a map originates mainly from 2D-games. The map is hence rasetered.
 
-the major reason for using this library is that it is platform independ and uses onyl java basic functionality (only java.lang and java.util)
+the major reason for using this library is that it is platform independ and uses only java basic functionality (only java.lang and java.util)
 
 there are 3 different types of maps implemented:
  + hexagonal (vertical or horizontal)
@@ -13,4 +13,5 @@ the map library provides a a-star shortestPath algorithm. In order to use this y
 
 requirements
  + [draw-library](https://github.com/martinFrank/draw-library)
+ + [geometry-library](https://github.com/martinFrank/geometry-library)
 
