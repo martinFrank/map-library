@@ -473,7 +473,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 
 	@Override
 	public String toString() {
-		return "" + center.toString();
+		return center.toString();
 	}
 
 }
