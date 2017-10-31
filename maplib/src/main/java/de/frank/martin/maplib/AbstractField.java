@@ -9,29 +9,30 @@ import java.util.List;
  *
  * @param <T>
  *            any desired object
+ * @param <V>
  */
-public abstract class AbstractField<T> implements MapField<T> {
+public abstract class AbstractField<T, V,U> implements MapField<T,V,U> {
 
 	/**
 	 * depending on the map type each field has a certain amount of edges.
 	 */
-	private final List<MapEdge> edgeList = new ArrayList<>();
+	private final List<MapEdge<V,U>> edgeList = new ArrayList<>();
 
 	/**
 	 * the center of the field - it's used as unique identifier
 	 */
-	private final MapPoint center;
+	private final MapPoint<U> center;
 
 	/**
 	 * the fields are indiced as well - its another unique identifier
 	 */
-	private final MapPoint index;
-
+	private final MapPoint<U> index;
+	
 	/**
 	 * each field is connected (via the edges) to other fields, these are the
 	 * neighbors - all neighbors are listed here
 	 */
-	private final List<MapField<? extends T>> nbList = new ArrayList<>();
+	private final List<MapField<T,V,U>> nbList = new ArrayList<>();
 
 	/**
 	 * the constructor requires the factory to created it's edges - it also requires
@@ -42,12 +43,13 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * @param f
 	 *            factory
 	 */
-	public AbstractField(MapPoint c, MapFactory<? extends T> f) {
+	public AbstractField(MapPoint<U> c, MapFactory< T, V,U> f) {
 		index = f.createPoint(c.getX(), c.getY());
 		center = f.createPoint(0, 0);
 		setCenter(c, f);
 		createShape(f);
 	}
+
 
 	/**
 	 * this is where the map magic happens - here are the fields created according
@@ -55,7 +57,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * 
 	 * @param factory
 	 */
-	private void createShape(MapFactory<? extends T> factory) {
+	private void createShape(MapFactory<T, V,U> factory) {
 		switch (factory.getStyle()) {
 		case SQUARE4:
 		case SQUARE8:
@@ -86,7 +88,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * @param f
 	 *            factory
 	 */
-	private void setCenter(MapPoint c, MapFactory<? extends T> f) {
+	private void setCenter(MapPoint<U> c, MapFactory< T, V,U> f) {
 		switch (f.getStyle()) {
 		case SQUARE4:
 		case SQUARE8:
@@ -111,7 +113,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 *  helper method to set triangle center
 	 * @param c temporary center
 	 */
-	private void setCenterTriangleVertical(MapPoint c) {
+	private void setCenterTriangleVertical(MapPoint<U> c) {
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
 				center.setXY(1 + (3 * c.getX()), 2 + (2 * c.getY()));
@@ -132,7 +134,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create triangle center
 	 * @param c temporary center
 	 */
-	private void setCenterTriangleHorizontal(MapPoint c) {
+	private void setCenterTriangleHorizontal(MapPoint<U> c) {
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
 				center.setXY(2 + (2 * c.getX()), 2 + (3 * c.getY()));
@@ -153,7 +155,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create center for hex fields
 	 * @param c temporary center
 	 */
-	private void setCenterHexHorizontal(MapPoint c) {
+	private void setCenterHexHorizontal(MapPoint<U> c) {
 		if (c.getX() % 2 == 0) {
 			center.setXY(2 + (3 * c.getX()), 2 + (4 * c.getY()));
 		} else {
@@ -165,7 +167,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create center for hex fields
 	 * @param c temporary center
 	 */
-	private void setCenterHexVertical(MapPoint c) {
+	private void setCenterHexVertical(MapPoint<U> c) {
 		if (c.getY() % 2 == 0) {
 			center.setXY(2 + (4 * c.getX()), 2 + (3 * c.getY()));
 		} else {
@@ -177,13 +179,13 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create center for squared fields
 	 * @param c temporary center
 	 */
-	private void setCenterSquare(MapPoint c) {
+	private void setCenterSquare(MapPoint<U> c) {
 		center.setXY(1 + (2 * c.getX()), 1 + (2 * c.getY()));
 	}
 
 	@Override
 	public void scale(float scale) {
-		for (MapEdge e : edgeList) {
+		for (MapEdge<V,U> e : edgeList) {
 			e.scale(scale);
 		}
 		center.scale(scale);
@@ -191,27 +193,27 @@ public abstract class AbstractField<T> implements MapField<T> {
 
 	@Override
 	public void pan(int dx, int dy) {
-		for (MapEdge e : edgeList) {
+		for (MapEdge<V,U> e : edgeList) {
 			e.pan(dx, dy);
 		}
 		center.pan(dx, dy);
 	}
 
 	@Override
-	public MapPoint getCenter() {
+	public MapPoint<U> getCenter() {
 		return center;
 	}
 
 	
 	@Override
-	public MapPoint getIndex() {
+	public MapPoint<U> getIndex() {
 		return index;
 	}
 	/**
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleVertical(MapFactory<? extends T> factory) {
+	private void createTriangleVertical(MapFactory<T, V,U> factory) {
 		boolean isPointingLeft = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -229,8 +231,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 
 		if (isPointingLeft) {
 			for (int i = 0; i < 3; i++) {
-				MapPoint a = factory.createPoint(1, 1);
-				MapPoint b = factory.createPoint(1, 1);
+				MapPoint<U> a = factory.createPoint(1, 1);
+				MapPoint<U> b = factory.createPoint(1, 1);
 				if (i == 0) {
 					a.setXY(center.getX() - 2, center.getY());
 					b.setXY(center.getX() + 1, center.getY() - 2);
@@ -247,8 +249,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 			}
 		} else {
 			for (int i = 0; i < 3; i++) {
-				MapPoint a = factory.createPoint(1, 1);
-				MapPoint b = factory.createPoint(1, 1);
+				MapPoint<U> a = factory.createPoint(1, 1);
+				MapPoint<U> b = factory.createPoint(1, 1);
 				if (i == 0) {
 					a.setXY(center.getX() - 1, center.getY() - 2);
 					b.setXY(center.getX() + 2, center.getY());
@@ -270,7 +272,7 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleHorizontal(MapFactory<? extends T> factory) {
+	private void createTriangleHorizontal(MapFactory<T, V,U> factory) {
 		boolean isUpside = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -287,8 +289,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 		}
 		if (isUpside) {
 			for (int i = 0; i < 3; i++) {
-				MapPoint a = factory.createPoint(1, 1);
-				MapPoint b = factory.createPoint(1, 1);
+				MapPoint<U> a = factory.createPoint(1, 1);
+				MapPoint<U> b = factory.createPoint(1, 1);
 				if (i == 0) {
 					a.setXY(center.getX() - 2, center.getY() + 1);
 					b.setXY(center.getX(), center.getY() - 2);
@@ -305,8 +307,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 			}
 		} else {
 			for (int i = 0; i < 3; i++) {
-				MapPoint a = factory.createPoint(1, 1);
-				MapPoint b = factory.createPoint(1, 1);
+				MapPoint<U> a = factory.createPoint(1, 1);
+				MapPoint<U> b = factory.createPoint(1, 1);
 				if (i == 0) {
 					a.setXY(center.getX() - 2, center.getY() - 1);
 					b.setXY(center.getX() + 2, center.getY() - 1);
@@ -329,10 +331,10 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesVertical(MapFactory<? extends T> factory) {
+	private void createHexesVertical(MapFactory<T, V,U> factory) {
 		for (int i = 0; i < 6; i++) {
-			MapPoint a = factory.createPoint(1, 1);
-			MapPoint b = factory.createPoint(1, 1);
+			MapPoint<U> a = factory.createPoint(1, 1);
+			MapPoint<U> b = factory.createPoint(1, 1);
 			if (i == 0) {
 				a.setXY(center.getX() - 2, center.getY() - 1);
 				b.setXY(center.getX(), center.getY() - 2);
@@ -367,8 +369,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * @param b
 	 * @param factory
 	 */
-	private void createAndAddEdge(MapPoint a, MapPoint b, MapFactory<? extends T> factory) {
-		MapEdge edge = factory.createEdge(a, b);
+	private void createAndAddEdge(MapPoint<U> a, MapPoint<U> b, MapFactory<T, V, U> factory) {
+		MapEdge<V,U> edge = factory.createEdge(a, b);
 		edgeList.add(edge);
 	}
 
@@ -376,10 +378,10 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesHorizontal(MapFactory<? extends T> factory) {
+	private void createHexesHorizontal(MapFactory<T, V, U> factory) {
 		for (int i = 0; i < 6; i++) {
-			MapPoint a = factory.createPoint(1, 1);
-			MapPoint b = factory.createPoint(1, 1);
+			MapPoint<U> a = factory.createPoint(1, 1);
+			MapPoint<U> b = factory.createPoint(1, 1);
 			if (i == 0) {
 				a.setXY(center.getX() - 2, center.getY());
 				b.setXY(center.getX() - 1, center.getY() - 2);
@@ -412,10 +414,10 @@ public abstract class AbstractField<T> implements MapField<T> {
 	 * helper method to create squared fields
 	 * @param factory
 	 */
-	private void createSquares(MapFactory<? extends T> factory) {
+	private void createSquares(MapFactory<T, V, U> factory) {
 		for (int i = 0; i < 4; i++) {
-			MapPoint a = factory.createPoint(1, 1);
-			MapPoint b = factory.createPoint(1, 1);
+			MapPoint<U> a = factory.createPoint(1, 1);
+			MapPoint<U> b = factory.createPoint(1, 1);
 			if (i == 0) {
 				a.setXY(center.getX() - 1, center.getY() - 1);
 				b.setXY(center.getX() + 1, center.getY() - 1);
@@ -437,12 +439,12 @@ public abstract class AbstractField<T> implements MapField<T> {
 	}
 
 	@Override
-	public List<MapField<? extends T>> getNeigbourList() {
+	public List<MapField<T,V,U>> getNeigbourList() {
 		return nbList;
 	}
 
 	@Override
-	public List<MapEdge> getEdgeList() {
+	public List<MapEdge<V,U>> getEdgeList() {
 		return edgeList;
 	}
 
@@ -462,7 +464,8 @@ public abstract class AbstractField<T> implements MapField<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractField<?> other = (AbstractField<?>) obj;
+		@SuppressWarnings("unchecked")
+		AbstractField<T,V,U> other = (AbstractField<T,V,U>) obj;
 		if (center == null) {
 			if (other.center != null)
 				return false;

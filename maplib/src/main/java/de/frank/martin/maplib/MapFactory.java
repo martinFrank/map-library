@@ -11,7 +11,7 @@ package de.frank.martin.maplib;
  * @param <T>
  *            any desired object
  */
-public interface MapFactory<T> {
+public interface MapFactory<T,V,U> {
 
 	/**
 	 * method to create the point
@@ -20,7 +20,7 @@ public interface MapFactory<T> {
 	 * @param y
 	 * @return
 	 */
-	MapPoint createPoint(int x, int y);
+	MapPoint<U> createPoint(int x, int y);
 
 	/**
 	 * method to create the field - requires the unique center
@@ -29,7 +29,7 @@ public interface MapFactory<T> {
 	 *            must be uniqe
 	 * @return
 	 */
-	MapField<T> createField(MapPoint center);
+	MapField<T,V,U> createField(MapPoint<U> center);
 
 	/**
 	 * method to create the edge
@@ -38,7 +38,7 @@ public interface MapFactory<T> {
 	 * @param b
 	 * @return
 	 */
-	MapEdge createEdge(MapPoint a, MapPoint b);
+	MapEdge<V,U> createEdge(MapPoint<U> a, MapPoint<U> b);
 
 	/**
 	 * override this method to set the map style

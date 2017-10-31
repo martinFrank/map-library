@@ -5,26 +5,27 @@ package de.frank.martin.maplib;
  * interface is not implemented
  * 
  * @author martinFrank
+ * @param <V>
  * 
  */
-public abstract class AbstractEdge implements MapEdge {
+public abstract class AbstractEdge<U, V> implements MapEdge<U,V> {
 
 	/**
 	 * an edge goes from a -> b; this is a
 	 */
-	private final MapPoint a;
+	private final MapPoint<V> a;
 	
 	/**
 	 * an edge goes from a -> b; this is b
 	 */
-	private final MapPoint b;
+	private final MapPoint<V> b;
 
 	/**
 	 * constructor requires both a and b, because an edge goes from a -> b
 	 * @param a
 	 * @param b
 	 */
-	public AbstractEdge(MapPoint a, MapPoint b) {
+	public AbstractEdge(MapPoint<V> a, MapPoint<V> b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -42,12 +43,12 @@ public abstract class AbstractEdge implements MapEdge {
 	}
 
 	@Override
-	public MapPoint getA() {
+	public MapPoint<V> getA() {
 		return a;
 	}
 
 	@Override
-	public MapPoint getB() {
+	public MapPoint<V> getB() {
 		return b;
 	}
 
@@ -73,7 +74,8 @@ public abstract class AbstractEdge implements MapEdge {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractEdge other = (AbstractEdge) obj;
+		@SuppressWarnings("unchecked")
+		AbstractEdge<U,V> other = (AbstractEdge<U,V>) obj;
 		if (a.equals(other.a) && b.equals(other.b)) {
 			return true;
 		}

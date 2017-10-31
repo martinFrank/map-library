@@ -13,7 +13,7 @@ import java.util.List;
  * @param <T>
  *            any Mapfield type
  */
-class Astar<T> {
+class Astar<T,V,U> {
 
 	/**
 	 * open list
@@ -25,9 +25,9 @@ class Astar<T> {
 	 */
 	private ArrayList<AStarNode> cList = new ArrayList<>();
 
-	ArrayList<MapField<T>> getShortestPath(MapField<T> startPoint, MapField<T> targetPoint, Walker<T> walker,
-			Map<T> map, int maxPathLength) {
-		ArrayList<MapField<T>> path = new ArrayList<>();
+	ArrayList<MapField<T,V,U>> getShortestPath(MapField<T,V,U> startPoint, MapField<T,V,U> targetPoint, Walker<T,V,U> walker,
+			Map<T,V,U> map, int maxPathLength) {
+		ArrayList<MapField<T,V,U>> path = new ArrayList<>();
 		if (walker == null || startPoint == null || targetPoint == null || map == null) {
 			return path;
 		}
@@ -88,7 +88,7 @@ class Astar<T> {
 		if (!noWayFound) {
 			AStarNode n = end;
 			while (n != null) {
-				MapField<T> wayPoint = map.getFieldByIndex(n.x, n.y);
+				MapField<T,V,U> wayPoint = map.getFieldByIndex(n.x, n.y);
 				path.add(wayPoint);
 				n = n.from;
 			}
@@ -96,24 +96,24 @@ class Astar<T> {
 		return path;
 	}
 
-	private void expandNode(AStarNode current, Map<T> map, Walker<T> walker, AStarNode end) {
-		MapField<T> center = map.getFieldByIndex(current.x, current.y);
+	private void expandNode(AStarNode current, Map<T,V,U> map, Walker<T,V,U> walker, AStarNode end) {
+		MapField<T,V,U> center = map.getFieldByIndex(current.x, current.y);
 		List<AStarNode> nodeList = getNeigbours(center);
 		for (AStarNode n : nodeList) {
 			if (checkIsPassable(center, n, walker, map)) {
-				MapField<T> to = map.getFieldByIndex(n.x, n.y);
+				MapField<T,V,U> to = map.getFieldByIndex(n.x, n.y);
 				int distance = walker.getEnterCosts(center, to, map.getMapStyle());
 				addIfRequired(n, current, end, distance);
 			}
 		}
 	}
 
-	private List<AStarNode> getNeigbours(MapField<? extends T> center) {
+	private List<AStarNode> getNeigbours(MapField< T,V,U> center) {
 		List<AStarNode> nodeList = new ArrayList<>();
 		// java 8 implementation
 		// center.getNeigbourList().stream().forEach(e -> nodeList.add(new
 		// Node(e.ix(),e.iy())))
-		for (MapField<? extends T> nbgField : center.getNeigbourList()) {
+		for (MapField<T,V,U> nbgField : center.getNeigbourList()) {
 			nodeList.add(new AStarNode(nbgField.getIndex()));
 		}
 		return nodeList;
@@ -138,8 +138,8 @@ class Astar<T> {
 		}
 	}
 
-	private boolean checkIsPassable(MapField<T> from, AStarNode n, Walker<T> walker, Map<T> map) {
-		MapField<T> into = map.getFieldByIndex(n.x, n.y);
+	private boolean checkIsPassable(MapField<T,V,U> from, AStarNode n, Walker<T,V,U> walker, Map<T,V,U> map) {
+		MapField<T,V,U> into = map.getFieldByIndex(n.x, n.y);
 		return walker.canEnter(from, into);
 	}
 

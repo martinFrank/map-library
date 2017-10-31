@@ -9,18 +9,19 @@ import de.frank.martin.geolib.GeoPoint;
  * @author martinFrank
  *
  */
-public abstract class AbstractPoint implements MapPoint {
+public abstract class AbstractPoint<U> implements MapPoint<U> {
 
 	/**
-	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's a 2D integer Implementation)
+	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's
+	 * a 2D integer Implementation)
 	 */
 	private GeoPoint point;
-	
+
 	/**
 	 * this is the panned point
 	 */
 	private GeoPoint pan = new GeoPoint();
-	
+
 	/**
 	 * this is the scaled point
 	 */
@@ -28,8 +29,11 @@ public abstract class AbstractPoint implements MapPoint {
 
 	/**
 	 * A Point at a certain location
-	 * @param x location
-	 * @param y location
+	 * 
+	 * @param x
+	 *            location
+	 * @param y
+	 *            location
 	 */
 	public AbstractPoint(int x, int y) {
 		point = new GeoPoint(x, y);
@@ -37,7 +41,7 @@ public abstract class AbstractPoint implements MapPoint {
 
 	@Override
 	public void scale(float s) {
-		scale = new GeoPoint((int)(point.getX() * s), (int)(point.getY() * s));
+		scale = new GeoPoint((int) (point.getX() * s), (int) (point.getY() * s));
 	}
 
 	@Override
@@ -92,16 +96,14 @@ public abstract class AbstractPoint implements MapPoint {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractPoint other = (AbstractPoint) obj;
+		@SuppressWarnings("unchecked")
+		AbstractPoint<U> other = (AbstractPoint<U>) obj;
 		if (point == null) {
 			if (other.point != null)
 				return false;
-		}
-			else if (!point.equals(other.point))
+		} else if (!point.equals(other.point))
 			return false;
 		return true;
 	}
-	
-	
 
 }

@@ -9,18 +9,21 @@ import de.frank.martin.drawlib.PanScale;
  * @author martinFrank
  *
  */
-public interface MapEdge extends PanScale {
+public interface MapEdge<V,U> extends PanScale {
 
 	/**
 	 * the a of the edge
 	 * @return a
 	 */
-	MapPoint getA();
+	MapPoint<U> getA();
 
 	/**
 	 * the be of the edge
 	 * @return b
 	 */
-	MapPoint getB();
+	MapPoint<U> getB();
 
+	V getEdgeData();
+
+	void setEdgeData(V v);
 }

@@ -14,17 +14,17 @@ import de.frank.martin.drawlib.PanScale;
  *
  * @param <T> any desired object
  */
-public interface MapField<T> extends PanScale {
+public interface MapField<T,V,U> extends PanScale {
 
-	MapPoint getIndex();
+	MapPoint<?> getIndex();
 
-	List<MapField<? extends T>> getNeigbourList();
+	List<MapField<T,V,U>> getNeigbourList();
 
-	List<MapEdge> getEdgeList();
+	List<MapEdge<V,U>> getEdgeList();
 
 	T getFieldData();
 
 	void setFieldData(T t);
 
-	MapPoint getCenter();
+	MapPoint<U> getCenter();
 }
