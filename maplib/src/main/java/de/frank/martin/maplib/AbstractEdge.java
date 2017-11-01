@@ -8,8 +8,9 @@ import java.util.Set;
  * interface is not implemented
  * 
  * @author martinFrank
- * @param <P>
  * 
+ * @param <E> any custom edge data
+ * @param <P> any custom point data
  */
 public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 
@@ -23,6 +24,9 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	 */
 	private final MapPoint<P> b;
 
+	/**
+	 * list of neighbor fields
+	 */
 	private Set<MapField<?, E, P>> fields = new HashSet<>();
 	
 

@@ -6,11 +6,12 @@ import java.util.Set;
 import de.frank.martin.geolib.GeoPoint;
 
 /**
- * basic implementation fo the Point interface, it's fully implemented, the only
+ * basic implementation of the Point interface, it's fully implemented, the only
  * thing that's not implemented is the drawable Interface
  * 
  * @author martinFrank
- *
+ * 
+ * @param <P> any customizable point data
  */
 public abstract class AbstractPoint<P> implements MapPoint<P> {
 

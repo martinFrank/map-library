@@ -6,6 +6,15 @@ import java.util.List;
 
 import de.frank.martin.drawlib.PanScale;
 
+/**
+ * this is the full implementation if the map only the drawable interface is not implemented
+ * 
+ * @author martinFrank
+ *
+ * @param <F> any custom field data
+ * @param <E> any custom edge data
+ * @param <P> any custom point data
+ */
 public abstract class Map<F, E, P> implements PanScale {
 
 	private final List<MapField<F, E, P>> fields = new ArrayList<>();

@@ -9,9 +9,9 @@ import java.util.Set;
  * this is an implementation of the map field, merely the drawable interface is
  * not implemented.
  *
- * @param <F>
- *            any desired object
- * @param <E>
+ * @param <F> any custom field data
+ * @param <E> any custom edge data
+ * @param <P> any custom point data
  */
 public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 
