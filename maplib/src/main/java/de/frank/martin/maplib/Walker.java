@@ -6,9 +6,11 @@ package de.frank.martin.maplib;
  * 
  * @author martinFrank
  *
- * @param <T> any desired field object
+ * @param <F> any desired field data object
+ * @param <E> any desired edge data object
+ * @param <P> any desired point data object
  */
-public abstract class Walker<T> {
+public abstract class Walker<F,E,P> {
 
 	/**
 	 * the walker returns false if the field cannot be entered, otherwise true - if a field can be entered the distance is used to calculate the accessibility of a field
@@ -16,7 +18,7 @@ public abstract class Walker<T> {
 	 * @param into destination field
 	 * @return 
 	 */
-	public abstract boolean canEnter(MapField<T> from, MapField<T> into);
+	public abstract boolean canEnter(MapField<F,E,P> from, MapField<F,E,P> into);
 
 	/**
 	 * some field can be accessed easier than other, eg. 'swamp' have a higher walking cost than grass plains - the amount of walk cost is determined here
@@ -25,7 +27,7 @@ public abstract class Walker<T> {
 	 * @param style sometimes the walk costs depend on the map style
 	 * @return walking costs
 	 */
-	public int getEnterCosts(MapField<T> from, MapField<T> into, MapStyle style) {
+	public int getEnterCosts(MapField<F,E,P> from, MapField<F,E,P> into, MapStyle style) {
 		// FIXME diagonale kosten
 		// diagonal = 14 (nur bei MapStyle.SQUARE8)
 		// ansonsten immer 10

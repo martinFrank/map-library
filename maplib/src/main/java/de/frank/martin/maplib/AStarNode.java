@@ -9,7 +9,7 @@ final class  AStarNode {
 	int y;
 	AStarNode from;
 
-	AStarNode(MapPoint point) {
+	AStarNode(MapPoint<?> point) {
 		this.x = point.getX();
 		this.y = point.getY();
 	}

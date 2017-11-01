@@ -1,5 +1,8 @@
 package de.frank.martin.maplib;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import de.frank.martin.geolib.GeoPoint;
 
 /**
@@ -9,18 +12,22 @@ import de.frank.martin.geolib.GeoPoint;
  * @author martinFrank
  *
  */
-public abstract class AbstractPoint implements MapPoint {
+public abstract class AbstractPoint<P> implements MapPoint<P> {
 
+	
+	private Set<MapEdge<?, P>>edges = new HashSet<>();
+	
 	/**
-	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's a 2D integer Implementation)
+	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's
+	 * a 2D integer Implementation)
 	 */
 	private GeoPoint point;
-	
+
 	/**
 	 * this is the panned point
 	 */
 	private GeoPoint pan = new GeoPoint();
-	
+
 	/**
 	 * this is the scaled point
 	 */
@@ -28,8 +35,11 @@ public abstract class AbstractPoint implements MapPoint {
 
 	/**
 	 * A Point at a certain location
-	 * @param x location
-	 * @param y location
+	 * 
+	 * @param x
+	 *            location
+	 * @param y
+	 *            location
 	 */
 	public AbstractPoint(int x, int y) {
 		point = new GeoPoint(x, y);
@@ -37,7 +47,7 @@ public abstract class AbstractPoint implements MapPoint {
 
 	@Override
 	public void scale(float s) {
-		scale = new GeoPoint((int)(point.getX() * s), (int)(point.getY() * s));
+		scale = new GeoPoint((int) (point.getX() * s), (int) (point.getY() * s));
 	}
 
 	@Override
@@ -69,10 +79,15 @@ public abstract class AbstractPoint implements MapPoint {
 	public int getY() {
 		return point.getY();
 	}
+	
+	@Override
+	public Set<MapEdge<?, P>> getEdges() {
+		return edges;
+	}
 
 	@Override
 	public String toString() {
-		return point.toString();
+		return "("+point.getX()+"/"+point.getY()+")";
 
 	}
 
@@ -92,16 +107,14 @@ public abstract class AbstractPoint implements MapPoint {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractPoint other = (AbstractPoint) obj;
+		@SuppressWarnings("unchecked")
+		AbstractPoint<P> other = (AbstractPoint<P>) obj;
 		if (point == null) {
 			if (other.point != null)
 				return false;
-		}
-			else if (!point.equals(other.point))
+		} else if (!point.equals(other.point))
 			return false;
 		return true;
 	}
-	
-	
 
 }

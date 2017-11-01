@@ -1,6 +1,7 @@
 package de.frank.martin.maplib;
 
 import java.util.List;
+import java.util.Set;
 
 import de.frank.martin.drawlib.PanScale;
 
@@ -12,19 +13,52 @@ import de.frank.martin.drawlib.PanScale;
  * 
  * @author martinFrank
  *
- * @param <T> any desired object
+ * @param <F> any desired field data object
+ * @param <E> any desired edge data object
+ * @param <P> any desired point data object
  */
-public interface MapField<T> extends PanScale {
+public interface MapField<F,E,P> extends PanScale {
 
-	MapPoint getIndex();
+	/**
+	 * unique index point
+	 * @return
+	 */
+	MapPoint<P> getIndex();
 
-	List<MapField<? extends T>> getNeigbourList();
+	/**
+	 * center point of the field
+	 * @return
+	 */
+	MapPoint<P> getCenter();
 
-	List<MapEdge> getEdgeList();
+	/**
+	 * a set of all surrounding neighbor fields
+	 * @return
+	 */
+	Set<MapField<F,E,P>> getNeigbours();
 
-	T getFieldData();
+	/**
+	 * the edges around the field
+	 * @return
+	 */
+	List<MapEdge<E,P>> getEdges();
+	
+	/**
+	 * the points around the field
+	 * @return
+	 */
+	List<MapPoint<P>> getPoints();
 
-	void setFieldData(T t);
+	/**
+	 * Customizable data
+	 * @return
+	 */
+	F getFieldData();
 
-	MapPoint getCenter();
+	/**
+	 * Customizable data
+	 * @param t
+	 */
+	void setFieldData(F t);
+
 }
