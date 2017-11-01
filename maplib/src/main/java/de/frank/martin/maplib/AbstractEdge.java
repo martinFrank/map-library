@@ -25,7 +25,6 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 
 	private Set<MapField<?, E, P>> fields = new HashSet<>();
 	
-	private Set<MapEdge<E, P>> edges = new HashSet<>();
 
 	/**
 	 * constructor requires both a and b, because an edge goes from a -> b
@@ -61,11 +60,6 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	}
 
 	@Override
-	public Set<MapEdge<E, P>> getEdges() {
-		return edges;
-	}
-
-	@Override
 	public Set<MapField<?, E, P>> getFields() {
 		return fields;
 	}
@@ -73,7 +67,6 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	@Override
 	public String toString() {
 		return "["+getA().toString()+":"+getB().toString()+"]";
-//		return getA().toString() + " --> " + b.toString();
 	}
 
 	@Override

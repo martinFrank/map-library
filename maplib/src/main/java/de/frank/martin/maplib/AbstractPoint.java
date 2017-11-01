@@ -88,7 +88,6 @@ public abstract class AbstractPoint<P> implements MapPoint<P> {
 	@Override
 	public String toString() {
 		return "("+point.getX()+"/"+point.getY()+")";
-//		return point.toString();
 
 	}
 

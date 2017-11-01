@@ -26,20 +26,36 @@ public abstract class Map<F, E, P> implements PanScale {
 		scale(1);
 	}
 
+	//FIXME that the 'field-related aStar' - you must implement the edge.related aStar as well!!!
 	public List<MapField<F, E, P>> aStar(MapField<F, E, P> start, MapField<F, E, P> destiny, Walker<F, E, P> walker,
 			int maxSearchDepth) {
 		return new Astar<F, E, P>().getShortestPath(start, destiny, walker, this, maxSearchDepth);
 	}
 
+	/**
+	 * the style of this map
+	 * @return
+	 */
 	public MapStyle getMapStyle() {
 		return style;
 	}
 
+	/**
+	 * list of all fields of the map
+	 * @return
+	 */
 	public List<MapField<F, E, P>> getFields() {
 		return fields;
 	}
 
-	public MapField<F, E, P> getFieldByCenter(int x, int y) {
+	/**
+	 * returns the field 'near' the x/y-position. This method is helpful if you want to 
+	 * get fields by click/touch
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public MapField<F, E, P> getField(int x, int y) {
 		double radius = getRadiusForScale();
 		for (MapField<F, E, P> field : fields) {
 			double dx = (double) x - field.getCenter().getTransformedX();
@@ -52,11 +68,24 @@ public abstract class Map<F, E, P> implements PanScale {
 		return null;
 	}
 
+	/**
+	 * returns the field by the indexed coordinates. this method is mainly used by the aStar
+	 * @param ix
+	 * @param iy
+	 * @return
+	 */
 	public MapField<F, E, P> getFieldByIndex(int ix, int iy) {
 		int index = iy * width + ix;
 		return fields.get(index);
 	}
 
+	/**
+	 * returns the edge 'near' the x/y-position. this method is helpful if you want to 
+	 * get edges by click/touch
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public MapEdge<E, P> getEdge(int x, int y) {
 		double radius = getRadiusForScale() / 2d;
 		for (MapField<F, E, P> field : fields) {
@@ -75,6 +104,13 @@ public abstract class Map<F, E, P> implements PanScale {
 		return null;
 	}
 
+	/**
+	 * returns the point 'near' the x/y-position. this method is helpful if you want to 
+	 * get points by click/touch
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public MapPoint<P> getPoint(int x, int y) {
 		double radius = getRadiusForScale() / 4d;
 		for (MapField<F, E, P> field : fields) {
@@ -97,14 +133,26 @@ public abstract class Map<F, E, P> implements PanScale {
 		return null;
 	}
 
+	/**
+	 * the width (amount of fields) of the map
+	 * @return
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * the height (amount of fields) of the map
+	 * @return
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * width (in pixel) of the (already) scaled map
+	 * @return
+	 */
 	public int getScaledWidth() {
 		int max = 0;
 		int cx = 0;
@@ -124,6 +172,10 @@ public abstract class Map<F, E, P> implements PanScale {
 		return max;
 	}
 
+	/**
+	 * height (in pixel) of the (already) scaled map
+	 * @return
+	 */
 	public int getScaledHeight() {
 		int max = 0;
 		int cy = 0;

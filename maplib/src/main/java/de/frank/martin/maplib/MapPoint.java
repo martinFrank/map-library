@@ -10,6 +10,7 @@ import de.frank.martin.drawlib.PanScale;
  * 
  * @author martinFrank
  *
+ * @param <P> any desired point data object
  */
 public interface MapPoint<P> extends PanScale {
 
@@ -45,10 +46,23 @@ public interface MapPoint<P> extends PanScale {
 	 */
 	int getY();
 	
+	
+	/**
+	 * Customizable data
+	 * @return
+	 */
 	P getPointData();
 
+	/**
+	 * Customizable data
+	 * @param u
+	 */
 	void setPointData(P u);
 	
+	/**
+	 * set of all edges that are connected to this point
+	 * @return
+	 */
 	Set<MapEdge<?,P>> getEdges();
 
 }
