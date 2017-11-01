@@ -226,15 +226,12 @@ public abstract class Map<F, E, P> implements PanScale {
 
 	private void reducePoints() {
 		java.util.Map<MapPoint<P>, MapPoint<P>> points = new HashMap<>();
-		int unreduced = 0;
 		for (MapField<F, E, P> field : fields) {
 			// field.getPoints().stream().forEach(e -> pointList.add(e))
 			for (MapPoint<P> p : field.getPoints()) {
 				points.put(p, p);
-				unreduced = unreduced + 1;
 			}
 		}
-		System.out.println("original=" + unreduced + " reduced=" + points.size());
 
 		// replace points in fields
 		for (MapField<F, E, P> field : fields) {
