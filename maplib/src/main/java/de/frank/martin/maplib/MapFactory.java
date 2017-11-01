@@ -8,10 +8,11 @@ package de.frank.martin.maplib;
  * 
  * @author martinFrank
  *
- * @param <T>
- *            any desired object
+ * @param <F> any desired field data object
+ * @param <E> any desired edge data object
+ * @param <P> any desired point data object
  */
-public interface MapFactory<T> {
+public interface MapFactory<F,E,P> {
 
 	/**
 	 * method to create the point
@@ -20,7 +21,7 @@ public interface MapFactory<T> {
 	 * @param y
 	 * @return
 	 */
-	MapPoint createPoint(int x, int y);
+	MapPoint<P> createPoint(int x, int y);
 
 	/**
 	 * method to create the field - requires the unique center
@@ -29,7 +30,7 @@ public interface MapFactory<T> {
 	 *            must be uniqe
 	 * @return
 	 */
-	MapField<T> createField(MapPoint center);
+	MapField<F,E,P> createField(MapPoint<P> center);
 
 	/**
 	 * method to create the edge
@@ -38,7 +39,7 @@ public interface MapFactory<T> {
 	 * @param b
 	 * @return
 	 */
-	MapEdge createEdge(MapPoint a, MapPoint b);
+	MapEdge<E,P> createEdge(MapPoint<P> a, MapPoint<P> b);
 
 	/**
 	 * override this method to set the map style
