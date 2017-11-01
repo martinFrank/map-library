@@ -1,5 +1,7 @@
 package de.frank.martin.maplib;
 
+import java.util.Set;
+
 import de.frank.martin.drawlib.PanScale;
 
 /**
@@ -9,7 +11,7 @@ import de.frank.martin.drawlib.PanScale;
  * @author martinFrank
  *
  */
-public interface MapPoint<U> extends PanScale {
+public interface MapPoint<P> extends PanScale {
 
 	/**
 	 * x of the point after scaling and panning
@@ -43,8 +45,10 @@ public interface MapPoint<U> extends PanScale {
 	 */
 	int getY();
 	
-	U getPointData();
+	P getPointData();
 
-	void setPointData(U u);
+	void setPointData(P u);
+	
+	Set<MapEdge<?,P>> getEdges();
 
 }

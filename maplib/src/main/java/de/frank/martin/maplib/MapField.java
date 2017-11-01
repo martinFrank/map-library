@@ -1,6 +1,7 @@
 package de.frank.martin.maplib;
 
 import java.util.List;
+import java.util.Set;
 
 import de.frank.martin.drawlib.PanScale;
 
@@ -12,19 +13,21 @@ import de.frank.martin.drawlib.PanScale;
  * 
  * @author martinFrank
  *
- * @param <T> any desired object
+ * @param <F> any desired object
  */
-public interface MapField<T,V,U> extends PanScale {
+public interface MapField<F,E,P> extends PanScale {
 
 	MapPoint<?> getIndex();
 
-	List<MapField<T,V,U>> getNeigbourList();
+	Set<MapField<F,E,P>> getNeigbours();
 
-	List<MapEdge<V,U>> getEdgeList();
+	List<MapEdge<E,P>> getEdges();
+	
+	List<MapPoint<P>> getPoints();
 
-	T getFieldData();
+	F getFieldData();
 
-	void setFieldData(T t);
+	void setFieldData(F t);
 
-	MapPoint<U> getCenter();
+	MapPoint<P> getCenter();
 }

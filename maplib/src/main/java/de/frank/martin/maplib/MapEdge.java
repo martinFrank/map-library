@@ -1,5 +1,7 @@
 package de.frank.martin.maplib;
 
+import java.util.Set;
+
 import de.frank.martin.drawlib.PanScale;
 
 /**
@@ -9,21 +11,25 @@ import de.frank.martin.drawlib.PanScale;
  * @author martinFrank
  *
  */
-public interface MapEdge<V,U> extends PanScale {
+public interface MapEdge<E,P> extends PanScale {
 
 	/**
 	 * the a of the edge
 	 * @return a
 	 */
-	MapPoint<U> getA();
+	MapPoint<P> getA();
 
 	/**
 	 * the be of the edge
 	 * @return b
 	 */
-	MapPoint<U> getB();
+	MapPoint<P> getB();
 
-	V getEdgeData();
+	E getEdgeData();
 
-	void setEdgeData(V v);
+	void setEdgeData(E v);
+	
+	Set<MapEdge<E, P>>getEdges();
+	
+	Set<MapField<?,E,P>> getFields();
 }

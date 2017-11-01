@@ -113,7 +113,7 @@ class Astar<T,V,U> {
 		// java 8 implementation
 		// center.getNeigbourList().stream().forEach(e -> nodeList.add(new
 		// Node(e.ix(),e.iy())))
-		for (MapField<T,V,U> nbgField : center.getNeigbourList()) {
+		for (MapField<T,V,U> nbgField : center.getNeigbours()) {
 			nodeList.add(new AStarNode(nbgField.getIndex()));
 		}
 		return nodeList;

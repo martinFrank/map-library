@@ -1,5 +1,8 @@
 package de.frank.martin.maplib;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import de.frank.martin.geolib.GeoPoint;
 
 /**
@@ -9,8 +12,11 @@ import de.frank.martin.geolib.GeoPoint;
  * @author martinFrank
  *
  */
-public abstract class AbstractPoint<U> implements MapPoint<U> {
+public abstract class AbstractPoint<P> implements MapPoint<P> {
 
+	
+	private Set<MapEdge<?, P>>edges = new HashSet<>();
+	
 	/**
 	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's
 	 * a 2D integer Implementation)
@@ -73,10 +79,16 @@ public abstract class AbstractPoint<U> implements MapPoint<U> {
 	public int getY() {
 		return point.getY();
 	}
+	
+	@Override
+	public Set<MapEdge<?, P>> getEdges() {
+		return edges;
+	}
 
 	@Override
 	public String toString() {
-		return point.toString();
+		return "("+point.getX()+"/"+point.getY()+")";
+//		return point.toString();
 
 	}
 
@@ -97,7 +109,7 @@ public abstract class AbstractPoint<U> implements MapPoint<U> {
 		if (getClass() != obj.getClass())
 			return false;
 		@SuppressWarnings("unchecked")
-		AbstractPoint<U> other = (AbstractPoint<U>) obj;
+		AbstractPoint<P> other = (AbstractPoint<P>) obj;
 		if (point == null) {
 			if (other.point != null)
 				return false;

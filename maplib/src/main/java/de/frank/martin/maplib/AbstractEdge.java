@@ -1,31 +1,39 @@
 package de.frank.martin.maplib;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Edges surround fields, this is a full implementation, only the drawable
  * interface is not implemented
  * 
  * @author martinFrank
- * @param <V>
+ * @param <P>
  * 
  */
-public abstract class AbstractEdge<U, V> implements MapEdge<U,V> {
+public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 
 	/**
 	 * an edge goes from a -> b; this is a
 	 */
-	private final MapPoint<V> a;
-	
+	private final MapPoint<P> a;
+
 	/**
 	 * an edge goes from a -> b; this is b
 	 */
-	private final MapPoint<V> b;
+	private final MapPoint<P> b;
+
+	private Set<MapField<?, E, P>> fields = new HashSet<>();
+	
+	private Set<MapEdge<E, P>> edges = new HashSet<>();
 
 	/**
 	 * constructor requires both a and b, because an edge goes from a -> b
+	 * 
 	 * @param a
 	 * @param b
 	 */
-	public AbstractEdge(MapPoint<V> a, MapPoint<V> b) {
+	public AbstractEdge(MapPoint<P> a, MapPoint<P> b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -43,26 +51,39 @@ public abstract class AbstractEdge<U, V> implements MapEdge<U,V> {
 	}
 
 	@Override
-	public MapPoint<V> getA() {
+	public MapPoint<P> getA() {
 		return a;
 	}
 
 	@Override
-	public MapPoint<V> getB() {
+	public MapPoint<P> getB() {
 		return b;
 	}
 
 	@Override
+	public Set<MapEdge<E, P>> getEdges() {
+		return edges;
+	}
+
+	@Override
+	public Set<MapField<?, E, P>> getFields() {
+		return fields;
+	}
+
+	@Override
 	public String toString() {
-		return  getA().toString() + " --> " + b.toString();
+		return "["+getA().toString()+":"+getB().toString()+"]";
+//		return getA().toString() + " --> " + b.toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((a == null) ? 0 : a.hashCode());
-		result = prime * result + ((b == null) ? 0 : b.hashCode());
+		int as = (a == null) ? 0 : a.hashCode();
+		int bs = (b == null) ? 0 : b.hashCode();
+		int abSum = as+bs;
+		result = prime * result + abSum;
 		return result;
 	}
 
@@ -75,7 +96,7 @@ public abstract class AbstractEdge<U, V> implements MapEdge<U,V> {
 		if (getClass() != obj.getClass())
 			return false;
 		@SuppressWarnings("unchecked")
-		AbstractEdge<U,V> other = (AbstractEdge<U,V>) obj;
+		AbstractEdge<E, P> other = (AbstractEdge<E, P>) obj;
 		if (a.equals(other.a) && b.equals(other.b)) {
 			return true;
 		}
