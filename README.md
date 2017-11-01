@@ -11,7 +11,7 @@ there are 3 different types of maps implemented:
  
 the map library provides a a-star shortestPath algorithm. In order to use this you must define a 'walker' who can walk over certain field or cannot walk into 'blocked' fields.
 
-requirements
+### Requirements:
  + [draw-library](https://github.com/martinFrank/draw-library)
  + [geometry-library](https://github.com/martinFrank/geometry-library)
 
