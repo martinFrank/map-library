@@ -18,6 +18,8 @@ import de.frank.martin.drawlib.PanScale;
 public abstract class Map<F, E, P> implements PanScale {
 
 	private final List<MapField<F, E, P>> fields = new ArrayList<>();
+	private final List<MapEdge<E,P>> edges = new ArrayList<>();
+	private final List<MapPoint<P>> points = new ArrayList<>();
 
 	private final int width;
 	private final int height;
@@ -50,11 +52,27 @@ public abstract class Map<F, E, P> implements PanScale {
 	}
 
 	/**
-	 * list of all fields of the map
+	 * list of all fields on the map
 	 * @return
 	 */
 	public List<MapField<F, E, P>> getFields() {
 		return fields;
+	}
+	
+	/**
+	 * list of all edges on the map
+	 * @return
+	 */
+	public List<MapEdge<E,P>> getEdges(){
+		return edges;
+	}
+	
+	/**
+	 * list of all points on the map
+	 * @return
+	 */
+	public List<MapPoint<P>> getPoints(){
+		return points;
 	}
 
 	/**
@@ -76,6 +94,8 @@ public abstract class Map<F, E, P> implements PanScale {
 		}
 		return null;
 	}
+	
+	
 
 	/**
 	 * returns the field by the indexed coordinates. this method is mainly used by the aStar
@@ -234,11 +254,11 @@ public abstract class Map<F, E, P> implements PanScale {
 	}
 
 	private void reducePoints() {
-		java.util.Map<MapPoint<P>, MapPoint<P>> points = new HashMap<>();
+		java.util.Map<MapPoint<P>, MapPoint<P>> pointsMap = new HashMap<>();
 		for (MapField<F, E, P> field : fields) {
 			// field.getPoints().stream().forEach(e -> pointList.add(e))
 			for (MapPoint<P> p : field.getPoints()) {
-				points.put(p, p);
+				pointsMap.put(p, p);
 			}
 		}
 
@@ -247,7 +267,7 @@ public abstract class Map<F, E, P> implements PanScale {
 			int length = field.getPoints().size();
 			for (int i = 0; i < length; i++) {
 				MapPoint<P> original = field.getPoints().get(i);
-				MapPoint<P> r = points.get(original);
+				MapPoint<P> r = pointsMap.get(original);
 				field.getPoints().set(i, r);
 			}
 		}
@@ -258,19 +278,20 @@ public abstract class Map<F, E, P> implements PanScale {
 			for (int i = 0; i < length; i++) {
 				MapPoint<P> aOriginal = field.getEdges().get(i).getA();
 				MapPoint<P> bOriginal = field.getEdges().get(i).getB();
-				MapPoint<P> ra = points.get(aOriginal);
-				MapPoint<P> rb = points.get(bOriginal);
+				MapPoint<P> ra = pointsMap.get(aOriginal);
+				MapPoint<P> rb = pointsMap.get(bOriginal);
 				field.getEdges().set(i, factory.createEdge(ra, rb));
 			}
 		}
+		points.addAll(pointsMap.values());
 	}
 
 	private void reduceEdges() {
-		java.util.Map<MapEdge<E, P>, MapEdge<E, P>> edges = new HashMap<>();
+		java.util.Map<MapEdge<E, P>, MapEdge<E, P>> edgesMap = new HashMap<>();
 		for (MapField<F, E, P> field : fields) {
 			// field.getPoints().stream().forEach(e -> pointList.add(e))
 			for (MapEdge<E, P> edge : field.getEdges()) {
-				edges.put(edge, edge);
+				edgesMap.put(edge, edge);
 			}
 		}
 
@@ -279,10 +300,11 @@ public abstract class Map<F, E, P> implements PanScale {
 			int length = field.getPoints().size();
 			for (int i = 0; i < length; i++) {
 				MapEdge<E, P> original = field.getEdges().get(i);
-				MapEdge<E, P> r = edges.get(original);
+				MapEdge<E, P> r = edgesMap.get(original);
 				field.getEdges().set(i, r);
 			}
 		}
+		edges.addAll(edgesMap.values());
 	}
 
 	private void generateFields() {
