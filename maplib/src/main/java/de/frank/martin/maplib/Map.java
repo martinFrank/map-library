@@ -83,7 +83,7 @@ public abstract class Map<F, E, P> implements PanScale {
 	 * @return
 	 */
 	public MapField<F, E, P> getField(int x, int y) {
-		double radius = getRadiusForScale();
+		double radius = getRadiusForScale()/1.2d;
 		for (MapField<F, E, P> field : fields) {
 			double dx = (double) x - field.getCenter().getTransformedX();
 			double dy = (double) y - field.getCenter().getTransformedY();
@@ -116,7 +116,7 @@ public abstract class Map<F, E, P> implements PanScale {
 	 * @return
 	 */
 	public MapEdge<E, P> getEdge(int x, int y) {
-		double radius = getRadiusForScale() / 2d;
+		double radius = getRadiusForScale() / 3d;
 		for (MapField<F, E, P> field : fields) {
 			for (MapEdge<E, P> edge : field.getEdges()) {
 				double mx = (edge.getA().getTransformedX() + edge.getB().getTransformedX()) / 2d;
