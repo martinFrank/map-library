@@ -49,11 +49,11 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * @param f
 	 *            factory
 	 */
-	public AbstractField(MapPoint<P> c, MapFactory< F, E,P> f) {
+	public AbstractField(MapPoint<P> c, MapPartFactory<?, F, E,P> f, MapStyle style) {
 		index = f.createPoint(c.getX(), c.getY());
 		center = f.createPoint(0, 0);
-		setCenter(c, f);
-		createShape(f);
+		setCenter(c, style);
+		createShape(f, style);
 	}
 
 
@@ -63,8 +63,8 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * 
 	 * @param factory
 	 */
-	private void createShape(MapFactory<F, E,P> factory) {
-		switch (factory.getStyle()) {
+	private void createShape(MapPartFactory<?, F, E,P> factory, MapStyle stlye) {
+		switch (stlye) {
 		case SQUARE4:
 		case SQUARE8:
 			createSquares(factory);
@@ -89,13 +89,11 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * according to the factory's map style the center is located on different
 	 * positions.
 	 * 
-	 * @param c
-	 *            temporary center
-	 * @param f
-	 *            factory
+	 * @param c temporary center
+	 * @param style style
 	 */
-	private void setCenter(MapPoint<P> c, MapFactory< F, E,P> f) {
-		switch (f.getStyle()) {
+	private void setCenter(MapPoint<P> c, MapStyle style) {
+		switch (style) {
 		case SQUARE4:
 		case SQUARE8:
 			setCenterSquare(c);
@@ -190,7 +188,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	}
 
 	@Override
-	public void scale(float scale) {
+	public void scale(double scale) {
 		for (MapEdge<E,P> e : edges) {
 			e.scale(scale);
 		}
@@ -198,11 +196,26 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	}
 
 	@Override
-	public void pan(int dx, int dy) {
+	public void pan(double dx, double dy) {
 		for (MapEdge<E,P> e : edges) {
 			e.pan(dx, dy);
 		}
 		center.pan(dx, dy);
+	}
+
+	@Override
+	public double getScale() {
+		return center.getScale();
+	}
+
+	@Override
+	public double getPanX() {
+		return center.getPanX();
+	}
+
+	@Override
+	public double getPanY() {
+		return center.getPanY();
 	}
 
 	@Override
@@ -225,7 +238,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleVertical(MapFactory<F, E,P> factory) {
+	private void createTriangleVertical(MapPartFactory<?, F, E,P> factory) {
 		boolean isPointingLeft = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -284,7 +297,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleHorizontal(MapFactory<F, E,P> factory) {
+	private void createTriangleHorizontal(MapPartFactory<?, F, E,P> factory) {
 		boolean isUpside = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -343,7 +356,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesVertical(MapFactory<F, E,P> factory) {
+	private void createHexesVertical(MapPartFactory<?, F, E,P> factory) {
 		for (int i = 0; i < 6; i++) {
 			MapPoint<P> a = factory.createPoint(1, 1);
 			MapPoint<P> b = factory.createPoint(1, 1);
@@ -381,7 +394,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * @param b
 	 * @param factory
 	 */
-	private void createAndAddEdge(MapPoint<P> a, MapPoint<P> b, MapFactory<F, E, P> factory) {
+	private void createAndAddEdge(MapPoint<P> a, MapPoint<P> b, MapPartFactory<?, F, E, P> factory) {
 		MapEdge<E,P> edge = factory.createEdge(a, b);
 		edges.add(edge);
 	}
@@ -390,7 +403,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesHorizontal(MapFactory<F, E, P> factory) {
+	private void createHexesHorizontal(MapPartFactory<?, F, E, P> factory) {
 		for (int i = 0; i < 6; i++) {
 			MapPoint<P> a = factory.createPoint(1, 1);
 			MapPoint<P> b = factory.createPoint(1, 1);
@@ -426,7 +439,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * helper method to create squared fields
 	 * @param factory
 	 */
-	private void createSquares(MapFactory<F, E, P> factory) {
+	private void createSquares(MapPartFactory<?, F, E, P> factory) {
 		for (int i = 0; i < 4; i++) {
 			MapPoint<P> a = factory.createPoint(1, 1);
 			MapPoint<P> b = factory.createPoint(1, 1);

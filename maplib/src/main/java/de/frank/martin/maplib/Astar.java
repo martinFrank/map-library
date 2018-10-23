@@ -27,7 +27,7 @@ class Astar<F,E,P> {
 	private ArrayList<AStarNode> cList = new ArrayList<>();
 
 	ArrayList<MapField<F,E,P>> getShortestPath(MapField<F,E,P> startPoint, MapField<F,E,P> targetPoint, Walker<F,E,P> walker,
-			Map<F,E,P> map, int maxPathLength) {
+			AbstractMap<F,E,P> map, int maxPathLength) {
 		ArrayList<MapField<F,E,P>> path = new ArrayList<>();
 		if (walker == null || startPoint == null || targetPoint == null || map == null) {
 			return path;
@@ -77,7 +77,6 @@ class Astar<F,E,P> {
 				break;
 			}
 			if (current.isSamePos(end)) {
-				noWayFound = false;
 				end.from = current.from;
 				break;
 			}
@@ -97,13 +96,13 @@ class Astar<F,E,P> {
 		return path;
 	}
 
-	private void expandNode(AStarNode current, Map<F,E,P> map, Walker<F,E,P> walker, AStarNode end) {
+	private void expandNode(AStarNode current, AbstractMap<F,E,P> map, Walker<F,E,P> walker, AStarNode end) {
 		MapField<F,E,P> center = map.getFieldByIndex(current.x, current.y);
 		List<AStarNode> nodeList = getNeigbours(center);
 		for (AStarNode n : nodeList) {
 			if (checkIsPassable(center, n, walker, map)) {
 				MapField<F,E,P> to = map.getFieldByIndex(n.x, n.y);
-				int distance = walker.getEnterCosts(center, to, map.getMapStyle());
+				int distance = walker.getEnterCosts(center, to);
 				addIfRequired(n, current, end, distance);
 			}
 		}
@@ -139,7 +138,7 @@ class Astar<F,E,P> {
 		}
 	}
 
-	private boolean checkIsPassable(MapField<F,E,P> from, AStarNode n, Walker<F,E,P> walker, Map<F,E,P> map) {
+	private boolean checkIsPassable(MapField<F,E,P> from, AStarNode n, Walker<F,E,P> walker, AbstractMap<F,E,P> map) {
 		MapField<F,E,P> into = map.getFieldByIndex(n.x, n.y);
 		return walker.canEnter(from, into);
 	}

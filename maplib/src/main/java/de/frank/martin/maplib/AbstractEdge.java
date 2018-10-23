@@ -38,15 +38,30 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	}
 
 	@Override
-	public void scale(float scale) {
+	public void scale(double scale) {
 		a.scale(scale);
 		b.scale(scale);
 	}
 
 	@Override
-	public void pan(int dx, int dy) {
+	public void pan(double dx, double dy) {
 		a.pan(dx, dy);
 		b.pan(dx, dy);
+	}
+
+	@Override
+	public double getScale() {
+		return a.getScale();
+	}
+
+	@Override
+	public double getPanX() {
+		return a.getPanX();
+	}
+
+	@Override
+	public double getPanY() {
+		return a.getPanY();
 	}
 
 	@Override

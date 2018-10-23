@@ -24,11 +24,10 @@ public abstract class Walker<F,E,P> {
 	 * some field can be accessed easier than other, eg. 'swamp' have a higher walking cost than grass plains - the amount of walk cost is determined here
 	 * @param from start field
 	 * @param into destination field
-	 * @param style sometimes the walk costs depend on the map style
 	 * @return walking costs
 	 */
-	public int getEnterCosts(MapField<F,E,P> from, MapField<F,E,P> into, MapStyle style) {
-		// FIXME diagonale kosten
+	public int getEnterCosts(MapField<F,E,P> from, MapField<F,E,P> into) {
+		// FIXME diagonale kosten:
 		// diagonal = 14 (nur bei MapStyle.SQUARE8)
 		// ansonsten immer 10
 		// if(style == MapStyle.SQUARE8){}

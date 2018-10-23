@@ -34,6 +34,11 @@ public abstract class AbstractPoint<P> implements MapPoint<P> {
 	private GeoPoint scale = new GeoPoint();
 
 	/**
+	 * scale factor
+	 */
+	private double scaleFactor = 1D;
+
+	/**
 	 * A Point at a certain location
 	 * 
 	 * @param x
@@ -46,13 +51,29 @@ public abstract class AbstractPoint<P> implements MapPoint<P> {
 	}
 
 	@Override
-	public void scale(float s) {
+	public void scale(double s) {
 		scale = new GeoPoint((int) (point.getX() * s), (int) (point.getY() * s));
+		scaleFactor = s;
 	}
 
 	@Override
-	public void pan(int dx, int dy) {
-		pan = new GeoPoint(dx, dy);
+	public void pan(double dx, double dy) {
+		pan = new GeoPoint((int)dx, (int)dy);
+	}
+
+	@Override
+	public double getScale() {
+		return scaleFactor;
+	}
+
+	@Override
+	public double getPanX() {
+		return pan.getX();
+	}
+
+	@Override
+	public double getPanY() {
+		return pan.getY();
 	}
 
 	@Override
@@ -79,7 +100,8 @@ public abstract class AbstractPoint<P> implements MapPoint<P> {
 	public int getY() {
 		return point.getY();
 	}
-	
+
+
 	@Override
 	public Set<MapEdge<?, P>> getEdges() {
 		return edges;
