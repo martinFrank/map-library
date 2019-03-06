@@ -1,4 +1,4 @@
-package de.frank.martin.maplib;
+package de.elite.games.maplib;
 
 public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
 

@@ -1,6 +1,6 @@
-package de.frank.martin.maplib;
+package de.elite.games.maplib;
 
-import de.frank.martin.drawlib.PanScale;
+import de.elite.games.drawlib.PanScale;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,12 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
 
     private final int width;
     private final int height;
+    private final MapStyle style;
 
-    public AbstractMap(int width, int height) {
+    public AbstractMap(int width, int height, MapStyle style) {
         this.width = width;
         this.height = height;
+        this.style = style;
     }
 
     //FIXME that the 'field-related aStar' - you must implement the edge.related aStar as well!!!
@@ -138,6 +140,10 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      */
     public int getHeight() {
         return height;
+    }
+
+    public MapStyle getStyle(){
+        return MapStyle;
     }
 
     /**
