@@ -143,7 +143,7 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     }
 
     public MapStyle getStyle(){
-        return MapStyle;
+        return style;
     }
 
     /**
