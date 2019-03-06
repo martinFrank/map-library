@@ -9,7 +9,7 @@ import java.util.HashMap;
  * <li>edge</li>
  * <li>point</li>
  *
- * @param <M> any desired field data object
+ * @param <M> any desired map data object
  * @param <F> any desired field data object
  * @param <E> any desired edge data object
  * @param <P> any desired point data object
@@ -18,9 +18,11 @@ import java.util.HashMap;
 public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
 
     private final MapPartFactory<M, F, E, P> mapPartFactory ;
+    private final MapStyle style;
 
-    public MapFactory (MapPartFactory<M,F,E,P> mapPartFactory){
+    public MapFactory (MapPartFactory<M,F,E,P> mapPartFactory, MapStyle style){
         this.mapPartFactory = mapPartFactory;
+        this.style = style;
     }
 
     public M createMap(int width, int height) {
@@ -36,7 +38,9 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
         for (int dy = 0; dy < map.getHeight(); dy++) {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 MapPoint<P> center = mapPartFactory.createPoint(dx, dy);
-                MapField<F, E, P> field = mapPartFactory.createField(center);
+                MapField<F, E, P> field = mapPartFactory.createField();
+                field.setCenter(center, style);
+                field.createShape(mapPartFactory, style);
                 map.getFields().add(field);
             }
         }
@@ -156,7 +160,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
     }
 
     private void setFieldNeighbors(M map) {
-        switch (mapPartFactory.getMapStyle()) {
+        switch (style) {
             case SQUARE4:
                 setNeighborRelationsSquare4(map);
                 break;

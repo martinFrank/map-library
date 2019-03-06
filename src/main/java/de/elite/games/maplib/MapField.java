@@ -25,6 +25,12 @@ public interface MapField<F,E,P> extends PanScale {
 	 */
 	MapPoint<P> getIndex();
 
+	//FIXME doku
+    void createShape(MapPartFactory<?, F, E, P> factory, MapStyle stlye);
+
+	//FIXME doku
+	void setCenter(MapPoint<P> c, MapStyle style);
+
 	/**
 	 * center point of the field
 	 * @return

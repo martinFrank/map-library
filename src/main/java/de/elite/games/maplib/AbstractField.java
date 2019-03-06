@@ -25,12 +25,12 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	/**
 	 * the center of the field - it's used as unique identifier
 	 */
-	private final MapPoint<P> center;
+	private MapPoint<P> center;
 
 	/**
 	 * the fields are indiced as well - its another unique identifier
 	 */
-	private final MapPoint<P> index;
+	private MapPoint<P> index;
 	
 	/**
 	 * each field is connected (via the edges) to other fields, these are the
@@ -40,22 +40,6 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 
 	
 	private List<MapPoint<P>>points = new ArrayList<>();
-	/**
-	 * the constructor requires the factory to created it's edges - it also requires
-	 * a center point
-	 * 
-	 * @param c
-	 *            center
-	 * @param f
-	 *            factory
-	 */
-	public AbstractField(MapPoint<P> c, MapPartFactory<?, F, E,P> f, MapStyle style) {
-		index = f.createPoint(c.getX(), c.getY());
-		center = f.createPoint(0, 0);
-		setCenter(c, style);
-		createShape(f, style);
-	}
-
 
 	/**
 	 * this is where the map magic happens - here are the fields created according
@@ -63,7 +47,8 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * 
 	 * @param factory
 	 */
-	private void createShape(MapPartFactory<?, F, E,P> factory, MapStyle stlye) {
+    @Override
+    public  void createShape(MapPartFactory<?, F, E, P> factory, MapStyle stlye) {
 		switch (stlye) {
 		case SQUARE4:
 		case SQUARE8:
@@ -89,31 +74,43 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * according to the factory's map style the center is located on different
 	 * positions.
 	 * 
-	 * @param c temporary center
+	 * @param center temporary center
 	 * @param style style
 	 */
-	private void setCenter(MapPoint<P> c, MapStyle style) {
-		switch (style) {
-		case SQUARE4:
-		case SQUARE8:
-			setCenterSquare(c);
-			break;
-		case HEX_VERTICAL:
-			setCenterHexVertical(c);
-			break;
-		case HEX_HORIZONTAL:
-			setCenterHexHorizontal(c);
-			break;
-		case TRIANGLE_HORIZONTAL:
-			setCenterTriangleHorizontal(c);
-			break;
-		case TRIANGLE_VERTICAL:
-			setCenterTriangleVertical(c);
-			break;
-		}
+	@Override
+	public void setCenter(MapPoint<P> center, MapStyle style) {
+	    initCenter(center);
+	    adjustCenter(style);
 	}
 
-	/**
+    protected void adjustCenter(MapStyle style){
+        switch (style) {
+            case SQUARE4:
+            case SQUARE8:
+                setCenterSquare(center);
+                break;
+            case HEX_VERTICAL:
+                setCenterHexVertical(center);
+                break;
+            case HEX_HORIZONTAL:
+                setCenterHexHorizontal(center);
+                break;
+            case TRIANGLE_HORIZONTAL:
+                setCenterTriangleHorizontal(center);
+                break;
+            case TRIANGLE_VERTICAL:
+                setCenterTriangleVertical(center);
+                break;
+        }
+    }
+
+    protected void initCenter(MapPoint<P> center){
+        this.index = center;
+        this.center = center;
+    }
+
+
+    /**
 	 *  helper method to set triangle center
 	 * @param c temporary center
 	 */
@@ -172,7 +169,7 @@ public abstract class AbstractField<F, E, P> implements MapField<F,E,P> {
 	 * @param c temporary center
 	 */
 	private void setCenterHexVertical(MapPoint<P> c) {
-		if (c.getY() % 2 == 0) {
+	    if (c.getY() % 2 == 0) {
 			center.setXY(2 + (4 * c.getX()), 2 + (3 * c.getY()));
 		} else {
 			center.setXY(4 + (4 * c.getX()), 2 + (3 * c.getY()));

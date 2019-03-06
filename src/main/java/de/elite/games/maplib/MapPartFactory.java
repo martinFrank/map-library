@@ -14,11 +14,9 @@ public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
     /**
      * method to create the field - requires the unique center
      *
-     * @param center
-     *            must be uniqe
      * @return
      */
-    MapField<F,E,P> createField(MapPoint<P> center);
+    MapField<F,E,P> createField();
 
     /**
      * method to create the edge
@@ -29,10 +27,10 @@ public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
      */
     MapEdge<E,P> createEdge(MapPoint<P> a, MapPoint<P> b);
 
-    /**
-     * @return mapStyle of the factory
-     */
-    MapStyle getMapStyle();
+//    /**
+//     * @return mapStyle of the factory
+//     */
+//    MapStyle getMapStyle();
 
 
     M createMap(int width, int height);
