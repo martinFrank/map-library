@@ -1,4 +1,4 @@
-package de.frank.martin.maplib;
+package de.elite.games.maplib;
 
 //import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
