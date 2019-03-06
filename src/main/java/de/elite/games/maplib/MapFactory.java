@@ -1,6 +1,8 @@
 package de.elite.games.maplib;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * the map factory is required to create the map parts:
@@ -10,17 +12,14 @@ import java.util.HashMap;
  * <li>point</li>
  *
  * @param <M> any desired map data object
- * @param <F> any desired field data object
- * @param <E> any desired edge data object
- * @param <P> any desired point data object
  * @author martinFrank
  */
-public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
+public class MapFactory<M extends AbstractMap<F,E,P>, F extends MapField<?, E, P>, E extends MapEdge<?, P> , P extends MapPoint<?> > {
 
     private final MapPartFactory<M, F, E, P> mapPartFactory ;
     private final MapStyle style;
 
-    public MapFactory (MapPartFactory<M,F,E,P> mapPartFactory, MapStyle style){
+    public MapFactory (MapPartFactory<M, F, E, P> mapPartFactory, MapStyle style){
         this.mapPartFactory = mapPartFactory;
         this.style = style;
     }
@@ -37,8 +36,8 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
     private void generateFields(M map) {
         for (int dy = 0; dy < map.getHeight(); dy++) {
             for (int dx = 0; dx < map.getWidth(); dx++) {
-                MapPoint<P> center = mapPartFactory.createPoint(dx, dy);
-                MapField<F, E, P> field = mapPartFactory.createField();
+                P center = mapPartFactory.createPoint(dx, dy);
+                F field = mapPartFactory.createField();
                 field.setCenter(center, style);
                 field.createShape(mapPartFactory, style);
                 map.getFields().add(field);
@@ -46,8 +45,8 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
         }
 
         // create points for the field as well
-        for (MapField<F, E, P> field : map.getFields()) {
-            for (MapEdge<E, P> edge : field.getEdges()) {
+        for (F field : map.getFields()) {
+            for (E edge : field.getEdges()) {
                 field.getPoints().add(edge.getA());
             }
         }
@@ -59,52 +58,52 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
     }
 
     private void reducePoints(M map) {
-        java.util.Map<MapPoint<P>, MapPoint<P>> points = new HashMap<>();
-        for (MapField<F, E, P> field : map.getFields()) {
+        java.util.Map<P, P> points = new HashMap<>();
+        for (F field : map.getFields()) {
             // field.getPoints().stream().forEach(e -> pointList.add(e))
-            for (MapPoint<P> p : field.getPoints()) {
+            for (P p : field.getPoints()) {
                 points.put(p, p);
             }
         }
 
         // replace points in fields
-        for (MapField<F, E, P> field : map.getFields()) {
+        for (F field : map.getFields()) {
             int length = field.getPoints().size();
             for (int i = 0; i < length; i++) {
-                MapPoint<P> original = field.getPoints().get(i);
-                MapPoint<P> r = points.get(original);
+                P original = field.getPoints().get(i);
+                P r = points.get(original);
                 field.getPoints().set(i, r);
             }
         }
 
         // replace points in edges
-        for (MapField<F, E, P> field : map.getFields()) {
+        for (F field : map.getFields()) {
             int length = field.getPoints().size();
             for (int i = 0; i < length; i++) {
-                MapPoint<P> aOriginal = field.getEdges().get(i).getA();
-                MapPoint<P> bOriginal = field.getEdges().get(i).getB();
-                MapPoint<P> ra = points.get(aOriginal);
-                MapPoint<P> rb = points.get(bOriginal);
+                P aOriginal = field.getEdges().get(i).getA();
+                P bOriginal = field.getEdges().get(i).getB();
+                P ra = points.get(aOriginal);
+                P rb = points.get(bOriginal);
                 field.getEdges().set(i, mapPartFactory.createEdge(ra, rb));
             }
         }
     }
 
     private void reduceEdges(M map) {
-        java.util.Map<MapEdge<E, P>, MapEdge<E, P>> edges = new HashMap<>();
-        for (MapField<F, E, P> field : map.getFields()) {
+        java.util.Map<E, E> edges = new HashMap<>();
+        for (F field : map.getFields()) {
             // field.getPoints().stream().forEach(e -> pointList.add(e))
-            for (MapEdge<E, P> edge : field.getEdges()) {
+            for (E edge : field.getEdges()) {
                 edges.put(edge, edge);
             }
         }
 
         // replace edges in field
-        for (MapField<F, E, P> field : map.getFields()) {
+        for (F field : map.getFields()) {
             int length = field.getPoints().size();
             for (int i = 0; i < length; i++) {
-                MapEdge<E, P> original = field.getEdges().get(i);
-                MapEdge<E, P> r = edges.get(original);
+                E original = field.getEdges().get(i);
+                E r = edges.get(original);
                 field.getEdges().set(i, r);
             }
         }
@@ -117,10 +116,10 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
     }
 
     private void setPointEdges(M map) {
-        for (MapField<F, E, P> field : map.getFields()) {
-            for (MapEdge<E, P> e : field.getEdges()) {
-                for (MapField<F, E, P> other : field.getNeigbours()) {
-                    for (MapEdge<E, P> otherEdge : other.getEdges()) {
+        for (F field : map.getFields()) {
+            for (E e : field.getEdges()) {
+                for (MapField<?, E, P> other : field.getNeigbours()) {
+                    for (E otherEdge : other.getEdges()) {
 
                         if (e.getA().equals(otherEdge.getA())) {
                             e.getA().getEdges().add(otherEdge);
@@ -144,12 +143,12 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
     }
 
     private void setEdgeFields(M map) {
-        for (MapField<F, E, P> field : map.getFields()) {
-            for (MapEdge<E, P> e : field.getEdges()) {
+        for (F field : map.getFields()) {
+            for (E e : field.getEdges()) {
                 e.getFields().add(field);
 
-                for (MapField<F, E, P> nbg : field.getNeigbours()) {
-                    for (MapEdge<E, P> nbgEdge : nbg.getEdges()) {
+                for (MapField<?, E, P> nbg : field.getNeigbours()) {
+                    for (E nbgEdge : nbg.getEdges()) {
                         if (nbgEdge.equals(e)) {
                             e.getFields().add(nbg);
                         }
@@ -188,7 +187,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 int nbx;
                 int nby;
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
 
                 nbx = dx;
                 nby = dy - 1;
@@ -219,7 +218,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 int nbx;
                 int nby;
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
 
                 nbx = dx - 1;
                 nby = dy - 1;
@@ -250,7 +249,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 int nbx;
                 int nby;
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
 
                 // oben
                 nbx = dx;
@@ -332,7 +331,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 int nbx;
                 int nby;
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
 
                 // links
                 nbx = dx - 1;
@@ -414,7 +413,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
             for (int dx = 0; dx < map.getWidth(); dx++) {
                 int nbx;
                 int nby;
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
 
                 nbx = dx - 1;
                 nby = dy;
@@ -452,7 +451,7 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
                 int nbx;
                 int nby;
 
-                MapField<F, E, P> center = map.getFieldByIndex(dx, dy);
+                F center = map.getFieldByIndex(dx, dy);
                 nbx = dx;
                 nby = dy - 1;
                 if (nby >= 0) {
@@ -482,8 +481,8 @@ public class MapFactory<M extends AbstractMap<F,E,P> ,F,E,P > {
         }
     }
 
-    private void addNbg(M map, int nbx, int nby, MapField<F, E, P> center) {
-        MapField<F, E, P> nb = map.getFieldByIndex(nbx, nby);
+    private void addNbg(M map, int nbx, int nby, F center) {
+        MapField<?,E,P> nb = map.getFieldByIndex(nbx, nby);
         center.getNeigbours().add(nb);
     }
 }

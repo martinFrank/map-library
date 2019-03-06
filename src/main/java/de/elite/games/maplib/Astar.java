@@ -10,11 +10,8 @@ import java.util.List;
  * 
  * @author martinFrank
  *
- * @param <F> any desired field data object
- * @param <E> any desired edge data object
- * @param <P> any desired point data object
  */
-class Astar<F,E,P> {
+class Astar <F extends MapField<?,E,P>, E extends MapEdge<?,P>, P extends MapPoint<?>> {
 
 	/**
 	 * open list
@@ -26,9 +23,9 @@ class Astar<F,E,P> {
 	 */
 	private ArrayList<AStarNode> cList = new ArrayList<>();
 
-	ArrayList<MapField<F,E,P>> getShortestPath(MapField<F,E,P> startPoint, MapField<F,E,P> targetPoint, Walker<F,E,P> walker,
+	ArrayList<F> getShortestPath(F startPoint, F targetPoint, Walker walker,
 			AbstractMap<F,E,P> map, int maxPathLength) {
-		ArrayList<MapField<F,E,P>> path = new ArrayList<>();
+		ArrayList<F> path = new ArrayList<>();
 		if (walker == null || startPoint == null || targetPoint == null || map == null) {
 			return path;
 		}
@@ -88,7 +85,7 @@ class Astar<F,E,P> {
 		if (!noWayFound) {
 			AStarNode n = end;
 			while (n != null) {
-				MapField<F,E,P> wayPoint = map.getFieldByIndex(n.x, n.y);
+				F wayPoint = map.getFieldByIndex(n.x, n.y);
 				path.add(wayPoint);
 				n = n.from;
 			}
@@ -96,24 +93,24 @@ class Astar<F,E,P> {
 		return path;
 	}
 
-	private void expandNode(AStarNode current, AbstractMap<F,E,P> map, Walker<F,E,P> walker, AStarNode end) {
-		MapField<F,E,P> center = map.getFieldByIndex(current.x, current.y);
+	private void expandNode(AStarNode current, AbstractMap map, Walker walker, AStarNode end) {
+		MapField<?,?,?>  center = map.getFieldByIndex(current.x, current.y);
 		List<AStarNode> nodeList = getNeigbours(center);
 		for (AStarNode n : nodeList) {
 			if (checkIsPassable(center, n, walker, map)) {
-				MapField<F,E,P> to = map.getFieldByIndex(n.x, n.y);
+				MapField<?,?,?> to = map.getFieldByIndex(n.x, n.y);
 				int distance = walker.getEnterCosts(center, to);
 				addIfRequired(n, current, end, distance);
 			}
 		}
 	}
 
-	private List<AStarNode> getNeigbours(MapField< F,E,P> center) {
+	private List<AStarNode> getNeigbours(MapField<?,?,?> center) {
 		List<AStarNode> nodeList = new ArrayList<>();
 		// java 8 implementation
 		// center.getNeigbourList().stream().forEach(e -> nodeList.add(new
 		// Node(e.ix(),e.iy())))
-		for (MapField<F,E,P> nbgField : center.getNeigbours()) {
+		for (MapField<?,?,?>  nbgField : center.getNeigbours()) {
 			nodeList.add(new AStarNode(nbgField.getIndex()));
 		}
 		return nodeList;
@@ -138,8 +135,8 @@ class Astar<F,E,P> {
 		}
 	}
 
-	private boolean checkIsPassable(MapField<F,E,P> from, AStarNode n, Walker<F,E,P> walker, AbstractMap<F,E,P> map) {
-		MapField<F,E,P> into = map.getFieldByIndex(n.x, n.y);
+	private boolean checkIsPassable(MapField<?,?,?> from, AStarNode n, Walker walker, AbstractMap map) {
+		MapField<?,?,?> into = map.getFieldByIndex(n.x, n.y);
 		return walker.canEnter(from, into);
 	}
 

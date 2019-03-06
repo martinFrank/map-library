@@ -1,6 +1,6 @@
 package de.elite.games.maplib;
 
-public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
+public interface MapPartFactory<M extends AbstractMap, F extends MapField, E extends MapEdge, P extends MapPoint> {
 
     /**
      * method to create the point
@@ -9,14 +9,14 @@ public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
      * @param y
      * @return
      */
-    MapPoint<P> createPoint(int x, int y);
+    P createPoint(int x, int y);
 
     /**
      * method to create the field - requires the unique center
      *
      * @return
      */
-    MapField<F,E,P> createField();
+    F createField();
 
     /**
      * method to create the edge
@@ -25,12 +25,8 @@ public interface MapPartFactory<M extends AbstractMap<F,E,P>,F,E,P> {
      * @param b
      * @return
      */
-    MapEdge<E,P> createEdge(MapPoint<P> a, MapPoint<P> b);
+    E createEdge(P a, P b);
 
-//    /**
-//     * @return mapStyle of the factory
-//     */
-//    MapStyle getMapStyle();
 
 
     M createMap(int width, int height);

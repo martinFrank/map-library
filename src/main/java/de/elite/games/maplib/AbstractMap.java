@@ -5,10 +5,10 @@ import de.elite.games.drawlib.PanScale;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractMap<F, E, P> implements PanScale{
+public abstract class AbstractMap<F extends  MapField<?,E,P>, E extends MapEdge<?,P>, P extends MapPoint<?>> implements PanScale{
 
 
-    private final List<MapField<F, E, P>> fields = new ArrayList<>();
+    private final List<F> fields = new ArrayList<>();
 
     private final int width;
     private final int height;
@@ -21,9 +21,9 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     }
 
     //FIXME that the 'field-related aStar' - you must implement the edge.related aStar as well!!!
-    public List<MapField<F, E, P>> aStar(MapField<F, E, P> start, MapField<F, E, P> destiny, Walker<F, E, P> walker,
+    public List<F> aStar(F start, F destiny, Walker walker,
                                          int maxSearchDepth) {
-        return new Astar<F, E, P>().getShortestPath(start, destiny, walker, this, maxSearchDepth);
+        return new Astar().getShortestPath(start, destiny, walker, this, maxSearchDepth);
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      *
      * @return
      */
-    public List<MapField<F, E, P>> getFields() {
+    public List<F> getFields() {
         return fields;
     }
 
@@ -43,9 +43,9 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      * @param y
      * @return
      */
-    public MapField<F, E, P> getField(int x, int y) {
+    public F getField(int x, int y) {
         double radius = getRadiusForScale();
-        for (MapField<F, E, P> field : fields) {
+        for (F field : fields) {
             double dx = (double) x - field.getCenter().getTransformedX();
             double dy = (double) y - field.getCenter().getTransformedY();
             double distance = Math.sqrt(dx * dx + dy * dy);
@@ -63,7 +63,7 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      * @param iy
      * @return
      */
-    public MapField<F, E, P> getFieldByIndex(int ix, int iy) {
+    public F getFieldByIndex(int ix, int iy) {
         int index = iy * width + ix;
         return fields.get(index);
     }
@@ -76,10 +76,10 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      * @param y
      * @return
      */
-    public MapEdge<E, P> getEdge(int x, int y) {
+    public E getEdge(int x, int y) {
         double radius = getRadiusForScale() / 2d;
-        for (MapField<F, E, P> field : fields) {
-            for (MapEdge<E, P> edge : field.getEdges()) {
+        for (F field : fields) {
+            for (E edge : field.getEdges()) {
                 double mx = (edge.getA().getTransformedX() + edge.getB().getTransformedX()) / 2d;
                 double my = (edge.getA().getTransformedY() + edge.getB().getTransformedY()) / 2d;
                 double dx = (double) x - mx;
@@ -102,10 +102,10 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
      * @param y
      * @return
      */
-    public MapPoint<P> getPoint(int x, int y) {
+    public P getPoint(int x, int y) {
         double radius = getRadiusForScale() / 4d;
-        for (MapField<F, E, P> field : fields) {
-            for (MapEdge<E, P> edge : field.getEdges()) {
+        for (F field : fields) {
+            for (E edge : field.getEdges()) {
                 double ax = (double) x - edge.getA().getTransformedX();
                 double ay = (double) y - edge.getA().getTransformedY();
                 double aDistance = Math.sqrt(ax * ax + ay * ay);
@@ -154,10 +154,10 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     public int getScaledWidth() {
         int max = 0;
         int cx = 0;
-        for (MapField<F, E, P> field : fields) {
+        for (F field : fields) {
             if (field.getCenter().getX() > cx) {
                 cx = field.getCenter().getX();
-                for (MapEdge<E, P> e : field.getEdges()) {
+                for (E e : field.getEdges()) {
                     if (e.getA().getTransformedX() > max) {
                         max = e.getA().getTransformedX();
                     }
@@ -178,10 +178,10 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     public int getScaledHeight() {
         int max = 0;
         int cy = 0;
-        for (MapField<F, E, P> field : fields) {
+        for (F field : fields) {
             if (field.getCenter().getY() > cy) {
                 cy = field.getCenter().getY();
-                for (MapEdge<E, P> e : field.getEdges()) {
+                for (E e : field.getEdges()) {
                     if (e.getA().getTransformedY() > max) {
                         max = e.getA().getTransformedY();
                     }
@@ -197,7 +197,7 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     @Override
     public void scale(double scale) {
         // fieldList.stream().forEach(e -> e.scale(scale))
-        for (MapField<F, E, P> field : fields) {
+        for (MapField field : fields) {
             field.scale(scale);
         }
     }
@@ -205,7 +205,7 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     @Override
     public void pan(double dx, double dy) {
         // fieldList.stream().forEach(e -> e.pan(dx,dy))
-        for (MapField<F, E, P> field : fields) {
+        for (MapField field : fields) {
             field.pan(dx, dy);
         }
     }
@@ -226,8 +226,8 @@ public abstract class AbstractMap<F, E, P> implements PanScale{
     }
 
     private double getRadiusForScale() {
-        MapField<F, E, P> anyField = fields.get(0);
-        MapEdge<E, P> anyEdge = anyField.getEdges().iterator().next();
+        F anyField = fields.get(0);
+        E anyEdge = anyField.getEdges().iterator().next();
         double anyx = (double) anyField.getCenter().getTransformedX() - anyEdge.getA().getTransformedX();
         double anyy = (double) anyField.getCenter().getTransformedY() - anyEdge.getA().getTransformedY();
         return Math.sqrt(anyx * anyx + anyy * anyy) / Math.sqrt(2);

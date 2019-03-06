@@ -1,5 +1,7 @@
 package de.elite.games.maplib;
 
+import de.elite.games.geolib.GeoPoint;
+
 final class  AStarNode {
 
 	int f;
@@ -9,7 +11,7 @@ final class  AStarNode {
 	int y;
 	AStarNode from;
 
-	AStarNode(MapPoint<?> point) {
+	AStarNode(GeoPoint point) {
 		this.x = point.getX();
 		this.y = point.getY();
 	}

@@ -8,22 +8,21 @@ import java.util.Set;
  * interface is not implemented
  * 
  * @author martinFrank
- * @param <P>
  * 
  */
-public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
+public abstract class AbstractEdge<E, P extends MapPoint>  implements MapEdge<E, P>  {
 
 	/**
 	 * an edge goes from a -> b; this is a
 	 */
-	private final MapPoint<P> a;
+	private final P a;
 
 	/**
 	 * an edge goes from a -> b; this is b
 	 */
-	private final MapPoint<P> b;
+	private final P b;
 
-	private Set<MapField<?, E, P>> fields = new HashSet<>();
+	private Set<MapField> fields = new HashSet<>();
 	
 
 	/**
@@ -32,7 +31,7 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	 * @param a
 	 * @param b
 	 */
-	public AbstractEdge(MapPoint<P> a, MapPoint<P> b) {
+	public AbstractEdge(P a, P b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -65,17 +64,17 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	}
 
 	@Override
-	public MapPoint<P> getA() {
+	public P getA() {
 		return a;
 	}
 
 	@Override
-	public MapPoint<P> getB() {
+	public P getB() {
 		return b;
 	}
 
 	@Override
-	public Set<MapField<?, E, P>> getFields() {
+	public Set<MapField> getFields() {
 		return fields;
 	}
 
@@ -83,6 +82,8 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 	public String toString() {
 		return "["+getA().toString()+":"+getB().toString()+"]";
 	}
+
+
 
 	@Override
 	public int hashCode() {
@@ -104,7 +105,7 @@ public abstract class AbstractEdge<E, P> implements MapEdge<E, P> {
 		if (getClass() != obj.getClass())
 			return false;
 		@SuppressWarnings("unchecked")
-		AbstractEdge<E, P> other = (AbstractEdge<E, P>) obj;
+		AbstractEdge other = (AbstractEdge) obj;
 		if (a.equals(other.a) && b.equals(other.b)) {
 			return true;
 		}

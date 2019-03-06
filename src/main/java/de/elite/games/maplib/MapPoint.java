@@ -63,6 +63,6 @@ public interface MapPoint<P> extends PanScale {
 	 * set of all edges that are connected to this point
 	 * @return
 	 */
-	Set<MapEdge<?,P>> getEdges();
+	Set<MapEdge> getEdges();
 
 }

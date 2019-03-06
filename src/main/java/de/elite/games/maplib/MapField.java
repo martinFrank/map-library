@@ -1,6 +1,7 @@
 package de.elite.games.maplib;
 
 import de.elite.games.drawlib.PanScale;
+import de.elite.games.geolib.GeoPoint;
 
 import java.util.List;
 import java.util.Set;
@@ -12,59 +13,55 @@ import java.util.Set;
  * <br> A field is unique identified by either the center Point or the index Point
  * 
  * @author martinFrank
- *
- * @param <F> any desired field data object
- * @param <E> any desired edge data object
- * @param <P> any desired point data object
  */
-public interface MapField<F,E,P> extends PanScale {
+public interface MapField<D, E extends MapEdge<?,P>, P extends MapPoint<?>> extends PanScale {
 
 	/**
 	 * unique index point
 	 * @return
 	 */
-	MapPoint<P> getIndex();
+	GeoPoint getIndex();
 
 	//FIXME doku
-    void createShape(MapPartFactory<?, F, E, P> factory, MapStyle stlye);
+    void createShape(MapPartFactory factory, MapStyle style);
 
 	//FIXME doku
-	void setCenter(MapPoint<P> c, MapStyle style);
+	void setCenter(P c, MapStyle style);
 
 	/**
 	 * center point of the field
 	 * @return
 	 */
-	MapPoint<P> getCenter();
+	P getCenter();
 
 	/**
 	 * a set of all surrounding neighbor fields
 	 * @return
 	 */
-	Set<MapField<F,E,P>> getNeigbours();
+	Set<MapField<?,E,P>> getNeigbours();
 
 	/**
 	 * the edges around the field
 	 * @return
 	 */
-	List<MapEdge<E,P>> getEdges();
+	List<E> getEdges();
 	
 	/**
 	 * the points around the field
 	 * @return
 	 */
-	List<MapPoint<P>> getPoints();
+	List<P> getPoints();
 
 	/**
 	 * Customizable data
 	 * @return
 	 */
-	F getFieldData();
+	D getFieldData();
 
 	/**
 	 * Customizable data
 	 * @param t
 	 */
-	void setFieldData(F t);
+	void setFieldData(D t);
 
 }

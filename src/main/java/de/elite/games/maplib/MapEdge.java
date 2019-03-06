@@ -11,37 +11,36 @@ import java.util.Set;
  * @author martinFrank
  * 
  * @param <E> any desired edge data object
- * @param <P> any desired point data object
  */
-public interface MapEdge<E,P> extends PanScale {
+public interface MapEdge<D,P extends MapPoint> extends PanScale {
 
 	/**
 	 * the a of the edge
 	 * @return a
 	 */
-	MapPoint<P> getA();
+	P getA();
 
 	/**
 	 * the be of the edge
 	 * @return b
 	 */
-	MapPoint<P> getB();
+	P getB();
 
 	/**
 	 * Customizable data
 	 * @return data
 	 */
-	E getEdgeData();
+	D getEdgeData();
 
 	/**
 	 * Customizable data
 	 * @param v data
 	 */
-	void setEdgeData(E v);
+	void setEdgeData(D v);
 		
 	/**
 	 * a set of all fields that are connected to this edge (should be one or two)
 	 * @return
 	 */
-	Set<MapField<?,E,P>> getFields();
+	Set<MapField> getFields();
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 public abstract class AbstractPoint<P> implements MapPoint<P> {
 
 	
-	private Set<MapEdge<?, P>>edges = new HashSet<>();
+	private Set<MapEdge>edges = new HashSet<>();
 	
 	/**
 	 * the GeoPoint of the Point (it's a rasteredMap so we use GeoPoint - that's
@@ -103,7 +103,7 @@ public abstract class AbstractPoint<P> implements MapPoint<P> {
 
 
 	@Override
-	public Set<MapEdge<?, P>> getEdges() {
+	public Set<MapEdge> getEdges() {
 		return edges;
 	}
 
