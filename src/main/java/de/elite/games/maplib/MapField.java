@@ -23,7 +23,7 @@ public interface MapField<D, E extends MapEdge<?,P>, P extends MapPoint<?>> exte
 	GeoPoint getIndex();
 
 	//FIXME doku
-    void createShape(MapPartFactory factory, MapStyle style);
+	void createShape(MapPartFactory<?, ?, E, P, ?> factory, MapStyle style);
 
 	//FIXME doku
 	void setCenter(P c, MapStyle style);

@@ -2,7 +2,10 @@ package de.elite.games.maplib;
 
 import de.elite.games.geolib.GeoPoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * this is an implementation of the map field, merely the drawable interface is
@@ -44,7 +47,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * @param factory
 	 */
     @Override
-    public  void createShape(MapPartFactory factory, MapStyle style) {
+    public void createShape(MapPartFactory<?, ?, E, P, ?> factory, MapStyle style) {
 		switch (style) {
 		case SQUARE4:
 		case SQUARE8:
@@ -231,7 +234,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleVertical(MapPartFactory<?, ?, E, P>  factory) {
+    private void createTriangleVertical(MapPartFactory<?, ?, E, P, ?> factory) {
 		boolean isPointingLeft = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -290,7 +293,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * helper method to create triangle fields
 	 * @param factory
 	 */
-	private void createTriangleHorizontal(MapPartFactory<?, ?, E, P>  factory) {
+    private void createTriangleHorizontal(MapPartFactory<?, ?, E, P, ?> factory) {
 		boolean isUpside = false;
 		if (index.getY() % 2 == 0) {
 			if (index.getX() % 2 == 0) {
@@ -349,7 +352,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesVertical(MapPartFactory<?, ?, E, P> factory) {
+    private void createHexesVertical(MapPartFactory<?, ?, E, P, ?> factory) {
 		for (int i = 0; i < 6; i++) {
 			P a = factory.createPoint(1, 1);
 			P b = factory.createPoint(1, 1);
@@ -387,7 +390,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * @param b
 	 * @param factory
 	 */
-	private void createAndAddEdge(P a,P b, MapPartFactory<?, ?, E, P> factory) {
+    private void createAndAddEdge(P a, P b, MapPartFactory<?, ?, E, P, ?> factory) {
 		E edge = factory.createEdge(a, b);
 		edges.add(edge);
 	}
@@ -396,7 +399,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * helper method to create hexagonal fields
 	 * @param factory
 	 */
-	private void createHexesHorizontal(MapPartFactory<?, ?, E, P>  factory) {
+    private void createHexesHorizontal(MapPartFactory<?, ?, E, P, ?> factory) {
 		for (int i = 0; i < 6; i++) {
 			P a = factory.createPoint(1, 1);
 			P b = factory.createPoint(1, 1);
@@ -432,7 +435,7 @@ public abstract class AbstractField<D, E extends MapEdge<?,P>, P extends MapPoin
 	 * helper method to create squared fields
 	 * @param factory
 	 */
-	private void createSquares(MapPartFactory<?, ?, E, P>  factory) {
+    private void createSquares(MapPartFactory<?, ?, E, P, ?> factory) {
 		for (int i = 0; i < 4; i++) {
 			P a = factory.createPoint(1, 1);
 			P b = factory.createPoint(1, 1);

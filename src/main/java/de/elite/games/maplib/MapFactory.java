@@ -1,7 +1,6 @@
 package de.elite.games.maplib;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,12 +13,12 @@ import java.util.Map;
  * @param <M> any desired map data object
  * @author martinFrank
  */
-public class MapFactory<M extends AbstractMap<F,E,P>, F extends MapField<?, E, P>, E extends MapEdge<?, P> , P extends MapPoint<?> > {
+public class MapFactory<M extends AbstractMap<F, E, P>, F extends MapField<?, E, P>, E extends MapEdge<?, P>, P extends MapPoint<?>, W extends Walker<? extends F>> {
 
-    private final MapPartFactory<M, F, E, P> mapPartFactory ;
+    private final MapPartFactory<M, F, E, P, W> mapPartFactory;
     private final MapStyle style;
 
-    public MapFactory (MapPartFactory<M, F, E, P> mapPartFactory, MapStyle style){
+    public MapFactory(MapPartFactory<M, F, E, P, W> mapPartFactory, MapStyle style) {
         this.mapPartFactory = mapPartFactory;
         this.style = style;
     }
@@ -58,7 +57,7 @@ public class MapFactory<M extends AbstractMap<F,E,P>, F extends MapField<?, E, P
     }
 
     private void reducePoints(M map) {
-        java.util.Map<P, P> points = new HashMap<>();
+        Map<P, P> points = new HashMap<>();
         for (F field : map.getFields()) {
             // field.getPoints().stream().forEach(e -> pointList.add(e))
             for (P p : field.getPoints()) {
@@ -90,7 +89,7 @@ public class MapFactory<M extends AbstractMap<F,E,P>, F extends MapField<?, E, P
     }
 
     private void reduceEdges(M map) {
-        java.util.Map<E, E> edges = new HashMap<>();
+        Map<E, E> edges = new HashMap<>();
         for (F field : map.getFields()) {
             // field.getPoints().stream().forEach(e -> pointList.add(e))
             for (E edge : field.getEdges()) {
@@ -484,5 +483,9 @@ public class MapFactory<M extends AbstractMap<F,E,P>, F extends MapField<?, E, P
     private void addNbg(M map, int nbx, int nby, F center) {
         MapField<?,E,P> nb = map.getFieldByIndex(nbx, nby);
         center.getNeigbours().add(nb);
+    }
+
+    public W createWalker() {
+        return mapPartFactory.createWalker(style);
     }
 }

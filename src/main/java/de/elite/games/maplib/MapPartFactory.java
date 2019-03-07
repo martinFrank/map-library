@@ -1,6 +1,6 @@
 package de.elite.games.maplib;
 
-public interface MapPartFactory<M extends AbstractMap, F extends MapField, E extends MapEdge, P extends MapPoint> {
+public interface MapPartFactory<M extends AbstractMap, F extends MapField, E extends MapEdge, P extends MapPoint, W extends Walker<? extends F>> {
 
     /**
      * method to create the point
@@ -27,7 +27,7 @@ public interface MapPartFactory<M extends AbstractMap, F extends MapField, E ext
      */
     E createEdge(P a, P b);
 
-
-
     M createMap(int width, int height);
+
+    W createWalker(MapStyle style);
 }
