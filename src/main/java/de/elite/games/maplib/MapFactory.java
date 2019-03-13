@@ -5,6 +5,7 @@ import de.elite.games.geolib.GeoPoint;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapPoint<?, F, E, P>, W extends MapWalker<F, E, P>> {
 
@@ -21,11 +22,11 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
         generateFields(map, style);
         reduceEdges(map);
         reducePoints(map);
-        setRelations(map, style);
+        setRelations(map);
         return map;
     }
 
-    private void setRelations(M map, MapStyle style) {
+    private void setRelations(M map) {
         Set<F> fields = map.getFields();
         Set<E> edges = getAllEdgesFromMap(map);
         for (F field : map.getFields()) {
@@ -37,20 +38,14 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
                 setRelationEdgeField(edge, field);
                 setRelationEdgeEdge(edge, edges);
             }
-            setRelationFieldField(field, fields, style);
+            setRelationFieldField(field, fields);
         }
     }
 
-    private void setRelationFieldField(F field, Set<F> fields, MapStyle style) {
-        for (F can : fields) {
-            if (style == MapStyle.SQUARE8) {
-                if (field.isConnectedByPointsTo(can) && !field.equals(can)) {
-                    field.addField(can);
-                }
-            } else {
-                if (field.isConnectedByEdgesTo(can) && !field.equals(can)) {
-                    field.addField(can);
-                }
+    private void setRelationFieldField(F field, Set<F> fields) {
+        for (F can : fields.stream().filter(f -> !f.equals(field)).collect(Collectors.toList())) {
+            if (field.isConnectedByEdgesTo(can)) {
+                field.addField(can);
             }
         }
     }

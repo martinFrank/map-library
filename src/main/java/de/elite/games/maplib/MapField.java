@@ -3,10 +3,7 @@ package de.elite.games.maplib;
 import de.elite.games.drawlib.PanScale;
 import de.elite.games.geolib.GeoPoint;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class MapField<D,
         F extends MapField<?, F, E, P>,
@@ -49,6 +46,15 @@ public abstract class MapField<D,
 
     public P getCenter() {
         return center;
+    }
+
+    public Optional<E> getEdge(F to) {
+        for (E e : getEdges()) {
+            if (e.getFields().contains(to)) {
+                return Optional.of(e);
+            }
+        }
+        return Optional.empty();
     }
 
     void setCenter(P center) {
@@ -157,9 +163,7 @@ public abstract class MapField<D,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         MapField<?, ?, ?, ?> mapField = (MapField<?, ?, ?, ?>) o;
-
         return index.equals(mapField.index);
     }
 

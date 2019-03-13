@@ -152,8 +152,8 @@ class MapFieldShaper<F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, 
         P c;
         if (isUpside) {
             a = createDeltaMapPointFromCenter(field, -2, 1);
-            b = createDeltaMapPointFromCenter(field, 2, 1);
-            c = createDeltaMapPointFromCenter(field, 0, -2);
+            b = createDeltaMapPointFromCenter(field, 0, -2);
+            c = createDeltaMapPointFromCenter(field, 2, 1);
         } else {
             a = createDeltaMapPointFromCenter(field, -2, -1);
             b = createDeltaMapPointFromCenter(field, 2, -1);
