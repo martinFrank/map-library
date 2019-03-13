@@ -21,11 +21,11 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
         generateFields(map, style);
         reduceEdges(map);
         reducePoints(map);
-        setRelations(map);
+        setRelations(map, style);
         return map;
     }
 
-    private void setRelations(M map) {
+    private void setRelations(M map, MapStyle style) {
         Set<F> fields = map.getFields();
         Set<E> edges = getAllEdgesFromMap(map);
         for (F field : map.getFields()) {
@@ -37,14 +37,20 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
                 setRelationEdgeField(edge, field);
                 setRelationEdgeEdge(edge, edges);
             }
-            setRelationFieldField(field, fields);
+            setRelationFieldField(field, fields, style);
         }
     }
 
-    private void setRelationFieldField(F field, Set<F> fields) {
+    private void setRelationFieldField(F field, Set<F> fields, MapStyle style) {
         for (F can : fields) {
-            if (field.isConnectedTo(can) && !field.equals(can)) {
-                field.addField(can);
+            if (style == MapStyle.SQUARE8) {
+                if (field.isConnectedByPointsTo(can) && !field.equals(can)) {
+                    field.addField(can);
+                }
+            } else {
+                if (field.isConnectedByEdgesTo(can) && !field.equals(can)) {
+                    field.addField(can);
+                }
             }
         }
     }

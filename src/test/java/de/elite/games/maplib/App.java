@@ -33,7 +33,7 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
-        demoMap = mapFactory.createMap(5, 4, MapStyle.SQUARE8);
+        demoMap = mapFactory.createMap(5, 4, MapStyle.TRIANGLE_HORIZONTAL);
         demoMap.scale(12f);
         demoMap.pan(10, 10);
 
@@ -51,19 +51,18 @@ public class App extends Application {
             Optional<TestMapField> field = demoMap.getField(x, y);
             LOGGER.debug("x/y:{}/{} Point:{}", x, y, point);
             LOGGER.debug("x/y:{}/{} Edge:{} ", x, y, edge);
-            LOGGER.debug("x/y:{}/{} Field:{}, index{} ", x, y, field);
+            LOGGER.debug("x/y:{}/{} Field:{}, index{} ", x, y, field, field.isPresent() ? field.get().getIndex() : "");
 
             if (field.isPresent()) {
-                System.out.println("field.getFields().size()=" + field.get().getFields().size());
-                System.out.println("field.getEdges().size()=" + field.get().getEdges().size());
-                System.out.println("field.getPoints().size()=" + field.get().getPoints().size());
+                LOGGER.debug("field.getFields().size()={}", field.get().getFields().size());
+                LOGGER.debug("field.getEdges().size()={}", field.get().getEdges().size());
+                LOGGER.debug("field.getPoints().size()={}", field.get().getPoints().size());
             }
-            edge.ifPresent(testMapField -> System.out.println(
-                    "edge.getFields().size()=" + testMapField.getFields().size()));
+            edge.ifPresent(testMapField -> LOGGER.debug("edge.getFields().size()={}", testMapField.getFields().size()));
 
             if (point.isPresent()) {
-                System.out.println("point.getEdges().size=" + point.get().getEdges().size());
-                System.out.println("point.getFields().size=" + point.get().getFields().size());
+                LOGGER.debug("point.getEdges().size={}", point.get().getEdges().size());
+                LOGGER.debug("point.getFields().size={}", point.get().getFields().size());
             }
 
             if (mouseEvent.getButton() == MouseButton.PRIMARY && field.isPresent()) {
@@ -77,7 +76,7 @@ public class App extends Application {
                     any.getData().markAsPath(false);
                 }
                 List<TestMapField> path = demoMap.aStar(start, end, walker, 10);
-                System.out.println("Path length = " + path.size());
+                LOGGER.debug("Path length = {}", path.size());
                 for (TestMapField pathField : path) {
                     pathField.getData().markAsPath(true);
                 }

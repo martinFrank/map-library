@@ -59,10 +59,21 @@ public abstract class MapField<D,
         edges.add(edge);
     }
 
-    boolean isConnectedTo(F can) {
+    boolean isConnectedByPointsTo(F can) {
         for (P pCan : can.getPoints()) {
             for (P p : getPoints()) {
                 if (p.equals(pCan)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean isConnectedByEdgesTo(F can) {
+        for (E edgeOfCan : can.getEdges()) {
+            for (E e : getEdges()) {
+                if (e.equalLocation(edgeOfCan)) {
                     return true;
                 }
             }
