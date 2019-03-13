@@ -9,21 +9,8 @@ import javafx.scene.paint.Color;
 
 public class TestMapField extends MapField<TestFieldData, TestMapField, TestMapEdge, TestMapPoint> {
 
-    private TestFieldData testFieldData = new TestFieldData();
-
-    public TestMapField(GeoPoint index) {
-        super(index);
-    }
-
-    @Override
-    public TestFieldData getData() {
-        return testFieldData;
-    }
-
-    @Override
-    public void setData(TestFieldData testFieldData) {
-        this.testFieldData = testFieldData;
-
+    public TestMapField(GeoPoint index, TestFieldData testFieldData) {
+        super(index, testFieldData);
     }
 
     @Override

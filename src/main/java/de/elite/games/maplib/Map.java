@@ -15,12 +15,14 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
     private final MapStyle style;
     private final Set<F> fields;
     private final Astar<Map<D, F, E, P, W>, F, E, P, W> astar = new Astar<>();
+    private final D d;
 
-    public Map(int width, int height, MapStyle style) {
+    public Map(int width, int height, MapStyle style, D d) {
         this.width = width;
         this.height = height;
         this.style = style;
         fields = new HashSet<>();
+        this.d = d;
     }
 
     public Set<F> getFields() {
@@ -159,5 +161,10 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
     @Override
     public double getPanY() {
         return anyField().getPanY();
+    }
+
+    @Override
+    public D getData() {
+        return d;
     }
 }

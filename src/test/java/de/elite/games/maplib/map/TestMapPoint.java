@@ -7,18 +7,8 @@ import javafx.scene.paint.Color;
 
 public class TestMapPoint extends MapPoint<TestPointData, TestMapField, TestMapEdge, TestMapPoint> {
 
-    public TestMapPoint(int x, int y) {
-        super(x, y);
-    }
-
-    @Override
-    public TestPointData getData() {
-        return null;
-    }
-
-    @Override
-    public void setData(TestPointData testPointData) {
-
+    public TestMapPoint(int x, int y, TestPointData testPointData) {
+        super(x, y, testPointData);
     }
 
     @Override

@@ -4,5 +4,4 @@ public interface MapData<D> {
 
     D getData();
 
-    void setData(D d);
 }

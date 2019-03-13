@@ -7,18 +7,8 @@ import de.elite.games.maplib.data.TestMapData;
 public class TestMap extends Map<TestMapData, TestMapField, TestMapEdge, TestMapPoint, TestMapWalker> {
 
 
-    TestMap(int width, int height, MapStyle style) {
-        super(width, height, style);
-    }
-
-    @Override
-    public TestMapData getData() {
-        return null;
-    }
-
-    @Override
-    public void setData(TestMapData o) {
-
+    TestMap(int width, int height, MapStyle style, TestMapData testMapData) {
+        super(width, height, style, testMapData);
     }
 
     @Override

@@ -15,10 +15,12 @@ public abstract class MapField<D,
     private final Set<P> points = new HashSet<>();
     private final Set<F> fields = new HashSet<>();
     private P center;
+    private final D d;
 
-    public MapField(GeoPoint index) {
+    public MapField(GeoPoint index, D d) {
         super();
         this.index = index;
+        this.d = d;
     }
 
     public GeoPoint getIndex() {
@@ -157,6 +159,11 @@ public abstract class MapField<D,
     @Override
     public double getTransformedY() {
         return getPanY() + getScaledY();
+    }
+
+    @Override
+    public D getData() {
+        return d;
     }
 
     @Override

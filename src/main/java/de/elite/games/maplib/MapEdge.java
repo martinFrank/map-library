@@ -11,10 +11,12 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     private final Set<E> edges = new HashSet<>();
     private P a;
     private P b;
+    private final D d;
 
-    public MapEdge(P a, P b) {
+    public MapEdge(P a, P b, D d) {
         this.a = a;
         this.b = b;
+        this.d = d;
     }
 
     public P getA() {
@@ -99,6 +101,11 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     @Override
     public double getTransformedY() {
         return getPanY() + getScaledY();
+    }
+
+    @Override
+    public D getData() {
+        return d;
     }
 
     //visible for testing

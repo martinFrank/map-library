@@ -16,9 +16,11 @@ public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P exten
     private double scaledx;
     private double scaledy;
     private double scale;
+    private final D d;
 
-    public MapPoint(int x, int y) {
+    public MapPoint(int x, int y, D d) {
         point = new GeoPoint(x, y);
+        this.d = d;
     }
 
     GeoPoint getPoint() {
@@ -91,6 +93,11 @@ public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P exten
     @Override
     public double getTransformedY() {
         return getPanY() + getScaledY();
+    }
+
+    @Override
+    public D getData() {
+        return d;
     }
 
     @Override
