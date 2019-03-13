@@ -33,7 +33,7 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
-        demoMap = mapFactory.createMap(5, 4, MapStyle.SQUARE8);
+        demoMap = mapFactory.createMap(5, 4, MapStyle.TRIANGLE_HORIZONTAL);
         demoMap.scale(12f);
         demoMap.pan(10, 10);
 
