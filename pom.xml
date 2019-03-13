@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.elite.games</groupId>
   <artifactId>maplib</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+    <version>0.2.0</version>
     <build>
         <plugins>
             <plugin>
@@ -16,32 +16,34 @@
         </plugins>
     </build>
     <name>maplib</name>
-    <properties>
-      <maven.compiler.source>1.7</maven.compiler.source>
-      <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
+    <description>this project provides a map library</description>
+    <organization>
+        <name>de.elite.games</name>
+    </organization>
 
     <dependencies>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
-        <scope>test</scope>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
       </dependency>
-      <dependency>
-      	<groupId>de.elite.games</groupId>
-      	<artifactId>drawlib</artifactId>
-      	<version>0.0.1-SNAPSHOT</version>
+        <dependency>
+            <groupId>de.elite.games</groupId>
+            <artifactId>drawlib</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
       </dependency>
-      <dependency>
-      	<groupId>de.elite.games</groupId>
-      	<artifactId>geolib</artifactId>
-      	<version>0.0.4-SNAPSHOT</version>
+        <dependency>
+            <groupId>de.elite.games</groupId>
+            <artifactId>geolib</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
       </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.8.0-beta2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <description>this project provides a draw library</description>
-    <organization>
-      <name>Martin Frank</name>
-    </organization>
 </project>
