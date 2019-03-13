@@ -101,7 +101,8 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
         return getPanY() + getScaledY();
     }
 
-    boolean equalLocation(MapEdge mapEdge) {
+    //visible for testing
+    protected boolean equalLocation(MapEdge mapEdge) {
         if (this == mapEdge) {
             return true;
         }

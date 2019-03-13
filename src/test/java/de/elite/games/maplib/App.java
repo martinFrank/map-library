@@ -1,10 +1,10 @@
 package de.elite.games.maplib;
 
+import de.elite.games.maplib.map.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -13,16 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 
 public class App extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    private DemoMap demoMap;
-    private DemoWalker walker;
-    private DemoMapField start;
-    private DemoMapField end;
+    private TestMap demoMap;
+    private TestMapWalker walker;
+
+    private TestMapField start;
+    private TestMapField end;
 
     public static void main(String[] args) {
         launch(args);
@@ -30,56 +31,60 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DemoMapPartFactory mapPartFactory = new DemoMapPartFactory();
-        MapFactory<DemoMap, DemoMapField, DemoMapEdge, DemoMapPoint, DemoWalker> mapFactory = new MapFactory<>(mapPartFactory, MapStyle.HEX_VERTICAL);
-        demoMap = mapFactory.createMap(5, 4);
+        TestMapPartFactory mapPartFactory = new TestMapPartFactory();
+        TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
+        demoMap = mapFactory.createMap(5, 4, MapStyle.SQUARE8);
         demoMap.scale(12f);
         demoMap.pan(10, 10);
-        walker = mapFactory.createWalker();
 
-        shuffleWalkCosts();
+        walker = mapPartFactory.createWalker();
 
         primaryStage.setTitle("Hello World!");
         BorderPane border = new BorderPane();
         Canvas canvas = new Canvas(300, 250);
+
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             int x = (int) mouseEvent.getX();
             int y = (int) mouseEvent.getY();
-            DemoMapPoint point = demoMap.getPoint(x, y);
-            DemoMapEdge edge = demoMap.getEdge(x, y);
-            DemoMapField field = demoMap.getField(x, y);
+            Optional<TestMapPoint> point = demoMap.getPoint(x, y);
+            Optional<TestMapEdge> edge = demoMap.getEdge(x, y);
+            Optional<TestMapField> field = demoMap.getField(x, y);
             LOGGER.debug("x/y:{}/{} Point:{}", x, y, point);
             LOGGER.debug("x/y:{}/{} Edge:{} ", x, y, edge);
-            LOGGER.debug("x/y:{}/{} Field:{}, index{} ", x, y, field, (field == null ? "" : field.getIndex()));
+            LOGGER.debug("x/y:{}/{} Field:{}, index{} ", x, y, field);
 
-            if (mouseEvent.getButton() == MouseButton.PRIMARY && field != null) {
-                start = field;
+            if (field.isPresent()) {
+                System.out.println("field.getFields().size()=" + field.get().getFields().size());
+                System.out.println("field.getEdges().size()=" + field.get().getEdges().size());
+                System.out.println("field.getPoints().size()=" + field.get().getPoints().size());
             }
-            if (mouseEvent.getButton() == MouseButton.SECONDARY && field != null) {
-                end = field;
+            edge.ifPresent(testMapField -> System.out.println(
+                    "edge.getFields().size()=" + testMapField.getFields().size()));
+
+            if (point.isPresent()) {
+                System.out.println("point.getEdges().size=" + point.get().getEdges().size());
+                System.out.println("point.getFields().size=" + point.get().getFields().size());
             }
-            if (start != null && !start.equals(end)) {
-                for (DemoMapField any : demoMap.getFields()) {
-                    any.getFieldData().markAsPath(false);
+
+            if (mouseEvent.getButton() == MouseButton.PRIMARY && field.isPresent()) {
+                start = field.get();
+            }
+            if (mouseEvent.getButton() == MouseButton.SECONDARY && field.isPresent()) {
+                end = field.get();
+            }
+            if (start != null && end != null && !start.equals(end)) {
+                for (TestMapField any : demoMap.getFields()) {
+                    any.getData().markAsPath(false);
                 }
-                List<DemoMapField> path = demoMap.aStar(start, end, walker, 10);
-                for (DemoMapField pathField : path) {
-                    pathField.getFieldData().markAsPath(true);
+                List<TestMapField> path = demoMap.aStar(start, end, walker, 10);
+                System.out.println("Path length = " + path.size());
+                for (TestMapField pathField : path) {
+                    pathField.getData().markAsPath(true);
                 }
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 drawShapes(gc);
             }
-
         });
-
-        Button btn = new Button();
-        btn.setText("Shuffle Map");
-        btn.setOnAction(event -> {
-            shuffleWalkCosts();
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            drawShapes(gc);
-        });
-        border.setBottom(btn);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         drawShapes(gc);
@@ -87,20 +92,6 @@ public class App extends Application {
         border.setCenter(canvas);
         primaryStage.setScene(new Scene(border));
         primaryStage.show();
-    }
-
-    private void shuffleWalkCosts() {
-        Random random = new Random();
-        for (DemoMapField demoMapField : demoMap.getFields()) {
-            demoMapField.getFieldData().setWalkCostFactor(1d);
-            int die = random.nextInt(6) + 1;
-            if (die == 1) {
-                demoMapField.getFieldData().setWalkCostFactor(6d);
-            }
-            if (die == 2) {
-                demoMapField.getFieldData().setWalkCostFactor(3d);
-            }
-        }
     }
 
 
