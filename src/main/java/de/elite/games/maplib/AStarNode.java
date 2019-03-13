@@ -1,8 +1,8 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
 import de.elite.games.geolib.GeoPoint;
 
-final class  AStarNode {
+final class AStarNode {
 
 	int f;
 	int g;

@@ -1,67 +1,159 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
 import de.elite.games.drawlib.PanScale;
 import de.elite.games.geolib.GeoPoint;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * A field is the elemental object of a map - all field together represent the
- * map. A field is surrounded by edges, these are equal to the connection to the
- * neighbor fields.
- * <br> A field is unique identified by either the center Point or the index Point
- * 
- * @author martinFrank
- */
-public interface MapField<D, E extends MapEdge<?,P>, P extends MapPoint<?>> extends PanScale {
+public abstract class MapField<D,
+        F extends MapField<?, F, E, P>,
+        E extends MapEdge<?, F, E, P>,
+        P extends MapPoint<?, F, E, P>> implements MapData<D>, PanScale {
 
-	/**
-	 * unique index point
-	 * @return
-	 */
-	GeoPoint getIndex();
+    private final GeoPoint index;
+    private final Set<E> edges = new HashSet<>();
+    private final Set<P> points = new HashSet<>();
+    private final Set<F> fields = new HashSet<>();
+    private P center;
 
-	//FIXME doku
-	void createShape(MapPartFactory<?, ?, E, P, ?> factory, MapStyle style);
+    public MapField(GeoPoint index) {
+        super();
+        this.index = index;
+    }
 
-	//FIXME doku
-	void setCenter(P c, MapStyle style);
+    public GeoPoint getIndex() {
+        return index;
+    }
 
-	/**
-	 * center point of the field
-	 * @return
-	 */
-	P getCenter();
+    public Set<P> getPoints() {
+        return points;
+    }
 
-	/**
-	 * a set of all surrounding neighbor fields
-	 * @return
-	 */
-	Set<MapField<?,E,P>> getNeigbours();
+    public List<P> getPointsOrdered() {
+        MapPointComperator ci = new MapPointComperator(center);
+        List<P> points = new ArrayList<>(getPoints());
+        points.sort(ci);
+        return points;
+    }
 
-	/**
-	 * the edges around the field
-	 * @return
-	 */
-	List<E> getEdges();
-	
-	/**
-	 * the points around the field
-	 * @return
-	 */
-	List<P> getPoints();
+    public Set<E> getEdges() {
+        return edges;
+    }
 
-	/**
-	 * Customizable data
-	 * @return
-	 */
-	D getFieldData();
+    public Set<F> getFields() {
+        return fields;
+    }
 
-	/**
-	 * Customizable data
-	 * @param t
-	 */
-	void setFieldData(D t);
+    public P getCenter() {
+        return center;
+    }
 
+    void setCenter(P center) {
+        this.center = center;
+    }
+
+    void addEdge(E edge) {
+        edges.add(edge);
+    }
+
+    boolean isConnectedTo(F can) {
+        for (P pCan : can.getPoints()) {
+            for (P p : getPoints()) {
+                if (p.equals(pCan)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void addField(F field) {
+        fields.add(field);
+    }
+
+    E anyEdge() {
+        return edges.iterator().next();
+    }
+
+    void replaceEdge(E edge, E replacement) {
+        edges.remove(edge);
+        edges.add(replacement);
+    }
+
+    void reducePoints() {
+        points.clear();
+        for (E edge : edges) {
+            points.add(edge.getA());
+            points.add(edge.getB());
+        }
+    }
+
+    @Override
+    public void scale(double scale) {
+        center.scale(scale);
+        for (E edge : edges) {
+            edge.scale(scale);
+        }
+    }
+
+    @Override
+    public void pan(double panx, double pany) {
+        center.pan(panx, pany);
+        for (E edge : edges) {
+            edge.pan(panx, pany);
+        }
+    }
+
+    @Override
+    public double getScale() {
+        return center.getScale();
+    }
+
+    @Override
+    public double getScaledX() {
+        return center.getScaledX();
+    }
+
+    @Override
+    public double getScaledY() {
+        return center.getScaledY();
+    }
+
+    @Override
+    public double getPanX() {
+        return center.getPanX();
+    }
+
+    @Override
+    public double getPanY() {
+        return center.getPanY();
+    }
+
+    @Override
+    public double getTransformedX() {
+        return getPanX() + getScaledX();
+    }
+
+    @Override
+    public double getTransformedY() {
+        return getPanY() + getScaledY();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MapField<?, ?, ?, ?> mapField = (MapField<?, ?, ?, ?>) o;
+
+        return index.equals(mapField.index);
+    }
+
+    @Override
+    public int hashCode() {
+        return index.hashCode();
+    }
 }

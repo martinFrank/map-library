@@ -1,46 +1,140 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
 import de.elite.games.drawlib.PanScale;
 
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * an edge is an elemental part of a map field - it surrounds the field. An edge
- * always requires two points a and b and between them is a line called 'edge'.
- * 
- * @author martinFrank
- * 
- * @param <E> any desired edge data object
- */
-public interface MapEdge<D,P extends MapPoint> extends PanScale {
+public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, PanScale {
 
-	/**
-	 * the a of the edge
-	 * @return a
-	 */
-	P getA();
+    private final Set<F> fields = new HashSet<>();
+    private final Set<E> edges = new HashSet<>();
+    private P a;
+    private P b;
 
-	/**
-	 * the be of the edge
-	 * @return b
-	 */
-	P getB();
+    public MapEdge(P a, P b) {
+        this.a = a;
+        this.b = b;
+    }
 
-	/**
-	 * Customizable data
-	 * @return data
-	 */
-	D getEdgeData();
+    public P getA() {
+        return a;
+    }
 
-	/**
-	 * Customizable data
-	 * @param v data
-	 */
-	void setEdgeData(D v);
-		
-	/**
-	 * a set of all fields that are connected to this edge (should be one or two)
-	 * @return
-	 */
-	Set<MapField> getFields();
+    public P getB() {
+        return b;
+    }
+
+    public Set<E> getEdges() {
+        return edges;
+    }
+
+    public Set<F> getFields() {
+        return fields;
+    }
+
+    void addField(F field) {
+        fields.add(field);
+    }
+
+    void addEdge(E edge) {
+        edges.add(edge);
+    }
+
+    boolean isConnectedTo(E can) {
+        if (can.getA().equals(a)) {
+            return true;
+        }
+        if (can.getA().equals(b)) {
+            return true;
+        }
+        if (can.getB().equals(a)) {
+            return true;
+        }
+        return can.getB().equals(b);
+    }
+
+    @Override
+    public void scale(double scale) {
+        a.scale(scale);
+        b.scale(scale);
+    }
+
+    @Override
+    public void pan(double dx, double dy) {
+        a.pan(dx, dy);
+        b.pan(dx, dy);
+    }
+
+    @Override
+    public double getScale() {
+        return a.getScale();
+    }
+
+    @Override
+    public double getScaledX() {
+        return a.getScaledX();
+    }
+
+    @Override
+    public double getScaledY() {
+        return a.getScaledY();
+    }
+
+    @Override
+    public double getPanX() {
+        return a.getPanX();
+    }
+
+    @Override
+    public double getPanY() {
+        return a.getPanY();
+    }
+
+    @Override
+    public double getTransformedX() {
+        return getPanX() + getScaledX();
+    }
+
+    @Override
+    public double getTransformedY() {
+        return getPanY() + getScaledY();
+    }
+
+    boolean equalLocation(MapEdge mapEdge) {
+        if (this == mapEdge) {
+            return true;
+        }
+        if (mapEdge == null) {
+            return false;
+        }
+        boolean matchesAA = a != null && a.equals(mapEdge.a);
+        boolean matchesAB = a != null && a.equals(mapEdge.b);
+        boolean matchesBA = b != null && b.equals(mapEdge.a);
+        boolean matchesBB = b != null && b.equals(mapEdge.b);
+
+        if (matchesAA && matchesBB) {
+            return true;
+        }
+        return matchesAB && matchesBA;
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MapEdge<?, ?, ?, ?> mapEdge = (MapEdge<?, ?, ?, ?>) o;
+
+        if (a != null ? !a.equals(mapEdge.a) : mapEdge.a != null) return false;
+        return b != null ? b.equals(mapEdge.b) : mapEdge.b == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = a != null ? a.hashCode() : 0;
+        result = 31 * result + (b != null ? b.hashCode() : 0);
+        return result;
+    }
 }

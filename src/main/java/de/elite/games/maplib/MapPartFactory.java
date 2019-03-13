@@ -1,33 +1,16 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
-public interface MapPartFactory<M extends AbstractMap, F extends MapField, E extends MapEdge, P extends MapPoint, W extends Walker<? extends F>> {
+import de.elite.games.geolib.GeoPoint;
 
-    /**
-     * method to create the point
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    P createPoint(int x, int y);
+public abstract class MapPartFactory<M extends Map, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapPoint<?, F, E, P>, W extends MapWalker> {
 
-    /**
-     * method to create the field - requires the unique center
-     *
-     * @return
-     */
-    F createField();
+    public abstract P createMapPoint(int x, int y);
 
-    /**
-     * method to create the edge
-     *
-     * @param a
-     * @param b
-     * @return
-     */
-    E createEdge(P a, P b);
+    public abstract E createMapEdge(P a, P b);
 
-    M createMap(int width, int height);
+    public abstract F createMapField(GeoPoint index);
 
-    W createWalker(MapStyle style);
+    public abstract M createMap(int width, int height, MapStyle style);
+
+    public abstract W createWalker();
 }

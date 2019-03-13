@@ -1,68 +1,108 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
 import de.elite.games.drawlib.PanScale;
+import de.elite.games.geolib.GeoPoint;
 
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * a point is a central element of each map - it's used for mapfield center
- * points and for map edges (they're a line from point a --> b)
- * 
- * @author martinFrank
- *
- * @param <P> any desired point data object
- */
-public interface MapPoint<P> extends PanScale {
+public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, PanScale {
 
-	/**
-	 * x of the point after scaling and panning
-	 * @return
-	 */
-	int getTransformedX();
+    private final Set<F> fields = new HashSet<>();
+    private final Set<E> edges = new HashSet<>();
+    private GeoPoint point;
+    private double panx;
+    private double pany;
+    private double scaledx;
+    private double scaledy;
+    private double scale;
 
-	/**
-	 * y of the point after scaling and panning
-	 * @return
-	 */
-	
-	int getTransformedY();
+    public MapPoint(int x, int y) {
+        point = new GeoPoint(x, y);
+    }
 
-	/**
-	 * set point location
-	 * @param x
-	 * @param y
-	 */
-	void setXY(int x, int y);
+    GeoPoint getPoint() {
+        return point;
+    }
 
-	/**
-	 * the point location 
-	 * @return x
-	 */
-	int getX();
+    public Set<E> getEdges() {
+        return edges;
+    }
 
-	/**
-	 * the point location
-	 * @return y
-	 */
-	int getY();
-	
-	
-	/**
-	 * Customizable data
-	 * @return
-	 */
-	P getPointData();
+    public Set<F> getFields() {
+        return fields;
+    }
 
-	/**
-	 * Customizable data
-	 * @param u
-	 */
-	void setPointData(P u);
-	
-	/**
-	 * set of all edges that are connected to this point
-	 * @return
-	 */
-	Set<MapEdge> getEdges();
+    void setPoint(int x, int y) {
+        point = new GeoPoint(x, y);
+    }
 
+    void addField(F field) {
+        fields.add(field);
+    }
+
+    void addEdge(E edge) {
+        edges.add(edge);
+    }
+
+    @Override
+    public void scale(double scale) {
+        this.scale = scale;
+        scaledx = point.getX() * scale;
+        scaledy = point.getY() * scale;
+    }
+
+    @Override
+    public void pan(double dx, double dy) {
+        this.panx = dx;
+        this.pany = dy;
+    }
+
+    @Override
+    public double getScale() {
+        return scale;
+    }
+
+    @Override
+    public double getScaledX() {
+        return scaledx;
+    }
+
+    @Override
+    public double getScaledY() {
+        return scaledy;
+    }
+
+    @Override
+    public double getPanX() {
+        return panx;
+    }
+
+    @Override
+    public double getPanY() {
+        return pany;
+    }
+
+    @Override
+    public double getTransformedX() {
+        return getPanX() + getScaledX();
+    }
+
+    @Override
+    public double getTransformedY() {
+        return getPanY() + getScaledY();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MapPoint<?, ?, ?, ?> mapPoint = (MapPoint<?, ?, ?, ?>) o;
+        return point.equals(mapPoint.point);
+    }
+
+    @Override
+    public int hashCode() {
+        return point.hashCode();
+    }
 }

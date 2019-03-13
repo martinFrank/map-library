@@ -1,491 +1,136 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
-import java.util.HashMap;
-import java.util.Map;
+import de.elite.games.geolib.GeoPoint;
 
-/**
- * the map factory is required to create the map parts:
- * <li>Map</li>
- * <li>field</li>
- * <li>edge</li>
- * <li>point</li>
- *
- * @param <M> any desired map data object
- * @author martinFrank
- */
-public class MapFactory<M extends AbstractMap<F, E, P>, F extends MapField<?, E, P>, E extends MapEdge<?, P>, P extends MapPoint<?>, W extends Walker<? extends F>> {
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapPoint<?, F, E, P>, W extends MapWalker<F, E, P>> {
 
     private final MapPartFactory<M, F, E, P, W> mapPartFactory;
-    private final MapStyle style;
+    private final MapFieldShaper<F, E, P> fieldShaper;
 
-    public MapFactory(MapPartFactory<M, F, E, P, W> mapPartFactory, MapStyle style) {
+    public MapFactory(MapPartFactory<M, F, E, P, W> mapPartFactory) {
         this.mapPartFactory = mapPartFactory;
-        this.style = style;
+        fieldShaper = new MapFieldShaper<>(mapPartFactory);
     }
 
-    public M createMap(int width, int height) {
-        M map =  mapPartFactory.createMap(width, height);
-        generateFields(map);
-        reduceMap(map);
-        setNeighbors(map);
-        map.scale(1F);
+    public M createMap(int width, int height, MapStyle style) {
+        M map = mapPartFactory.createMap(width, height, style);
+        generateFields(map, style);
+        reduceEdges(map);
+        reducePoints(map);
+        setRelations(map);
         return map;
     }
 
-    private void generateFields(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                P center = mapPartFactory.createPoint(dx, dy);
-                F field = mapPartFactory.createField();
-                field.setCenter(center, style);
-                field.createShape(mapPartFactory, style);
-                map.getFields().add(field);
-            }
-        }
-
-        // create points for the field as well
+    private void setRelations(M map) {
+        Set<F> fields = map.getFields();
+        Set<E> edges = getAllEdgesFromMap(map);
         for (F field : map.getFields()) {
             for (E edge : field.getEdges()) {
-                field.getPoints().add(edge.getA());
+                setRelationPointField(edge.getA(), fields);
+                setRelationPointField(edge.getB(), fields);
+                setRelationPointEdge(edge.getA(), edges);
+                setRelationPointEdge(edge.getB(), edges);
+                setRelationEdgeField(edge, field);
+                setRelationEdgeEdge(edge, edges);
+            }
+            setRelationFieldField(field, fields);
+        }
+    }
+
+    private void setRelationFieldField(F field, Set<F> fields) {
+        for (F can : fields) {
+            if (field.isConnectedTo(can) && !field.equals(can)) {
+                field.addField(can);
             }
         }
     }
 
-    private void reduceMap(M map) {
-        reducePoints(map);
-        reduceEdges(map);
+    private void setRelationEdgeEdge(E edge, Set<E> edges) {
+        for (E can : edges) {
+            if (edge.isConnectedTo(can)) {
+                edge.addEdge(can);
+            }
+        }
+    }
+
+    private void setRelationEdgeField(E edge, F field) {
+        edge.addField(field);
+
+    }
+
+    private void setRelationPointField(P p, Set<F> fields) {
+        for (F field : fields) {
+            if (field.getPoints().contains(p)) {
+                p.addField(field);
+            }
+        }
+    }
+
+    private void setRelationPointEdge(P p, Set<E> edges) {
+        for (E edge : edges) {
+            if (edge.getA().equals(p) || edge.getB().equals(p)) {
+                p.addEdge(edge);
+            }
+        }
+    }
+
+    private void generateFields(M map, MapStyle style) {
+        for (int dy = 0; dy < map.getHeight(); dy++) {
+            for (int dx = 0; dx < map.getWidth(); dx++) {
+                F field = mapPartFactory.createMapField(new GeoPoint(dx, dy));
+                fieldShaper.createFieldShape(field, style);
+                map.addField(field);
+            }
+        }
     }
 
     private void reducePoints(M map) {
-        Map<P, P> points = new HashMap<>();
         for (F field : map.getFields()) {
-            // field.getPoints().stream().forEach(e -> pointList.add(e))
-            for (P p : field.getPoints()) {
-                points.put(p, p);
-            }
-        }
-
-        // replace points in fields
-        for (F field : map.getFields()) {
-            int length = field.getPoints().size();
-            for (int i = 0; i < length; i++) {
-                P original = field.getPoints().get(i);
-                P r = points.get(original);
-                field.getPoints().set(i, r);
-            }
-        }
-
-        // replace points in edges
-        for (F field : map.getFields()) {
-            int length = field.getPoints().size();
-            for (int i = 0; i < length; i++) {
-                P aOriginal = field.getEdges().get(i).getA();
-                P bOriginal = field.getEdges().get(i).getB();
-                P ra = points.get(aOriginal);
-                P rb = points.get(bOriginal);
-                field.getEdges().set(i, mapPartFactory.createEdge(ra, rb));
-            }
+            field.reducePoints();
         }
     }
 
     private void reduceEdges(M map) {
-        Map<E, E> edges = new HashMap<>();
+        Set<E> edges = getAllEdgesFromMap(map);
         for (F field : map.getFields()) {
-            // field.getPoints().stream().forEach(e -> pointList.add(e))
-            for (E edge : field.getEdges()) {
-                edges.put(edge, edge);
-            }
+            edges.addAll(field.getEdges());
         }
-
-        // replace edges in field
         for (F field : map.getFields()) {
-            int length = field.getPoints().size();
-            for (int i = 0; i < length; i++) {
-                E original = field.getEdges().get(i);
-                E r = edges.get(original);
-                field.getEdges().set(i, r);
-            }
+            while (replaceNext(field, edges)) ;
         }
     }
 
-    private void setNeighbors(M map) {
-        setFieldNeighbors(map);
-        setEdgeFields(map);
-        setPointEdges(map);
-    }
-
-    private void setPointEdges(M map) {
+    private Set<E> getAllEdgesFromMap(M map) {
+        Set<E> edges = new HashSet<>();
         for (F field : map.getFields()) {
-            for (E e : field.getEdges()) {
-                for (MapField<?, E, P> other : field.getNeigbours()) {
-                    for (E otherEdge : other.getEdges()) {
+            edges.addAll(field.getEdges());
+        }
+        return edges;
+    }
 
-                        if (e.getA().equals(otherEdge.getA())) {
-                            e.getA().getEdges().add(otherEdge);
-                        }
-
-                        if (e.getB().equals(otherEdge.getA())) {
-                            e.getB().getEdges().add(otherEdge);
-                        }
-
-                        if (e.getA().equals(otherEdge.getB())) {
-                            e.getA().getEdges().add(otherEdge);
-                        }
-
-                        if (e.getB().equals(otherEdge.getB())) {
-                            e.getB().getEdges().add(otherEdge);
-                        }
-                    }
-                }
+    private boolean replaceNext(F field, Set<E> edges) {
+        for (E edge : field.getEdges()) {
+            Optional<E> newOne = findEqualLocation(edges, edge);
+            if (newOne.isPresent()) {
+                field.replaceEdge(edge, newOne.get());
+                return true;
             }
         }
+        return false;
     }
 
-    private void setEdgeFields(M map) {
-        for (F field : map.getFields()) {
-            for (E e : field.getEdges()) {
-                e.getFields().add(field);
 
-                for (MapField<?, E, P> nbg : field.getNeigbours()) {
-                    for (E nbgEdge : nbg.getEdges()) {
-                        if (nbgEdge.equals(e)) {
-                            e.getFields().add(nbg);
-                        }
-                    }
-                }
-            }
+    private Optional<E> findEqualLocation(Set<E> edges, E edge) {
+        Optional<E> opt = edges.stream().filter(e -> e.equalLocation(edge)).findAny();
+        if (opt.isPresent() && edge.equals(opt.get())) {
+            return Optional.empty();
+        } else {
+            return opt;
         }
     }
 
-    private void setFieldNeighbors(M map) {
-        switch (style) {
-            case SQUARE4:
-                setNeighborRelationsSquare4(map);
-                break;
-            case SQUARE8:
-                setNeighborRelationsSquare4(map);
-                setNeighborRelationsSquare8(map);
-                break;
-            case HEX_HORIZONTAL:
-                setNeighborRelationsHexHorizontal(map);
-                break;
-            case HEX_VERTICAL:
-                setNeighborRelationsHexVertical(map);
-                break;
-            case TRIANGLE_HORIZONTAL:
-                setNeighborRelationsTriangleHorizontal(map);
-                break;
-            case TRIANGLE_VERTICAL:
-                setNeighborRelationsTriangleVertical(map);
-                break;
-        }
-    }
-
-    private void setNeighborRelationsSquare4(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-                F center = map.getFieldByIndex(dx, dy);
-
-                nbx = dx;
-                nby = dy - 1;
-                if (nby >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx + 1;
-                nby = dy;
-                if (nbx < map.getWidth()) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx;
-                nby = dy + 1;
-                if (nby < map.getHeight()) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx - 1;
-                nby = dy;
-                if (nbx >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-            }
-        }
-    }
-
-    private void setNeighborRelationsSquare8(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-                F center = map.getFieldByIndex(dx, dy);
-
-                nbx = dx - 1;
-                nby = dy - 1;
-                if (nbx >= 0 && nby >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx + 1;
-                nby = dy - 1;
-                if (nbx < map.getWidth() && nby >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx + 1;
-                nby = dy + 1;
-                if (nbx < map.getWidth() && nby < map.getHeight()) {
-                    addNbg(map, nbx, nby, center);
-                }
-                nbx = dx - 1;
-                nby = dy + 1;
-                if (nbx >= 0 && nby < map.getHeight()) {
-                    addNbg(map, nbx, nby, center);
-                }
-            }
-        }
-    }
-
-    private void setNeighborRelationsHexHorizontal(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-                F center = map.getFieldByIndex(dx, dy);
-
-                // oben
-                nbx = dx;
-                nby = dy - 1;
-                if (nby >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                // unten
-                nbx = dx;
-                nby = dy + 1;
-                if (nby < map.getHeight()) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                if (center.getIndex().getX() % 2 == 0) {
-                    // links oben
-                    nbx = dx - 1;
-                    nby = dy - 1;
-                    if (nbx >= 0 && nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // links unten
-                    nbx = dx - 1;
-                    nby = dy;
-                    if (nbx >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // rechts oben
-                    nbx = dx + 1;
-                    nby = dy - 1;
-                    if (nbx < map.getWidth() && nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // rechts unten
-                    nbx = dx + 1;
-                    nby = dy;
-                    if (nbx < map.getWidth()) {
-                        addNbg(map, nbx, nby, center);//
-                    }
-                } else {
-                    // links oben
-                    nbx = dx - 1;
-                    nby = dy;
-                    if (nbx >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // links unten
-                    nbx = dx - 1;
-                    nby = dy + 1;
-                    if (nbx >= 0 && nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // rechts oben
-                    nbx = dx + 1;
-                    nby = dy;
-                    if (nbx < map.getWidth()) {
-                        addNbg(map, nbx, nby, center);//
-                    }
-
-                    // rechts unten
-                    nbx = dx + 1;
-                    nby = dy + 1;
-                    if (nbx < map.getWidth() && nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-                }
-            }
-        }
-    }
-
-    private void setNeighborRelationsHexVertical(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-                F center = map.getFieldByIndex(dx, dy);
-
-                // links
-                nbx = dx - 1;
-                nby = dy;
-                if (nbx >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                // rechts
-                nbx = dx + 1;
-                nby = dy;
-                if (nbx < map.getWidth()) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                if (center.getIndex().getY() % 2 == 0) {
-                    // oben links
-                    nbx = dx - 1;
-                    nby = dy - 1;
-                    if (nbx >= 0 && nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // oben rechts
-                    nbx = dx;
-                    nby = dy - 1;
-                    if (nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // unten links
-                    nbx = dx - 1;
-                    nby = dy + 1;
-                    if (nbx >= 0 && nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // unten rechts
-                    nbx = dx;
-                    nby = dy + 1;
-                    if (nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-                } else {
-                    // oben links
-                    nbx = dx;
-                    nby = dy - 1;
-                    if (nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // oben rechts
-                    nbx = dx + 1;
-                    nby = dy - 1;
-                    if (nbx < map.getWidth() && nby >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // unten links
-                    nbx = dx;
-                    nby = dy + 1;
-                    if (nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-
-                    // unten rechts
-                    nbx = dx + 1;
-                    nby = dy + 1;
-                    if (nbx < map.getWidth() && nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);//
-                    }
-                }
-            }
-        }
-    }
-
-    private void setNeighborRelationsTriangleHorizontal(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-                F center = map.getFieldByIndex(dx, dy);
-
-                nbx = dx - 1;
-                nby = dy;
-                if (nbx >= 0) {
-                    addNbg(map, nbx, nby, center);//
-                }
-
-                nbx = dx + 1;
-                nby = dy;
-                if (nbx < map.getWidth()) {
-                    addNbg(map, nbx, nby, center);//
-                }
-
-                if ((dx + dy) % 2 == 0) {
-
-                    nbx = dx;
-                    nby = dy + 1;
-                    if (nby < map.getHeight()) {
-                        addNbg(map, nbx, nby, center);//
-                    }
-                } else {
-                    nbx = dx;
-                    nby = dy - 1;
-                    if (nby >= 0) {
-                        addNbg(map, nbx, nby, center);//
-                    }
-                }
-            }
-        }
-    }
-
-    private void setNeighborRelationsTriangleVertical(M map) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
-                int nbx;
-                int nby;
-
-                F center = map.getFieldByIndex(dx, dy);
-                nbx = dx;
-                nby = dy - 1;
-                if (nby >= 0) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                nbx = dx;
-                nby = dy + 1;
-                if (nby < map.getHeight()) {
-                    addNbg(map, nbx, nby, center);
-                }
-
-                if ((dx + dy) % 2 == 0) {
-                    nbx = dx - 1;
-                    nby = dy;
-                    if (nbx >= 0) {
-                        addNbg(map, nbx, nby, center);
-                    }
-                } else {
-                    nbx = dx + 1;
-                    nby = dy;
-                    if (nbx < map.getWidth()) {
-                        addNbg(map, nbx, nby, center);
-                    }
-                }
-            }
-        }
-    }
-
-    private void addNbg(M map, int nbx, int nby, F center) {
-        MapField<?,E,P> nb = map.getFieldByIndex(nbx, nby);
-        center.getNeigbours().add(nb);
-    }
-
-    public W createWalker() {
-        return mapPartFactory.createWalker(style);
-    }
 }
