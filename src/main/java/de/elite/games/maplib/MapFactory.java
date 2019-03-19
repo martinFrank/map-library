@@ -30,6 +30,8 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
         reducePoints(map);
         LOGGER.debug("setRelations");
         setRelations(map, edges);
+        LOGGER.debug(("calculate map size"));
+        map.calculateSize();
 
         map.scale(1);
         return map;
@@ -78,8 +80,8 @@ public class MapFactory<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E
     }
 
     private void generateFields(M map, MapStyle style) {
-        for (int dy = 0; dy < map.getHeight(); dy++) {
-            for (int dx = 0; dx < map.getWidth(); dx++) {
+        for (int dy = 0; dy < map.getAmountFieldsInColumn(); dy++) {
+            for (int dx = 0; dx < map.getAmountFieldsInRow(); dx++) {
                 F field = mapPartFactory.createMapField(new GeoPoint(dx, dy));
                 fieldShaper.createFieldShape(field, style);
                 map.addField(field);

@@ -27,4 +27,5 @@ public class TestMapEdge extends MapEdge<TestEdgeData, TestMapField, TestMapEdge
 
     }
 
+
 }

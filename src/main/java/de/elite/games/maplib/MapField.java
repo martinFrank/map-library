@@ -1,6 +1,7 @@
 package de.elite.games.maplib;
 
-import de.elite.games.drawlib.PanScale;
+import de.elite.games.drawlib.Draw;
+import de.elite.games.drawlib.Shape;
 import de.elite.games.geolib.GeoPoint;
 
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.*;
 public abstract class MapField<D,
         F extends MapField<?, F, E, P>,
         E extends MapEdge<?, F, E, P>,
-        P extends MapPoint<?, F, E, P>> implements MapData<D>, PanScale {
+        P extends MapPoint<?, F, E, P>> implements MapData<D>, Shape, Draw {
 
     private final GeoPoint index;
     private final Set<E> edges = new HashSet<>();
@@ -16,6 +17,9 @@ public abstract class MapField<D,
     private final Set<F> fields = new HashSet<>();
     private P center;
     private final D d;
+    private double scale;
+    private double width;
+    private double height;
 
     public MapField(GeoPoint index, D d) {
         super();
@@ -61,10 +65,12 @@ public abstract class MapField<D,
 
     void setCenter(P center) {
         this.center = center;
+        calculateSize();
     }
 
     void addEdge(E edge) {
         edges.add(edge);
+        calculateSize();
     }
 
     boolean isConnectedByPointsTo(F can) {
@@ -100,6 +106,7 @@ public abstract class MapField<D,
     void replaceEdges(Set<E> replacement) {
         edges.clear();
         edges.addAll(replacement);
+        calculateSize();
     }
 
     void reducePoints() {
@@ -108,10 +115,27 @@ public abstract class MapField<D,
             points.add(edge.getA());
             points.add(edge.getB());
         }
+        calculateSize();
+    }
+
+    private void calculateSize() {
+        double left = Double.MAX_VALUE;
+        double right = Double.MIN_VALUE;
+        double bottom = Double.MAX_VALUE;
+        double top = Double.MIN_VALUE;
+        for (P point : getPoints()) {
+            left = Math.min(point.getPanX(), left);
+            right = Math.max(point.getPanX(), right);
+            bottom = Math.min(point.getPanY(), bottom);
+            top = Math.max(point.getPanY(), top);
+        }
+        width = right - left;
+        height = top - bottom;
     }
 
     @Override
     public void scale(double scale) {
+        this.scale = scale;
         center.scale(scale);
         for (E edge : edges) {
             edge.scale(scale);
@@ -124,11 +148,6 @@ public abstract class MapField<D,
         for (E edge : edges) {
             edge.pan(panx, pany);
         }
-    }
-
-    @Override
-    public double getScale() {
-        return center.getScale();
     }
 
     @Override
@@ -159,6 +178,26 @@ public abstract class MapField<D,
     @Override
     public double getTransformedY() {
         return getPanY() + getScaledY();
+    }
+
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
+    @Override
+    public double getScaledWidth() {
+        return scale * width;
+    }
+
+    @Override
+    public double getScaledHeight() {
+        return scale * height;
     }
 
     @Override

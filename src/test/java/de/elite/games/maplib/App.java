@@ -34,11 +34,14 @@ public class App extends Application {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
         LOGGER.debug("starting creating map");
-        demoMap = mapFactory.createMap(48, 48, MapStyle.HEX_VERTICAL);
+//        demoMap = mapFactory.createMap(48, 48, MapStyle.HEX_VERTICAL);
+        demoMap = mapFactory.createMap(4, 3, MapStyle.HEX_VERTICAL);
 //        demoMap = mapFactory.createMap(48, 48, MapStyle.SQUARE4);
         LOGGER.debug("finished creating map");
         demoMap.scale(12f);
         demoMap.pan(10, 10);
+
+        LOGGER.debug("size of map: {}/{}", demoMap.getScaledWidth(), demoMap.getScaledHeight());
 
         walker = mapPartFactory.createWalker();
 

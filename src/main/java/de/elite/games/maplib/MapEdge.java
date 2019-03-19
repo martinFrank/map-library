@@ -1,22 +1,33 @@
 package de.elite.games.maplib;
 
-import de.elite.games.drawlib.PanScale;
+import de.elite.games.drawlib.Draw;
+import de.elite.games.drawlib.Shape;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, PanScale {
+public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, Shape, Draw {
 
     private final Set<F> fields = new HashSet<>();
     private final Set<E> edges = new HashSet<>();
     private P a;
     private P b;
     private final D d;
-
+    private final double width;
+    private final double height;
+    private double scale;
     public MapEdge(P a, P b, D d) {
         this.a = a;
         this.b = b;
         this.d = d;
+
+        double left = Math.min(a.getPanX(), b.getPanX());
+        double right = Math.max(a.getPanX(), b.getPanX());
+        width = right - left;
+
+        double bottom = Math.min(a.getPanY(), b.getPanY());
+        double top = Math.max(a.getPanY(), b.getPanY());
+        height = top - bottom;
     }
 
     public P getA() {
@@ -65,6 +76,7 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
 
     @Override
     public void scale(double scale) {
+        this.scale = scale;
         a.scale(scale);
         b.scale(scale);
     }
@@ -73,11 +85,6 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     public void pan(double dx, double dy) {
         a.pan(dx, dy);
         b.pan(dx, dy);
-    }
-
-    @Override
-    public double getScale() {
-        return a.getScale();
     }
 
     @Override
@@ -108,6 +115,26 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     @Override
     public double getTransformedY() {
         return getPanY() + getScaledY();
+    }
+
+    @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
+    @Override
+    public double getScaledWidth() {
+        return width * scale;
+    }
+
+    @Override
+    public double getScaledHeight() {
+        return height * scale;
     }
 
     @Override

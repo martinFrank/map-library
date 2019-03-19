@@ -1,25 +1,32 @@
 package de.elite.games.maplib;
 
-import de.elite.games.drawlib.PanScale;
+import de.elite.games.drawlib.Draw;
+import de.elite.games.drawlib.Shape;
 import de.elite.games.geolib.GeoPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapPoint<?, F, E, P>, W extends MapWalker<F, E, P>> implements MapData<D>, PanScale {
+public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapPoint<?, F, E, P>, W extends MapWalker<F, E, P>> implements MapData<D>, Shape, Draw {
 
-    private final int width;
-    private final int height;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
+    private final int fieldsInRow;
+    private final int fieldsInColumn;
+    private double width;
+    private double height;
     private final MapStyle style;
     private final Set<F> fields;
     private final Astar<Map<D, F, E, P, W>, F, E, P, W> astar = new Astar<>();
     private final D d;
+    private double scale;
 
     public Map(int width, int height, MapStyle style, D d) {
-        this.width = width;
-        this.height = height;
+        this.fieldsInRow = width;
+        this.fieldsInColumn = height;
         this.style = style;
         fields = new HashSet<>();
         this.d = d;
@@ -29,12 +36,12 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
         return fields;
     }
 
-    public int getWidth() {
-        return width;
+    public int getAmountFieldsInRow() {
+        return fieldsInRow;
     }
 
-    public int getHeight() {
-        return height;
+    public int getAmountFieldsInColumn() {
+        return fieldsInColumn;
     }
 
     public MapStyle getStyle() {
@@ -91,6 +98,26 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
         return Optional.empty();
     }
 
+    void calculateSize() {
+
+        double left = 10000;
+        double right = -10000;
+        double bottom = 10000;
+        double top = -10000;
+
+        for (F field : getFields()) {
+            for (P point : field.getPoints()) {
+                left = Math.min(point.getPoint().getX(), left);
+                bottom = Math.min(point.getPoint().getY(), bottom);
+                right = Math.max(point.getPoint().getX(), right);
+                top = Math.max(point.getPoint().getY(), top);
+            }
+        }
+        width = right - left + anyField().getWidth();
+        height = top - bottom + anyField().getHeight();
+
+    }
+
     void addField(F field) {
         fields.add(field);
     }
@@ -115,6 +142,26 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
     }
 
     @Override
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
+    @Override
+    public double getScaledWidth() {
+        return scale * width;
+    }
+
+    @Override
+    public double getScaledHeight() {
+        return scale * height;
+    }
+
+    @Override
     public double getTransformedX() {
         return anyField().getTransformedX();
     }
@@ -126,6 +173,7 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
 
     @Override
     public void scale(double scale) {
+        this.scale = scale;
         for (F field : fields) {
             field.scale(scale);
         }
@@ -136,11 +184,6 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
         for (F field : fields) {
             field.pan(panx, pany);
         }
-    }
-
-    @Override
-    public double getScale() {
-        return anyField().getScale();
     }
 
     @Override
@@ -167,4 +210,6 @@ public abstract class Map<D, F extends MapField<?, F, E, P>, E extends MapEdge<?
     public D getData() {
         return d;
     }
+
+
 }

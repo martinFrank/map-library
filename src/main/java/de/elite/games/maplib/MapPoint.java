@@ -1,12 +1,13 @@
 package de.elite.games.maplib;
 
-import de.elite.games.drawlib.PanScale;
+import de.elite.games.drawlib.Draw;
+import de.elite.games.drawlib.Point;
 import de.elite.games.geolib.GeoPoint;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, PanScale {
+public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P extends MapPoint> implements MapData<D>, Point, Draw {
 
     private final Set<F> fields = new HashSet<>();
     private final Set<E> edges = new HashSet<>();
@@ -58,11 +59,6 @@ public abstract class MapPoint<D, F extends MapField, E extends MapEdge, P exten
     public void pan(double dx, double dy) {
         this.panx = dx;
         this.pany = dy;
-    }
-
-    @Override
-    public double getScale() {
-        return scale;
     }
 
     @Override
