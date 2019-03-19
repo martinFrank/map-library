@@ -43,7 +43,7 @@ the map is build up from fields, edges and points, they all together form the ma
    ```
 
 ##### Points have:
- + Edges to which they are connected
+ + MapEdges to which they are connected
    ```
    Set<MapEdge> edges = mapPoint.getEdges();
    ```

@@ -44,6 +44,9 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     }
 
     boolean isConnectedTo(E can) {
+        if (this.equalLocation(can)) {
+            return false;
+        }
         if (can.getA().equals(a)) {
             return true;
         }
@@ -54,6 +57,10 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
             return true;
         }
         return can.getB().equals(b);
+    }
+
+    Integer equalLocationHash() {
+        return 31 * a.hashCode() * b.hashCode();
     }
 
     @Override
@@ -107,9 +114,9 @@ public abstract class MapEdge<D, F extends MapField, E extends MapEdge, P extend
     public D getData() {
         return d;
     }
-
     //visible for testing
-    protected boolean equalLocation(MapEdge mapEdge) {
+
+    boolean equalLocation(MapEdge mapEdge) {
         if (this == mapEdge) {
             return true;
         }

@@ -97,9 +97,9 @@ public abstract class MapField<D,
         return edges.iterator().next();
     }
 
-    void replaceEdge(E edge, E replacement) {
-        edges.remove(edge);
-        edges.add(replacement);
+    void replaceEdges(Set<E> replacement) {
+        edges.clear();
+        edges.addAll(replacement);
     }
 
     void reducePoints() {
