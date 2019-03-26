@@ -30,11 +30,7 @@ public abstract class MapField<D,
         shape = new Shape();
     }
 
-    public Shape getTransformed() {
-        return shape.getTransformed();
-    }
-
-    Shape getShape() {
+    public Shape getShape() {
         return shape;
     }
 

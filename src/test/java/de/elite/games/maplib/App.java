@@ -52,7 +52,7 @@ public class App extends Application {
 
         primaryStage.setTitle("Hello World!");
         BorderPane border = new BorderPane();
-        Canvas canvas = new Canvas(300, 250);
+        Canvas canvas = new Canvas(demoMap.getTransformed().getWidth(), demoMap.getTransformed().getHeight());
 
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             double x = mouseEvent.getX();

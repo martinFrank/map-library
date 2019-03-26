@@ -66,7 +66,7 @@ public abstract class Map<D,
         return Collections.unmodifiableList(fields);
     }
 
-    public void addField(F field) {
+    void addField(F field) {
         if (!fields.contains(field)) {
             fields.add(field);
             aggregation.addShape(field.getShape());

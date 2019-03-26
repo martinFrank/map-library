@@ -29,7 +29,7 @@ public class TestMapField extends MapField<TestMapFieldData, TestMapField, TestM
         GraphicsContext gc = (GraphicsContext) graphics;
         gc.setFill(color);
 
-        Shape transformed = getTransformed();
+        Shape transformed = getShape().getTransformed();
         transformed.getPoints();
 
         double[] xs = transformed.getPoints().stream().mapToDouble(Point::getX).toArray();

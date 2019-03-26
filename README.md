@@ -7,51 +7,79 @@ the major reason for using this library is that it is platform independ and uses
 #### Map Types
 there are 3 different types of maps implemented:
  + hexagonal (vertical or horizontal)
- + squared map (either 4 neighbours or 8 neighbours)
+ + squared map (squares, diamonds, isometric)
  + triangle map (vertical or horizontal)
  
 #### Data Types
-the map is build up from fields, edges and points, they all together form the map.
+the map is build up from fields: ```F```, edges ```E``` and nodes ```N```, they all together form the map.
 
+##### A Map has:
+  + all fields:
+    ```
+    List<F> fields = getFields();
+    ```
+  + an aggregation - a set of shape that form the map.<br>
+    the aggreagtion is the graphical representation of the map
+    ```
+    Aggregation aggregation = getAggregation();
+    double widthOfMap = aggregation.getWidth(); //real size after scale
+    double heightOfMap = aggregation.getHeight(); //real size after scale
+    ```
 ##### A field has:
   + neighbors (other map fields)<br>
     ```
-    Set<MapField> nbgs = MapField.getFields();
+    List<F> nbgs = MapField.getFields();
     ```
  + edges (around the field) <br>
     ```
-    Set<MapEdge> edges = mapField.getEdges();
+    List<E> edges = mapField.getEdges();
     ```
  + points (outline and center)<br>
     ```
-    Set<MapPoint> points = mapField.getPoints();
+    List<N> points = mapField.getNodes();
     ```
- 
+  + a Shape that represents the graphic:<br>
+    this shape should be used for any drawing tasks
+    ```
+    Shape shape = getShape();
+    ```
+
+
+
 ##### Edges have:
- + Points a and Point b these are start and end point<br>
+ + A List of Nodes - always of size 2, these are start and end nodes<br>
    ```
-   MapPoint a = mapEdge.getA();
-   MapPoint a = mapEdge.getB();
+   N a = mapEdge.getNodes().get(0);
+   N a = mapEdge.getNodes().get(1);
    ```
  + fields, the two field adjected to the edge (or only one if it is on the border)
    ```
-   Set<MapField> fields = mapEdge.getFields();
+   List<F> fields = mapEdge.getFields();
    ```
  + edges, whom they are connected to
    ```
-   Set<MapEge> edges = mapEdge.getEdges();
+   List<E> edges = mapEdge.getEdges();
    ```
-
-##### Points have:
+ + a Line that represents the graphic:<br>
+   this line should be used for any drawing tasks
+   ```
+   Line line = getLine();
+   ```
+##### Nodes have:
  + MapEdges to which they are connected
    ```
-   Set<MapEdge> edges = mapPoint.getEdges();
+   List<E> edges = mapPoint.getEdges();
    ```
  + Fields to which they are connected
    ```
-   Set<MapField> fields = mapPoint.getFields();
+   List<F> fields = mapPoint.getFields();
    ```
-
+ + a Point that represents the graphic:<br>
+   this point should be used for any drawing tasks
+   ```
+   Point point = getPoint();
+   ```
+##### Nodes have:
 all data types can be parametrized and have getters/setters for the customizable objects
  
 #### API
@@ -63,7 +91,7 @@ all data types can be parametrized and have getters/setters for the customizable
 #### Example / Tutorial
 this screen shot is taken from the [example of the map-library](https://github.com/martinFrank/map-library-demo):
 
-![swing-based tutorial](https://user-images.githubusercontent.com/33021138/32279466-1fc971ca-bf19-11e7-8a17-2ba9f1ad5a71.png)
+![screenshot](https://user-images.githubusercontent.com/33021138/32279466-1fc971ca-bf19-11e7-8a17-2ba9f1ad5a71.png)
 
 ### Requirements:
  + [draw-library](https://github.com/martinFrank/draw-library)
