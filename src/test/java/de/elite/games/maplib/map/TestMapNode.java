@@ -1,7 +1,7 @@
 package de.elite.games.maplib.map;
 
+import de.elite.games.maplib.MapNode;
 import de.elite.games.maplib.data.TestMapNodeData;
-import de.elite.games.maplib2.MapNode;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

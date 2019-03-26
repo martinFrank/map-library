@@ -1,8 +1,8 @@
 package de.elite.games.maplib.map;
 
+import de.elite.games.maplib.Map;
+import de.elite.games.maplib.MapStyle;
 import de.elite.games.maplib.data.TestMapData;
-import de.elite.games.maplib2.Map;
-import de.elite.games.maplib2.MapStyle;
 
 public class TestMap extends Map<TestMapData, TestMapField, TestMapEdge, TestMapNode, TestMapWalker> {
 

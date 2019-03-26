@@ -2,8 +2,8 @@ package de.elite.games.maplib.map;
 
 import de.elite.games.drawlib.Point;
 import de.elite.games.drawlib.Shape;
+import de.elite.games.maplib.MapField;
 import de.elite.games.maplib.data.TestMapFieldData;
-import de.elite.games.maplib2.MapField;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;

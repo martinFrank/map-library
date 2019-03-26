@@ -1,8 +1,8 @@
 package de.elite.games.maplib.map;
 
 import de.elite.games.drawlib.Point;
+import de.elite.games.maplib.MapEdge;
 import de.elite.games.maplib.data.TestMapEdgeData;
-import de.elite.games.maplib2.MapEdge;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

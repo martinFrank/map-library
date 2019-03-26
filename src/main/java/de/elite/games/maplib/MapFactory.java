@@ -1,4 +1,4 @@
-package de.elite.games.maplib2;
+package de.elite.games.maplib;
 
 import de.elite.games.geolib.GeoPoint;
 import org.slf4j.Logger;

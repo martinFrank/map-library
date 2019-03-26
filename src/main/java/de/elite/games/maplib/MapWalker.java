@@ -1,4 +1,4 @@
-package de.elite.games.maplib2;
+package de.elite.games.maplib;
 
 
 public abstract class MapWalker<F extends MapField<?, F, E, N>,

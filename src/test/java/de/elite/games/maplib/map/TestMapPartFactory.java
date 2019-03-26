@@ -1,11 +1,11 @@
 package de.elite.games.maplib.map;
 
+import de.elite.games.maplib.MapPartFactory;
+import de.elite.games.maplib.MapStyle;
 import de.elite.games.maplib.data.TestMapData;
 import de.elite.games.maplib.data.TestMapEdgeData;
 import de.elite.games.maplib.data.TestMapFieldData;
 import de.elite.games.maplib.data.TestMapNodeData;
-import de.elite.games.maplib2.MapPartFactory;
-import de.elite.games.maplib2.MapStyle;
 
 public class TestMapPartFactory extends MapPartFactory<TestMap, TestMapField, TestMapEdge, TestMapNode, TestMapWalker> {
 

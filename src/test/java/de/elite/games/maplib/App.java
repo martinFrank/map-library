@@ -3,7 +3,6 @@ package de.elite.games.maplib;
 //import de.elite.games.maplib.map.*;
 
 import de.elite.games.maplib.map.*;
-import de.elite.games.maplib2.MapStyle;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;

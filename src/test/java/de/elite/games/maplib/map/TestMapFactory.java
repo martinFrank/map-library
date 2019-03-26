@@ -1,7 +1,7 @@
 package de.elite.games.maplib.map;
 
-import de.elite.games.maplib2.MapFactory;
-import de.elite.games.maplib2.MapPartFactory;
+import de.elite.games.maplib.MapFactory;
+import de.elite.games.maplib.MapPartFactory;
 
 public class TestMapFactory extends MapFactory<TestMap, TestMapField, TestMapEdge, TestMapNode, TestMapWalker> {
 

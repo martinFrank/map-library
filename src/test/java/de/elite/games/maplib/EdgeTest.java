@@ -4,8 +4,6 @@ import de.elite.games.drawlib.Line;
 import de.elite.games.drawlib.Point;
 import de.elite.games.maplib.data.TestMapEdgeData;
 import de.elite.games.maplib.map.TestMapEdge;
-import de.elite.games.maplib2.MapEdge;
-import de.elite.games.maplib2.MapEdges;
 import org.junit.Assert;
 import org.junit.Test;
 

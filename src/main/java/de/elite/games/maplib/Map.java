@@ -1,4 +1,4 @@
-package de.elite.games.maplib2;
+package de.elite.games.maplib;
 
 import de.elite.games.drawlib.Aggregation;
 import de.elite.games.drawlib.Draw;

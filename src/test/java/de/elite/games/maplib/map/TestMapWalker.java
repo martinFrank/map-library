@@ -1,6 +1,6 @@
 package de.elite.games.maplib.map;
 
-import de.elite.games.maplib2.MapWalker;
+import de.elite.games.maplib.MapWalker;
 
 public class TestMapWalker extends MapWalker<TestMapField, TestMapEdge, TestMapNode> {
     @Override
