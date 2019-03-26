@@ -17,9 +17,7 @@ final class AStarNode {
 	}
 
 	boolean isSamePos(AStarNode n) {
-		if (n != null && n.x == x && n.y == y)
-			return true;
-		return false;
+		return n != null && n.x == x && n.y == y;
 	}
 
 	@Override

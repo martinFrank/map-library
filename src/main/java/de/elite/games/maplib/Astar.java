@@ -11,7 +11,17 @@ import java.util.Optional;
  *
  * @author martinFrank
  */
-class Astar<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E extends MapEdge<?, F, E, P>, P extends MapNode<?, F, E, P>, W extends MapWalker<F, E, P>> {
+class Astar<M extends Map<?, F, E, P, W>,
+        F extends MapField<?, F, E, P>,
+        E extends MapEdge<?, F, E, P>,
+        P extends MapNode<?, F, E, P>,
+        W extends MapWalker<F, E, P>> {
+
+    private final M map;
+
+    public Astar(M map) {
+        this.map = map;
+    }
 
     /**
      * open list
@@ -23,9 +33,9 @@ class Astar<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E exte
      */
     private ArrayList<AStarNode> cList = new ArrayList<>();
 
-    ArrayList<F> getShortestPath(F startField, F targetField, W walker, M map, int maxPathLength) {
+    ArrayList<F> getShortestPath(F startField, F targetField, W walker, int maxPathLength) {
         ArrayList<F> path = new ArrayList<>();
-        if (walker == null || startField == null || targetField == null || map == null) {
+        if (walker == null || startField == null || targetField == null) {
             return path;
         }
 
@@ -89,8 +99,6 @@ class Astar<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E exte
                     path.add(wayPoint.get());
                     n = n.from;
                 }
-//				path.add(wayPoint);
-//				n = n.from;
             }
         }
         return path;
@@ -99,7 +107,7 @@ class Astar<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E exte
     private void expandNode(AStarNode current, M map, W walker, AStarNode end) {
         Optional<F> center = map.getField(current.x, current.y);
         if (center.isPresent()) {
-            List<AStarNode> nodeList = getNeigbors(center.get());
+            List<AStarNode> nodeList = getNeigbors(walker, center.get());
             for (AStarNode n : nodeList) {
                 if (checkIsPassable(center.get(), n, walker, map)) {
                     Optional<F> to = map.getField(n.x, n.y);
@@ -112,9 +120,9 @@ class Astar<M extends Map<?, F, E, P, W>, F extends MapField<?, F, E, P>, E exte
         }
     }
 
-    private List<AStarNode> getNeigbors(F field) {
+    private List<AStarNode> getNeigbors(W walker, F field) {
         List<AStarNode> nodeList = new ArrayList<>();
-        for (F nbgField : field.getFields()) {
+        for (F nbgField : walker.getNeighbours(field)) {
             nodeList.add(new AStarNode(nbgField.getIndex()));
         }
         return nodeList;

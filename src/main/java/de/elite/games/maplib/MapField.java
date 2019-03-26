@@ -21,7 +21,6 @@ public abstract class MapField<D,
     private final List<F> fields = new ArrayList<>();
     //data
     private final D d;
-    //    private N center;
     private GeoPoint index;
     //draw
     private Shape shape;
@@ -42,15 +41,6 @@ public abstract class MapField<D,
     void setShape(Shape shape) {
         this.shape = shape;
     }
-
-//    N getCenter(){
-//        return center;
-//    }
-//    void  setCenter(N center){
-//        this.center = center;
-//        //FIXME!!!
-//        center.addField((F) this);
-//    }
 
     @Override
     public String toString() {
@@ -91,11 +81,6 @@ public abstract class MapField<D,
             nodes.add(n);
         }
     }
-
-//    void setEdges(List<E> edges){
-//        this.edges.clear();
-//        this.edges.addAll(edges);
-//    }
 
     void addField(F field) {
         if (!field.equals(this) && !fields.contains(field)) {

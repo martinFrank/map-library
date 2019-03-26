@@ -25,12 +25,14 @@ public abstract class Map<D,
     private final int columns;
     private final MapStyle style;
 
-    private final Astar<Map<D, F, E, N, W>, F, E, N, W> astar = new Astar<>();
+    private final Astar<Map<D, F, E, N, W>, F, E, N, W> astar;
 
     //relation
     private final List<F> fields;
+
     //data
     private final D d;
+
     //draw
     private final Aggregation aggregation;
     private MapEdges<?, F, E, N> edges;
@@ -45,6 +47,7 @@ public abstract class Map<D,
         this.rows = rows;
         this.columns = columns;
         this.d = d;
+        astar = new Astar<>(this);
     }
 
     public int getRows() {
@@ -156,7 +159,6 @@ public abstract class Map<D,
 
 
     public List<F> aStar(F start, F end, W walker, int depth) {
-        //FIXME this muss raus
-        return astar.getShortestPath(start, end, walker, this, depth);
+        return astar.getShortestPath(start, end, walker, depth);
     }
 }

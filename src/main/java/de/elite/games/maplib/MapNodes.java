@@ -1,7 +1,5 @@
 package de.elite.games.maplib;
 
-import de.elite.games.drawlib.Point;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +18,6 @@ public class MapNodes<D,
             n = node;
         }
         return n;
-    }
-
-    N getFromPoint(Point p) {
-        return nodes.get(p.hashCode());
     }
 
     public List<N> values() {

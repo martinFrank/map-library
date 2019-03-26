@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class MapFieldShaper<F extends MapField<?, F, E, N>, E extends MapEdge<?, F, E, N>, N extends MapNode<?, F, E, N>> {
+class MapFieldShaper<F extends MapField<?, F, E, N>,
+        E extends MapEdge<?, F, E, N>,
+        N extends MapNode<?, F, E, N>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapFieldShaper.class);
 
@@ -245,11 +247,6 @@ class MapFieldShaper<F extends MapField<?, F, E, N>, E extends MapEdge<?, F, E, 
         N d = getDeltaNode(center, -2, 0, nodes);
         return Arrays.asList(a, b, c, d);
     }
-
-//    private Shape createShapeInField(Point center,List<N> squareNodes, List<E>shapeEdges) {
-//        return createShape(center, squareNodes, shapeEdges);
-//
-//    }
 
     private List<E> createEdges(List<N> shapeNodes, MapEdges<?, F, E, N> edges) {
         List<E> edgeShapes = new ArrayList<>();

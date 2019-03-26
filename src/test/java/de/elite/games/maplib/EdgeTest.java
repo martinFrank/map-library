@@ -23,10 +23,10 @@ public class EdgeTest {
         MapEdge ba = new TestMapEdge(new TestMapEdgeData());
         ba.setLine(new Line(pb, pa));
 
-        Assert.assertTrue(ab.equals(ba));
+        Assert.assertEquals(ab, ba);
 
         MapEdge testee = edges.get(ab);
-        Assert.assertTrue(testee.equals(ab));
+        Assert.assertEquals(testee, ab);
 
     }
 }

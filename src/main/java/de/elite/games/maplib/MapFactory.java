@@ -4,7 +4,11 @@ import de.elite.games.geolib.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MapFactory<M extends Map<?, F, E, N, W>, F extends MapField<?, F, E, N>, E extends MapEdge<?, F, E, N>, N extends MapNode<?, F, E, N>, W extends MapWalker<F, E, N>> {
+public class MapFactory<M extends Map<?, F, E, N, W>,
+        F extends MapField<?, F, E, N>,
+        E extends MapEdge<?, F, E, N>,
+        N extends MapNode<?, F, E, N>,
+        W extends MapWalker<F, E, N>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapFactory.class);
 
