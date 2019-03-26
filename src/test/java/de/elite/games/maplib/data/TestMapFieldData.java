@@ -1,6 +1,6 @@
 package de.elite.games.maplib.data;
 
-public class TestFieldData {
+public class TestMapFieldData {
 
     private boolean isMarkedAsPath;
 

@@ -1,30 +1,28 @@
 package de.elite.games.maplib.map;
 
-import de.elite.games.maplib.MapEdge;
-import de.elite.games.maplib.data.TestEdgeData;
+import de.elite.games.drawlib.Point;
+import de.elite.games.maplib.data.TestMapEdgeData;
+import de.elite.games.maplib2.MapEdge;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class TestMapEdge extends MapEdge<TestEdgeData, TestMapField, TestMapEdge, TestMapPoint> {
+public class TestMapEdge extends MapEdge<TestMapEdgeData, TestMapField, TestMapEdge, TestMapNode> {
 
-    public TestMapEdge(TestMapPoint a, TestMapPoint b, TestEdgeData testEdgeData) {
-        super(a, b, testEdgeData);
+    public TestMapEdge(TestMapEdgeData testEdgeData) {
+        super(testEdgeData);
     }
+
 
     @Override
     public void draw(Object graphics) {
         GraphicsContext gc = (GraphicsContext) graphics;
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(0.5);
-        TestMapPoint a = getA();
-        TestMapPoint b = getB();
-        double ax = a.getScaledX() + a.getPanX();
-        double ay = a.getScaledY() + a.getPanY();
-        double bx = b.getScaledX() + b.getPanX();
-        double by = b.getScaledY() + b.getPanY();
-        gc.strokeLine(ax, ay, bx, by);
+        gc.setLineWidth(1);
 
+        Point a = getLine().getA().getTransformed();
+        Point b = getLine().getB().getTransformed();
+        gc.strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
     }
 
 

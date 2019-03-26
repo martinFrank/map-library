@@ -1,6 +1,9 @@
 package de.elite.games.maplib;
 
+//import de.elite.games.maplib.map.*;
+
 import de.elite.games.maplib.map.*;
+import de.elite.games.maplib2.MapStyle;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -33,16 +36,19 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
-        LOGGER.debug("starting creating map");
-//        demoMap = mapFactory.createMap(48, 48, MapStyle.HEX_VERTICAL);
-        demoMap = mapFactory.createMap(4, 3, MapStyle.HEX_VERTICAL);
-//        demoMap = mapFactory.createMap(48, 48, MapStyle.SQUARE4);
+        LOGGER.debug("starting creating map ");
+//        demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE_DIAMOND);
+//        demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE);
+//        demoMap = mapFactory.createMap(16, 16, MapStyle.TRIANGLE_VERTICAL);
+//        demoMap = mapFactory.createMap(2, 2, MapStyle.TRIANGLE_HORIZONTAL);
+        demoMap = mapFactory.createMap(5, 5, MapStyle.SQUARE_ISOMETRIC);
+//        demoMap = mapFactory.createMap(2, 2, MapStyle.HEX_VERTICAL);
+//        demoMap = mapFactory.createMap(4, 3, MapStyle.HEX_VERTICAL);
+//        demoMap = mapFactory.createMap(48, 48, MapStyle.SQUARE);
+//                demoMap = mapFactory.createMap(48, 48, MapStyle.HEX_HORIZONTAL);
         LOGGER.debug("finished creating map");
         demoMap.scale(12f);
-        demoMap.pan(10, 10);
-
-        LOGGER.debug("size of map: {}/{}", demoMap.getScaledWidth(), demoMap.getScaledHeight());
-
+//        demoMap.pan(10, 10);
         walker = mapPartFactory.createWalker();
 
         primaryStage.setTitle("Hello World!");
@@ -50,27 +56,37 @@ public class App extends Application {
         Canvas canvas = new Canvas(300, 250);
 
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            int x = (int) mouseEvent.getX();
-            int y = (int) mouseEvent.getY();
-            Optional<TestMapPoint> point = demoMap.getPoint(x, y);
-            Optional<TestMapEdge> edge = demoMap.getEdge(x, y);
-            Optional<TestMapField> field = demoMap.getField(x, y);
-            LOGGER.debug("x/y:{}/{} Point:{}", x, y, point);
-            LOGGER.debug("x/y:{}/{} Edge:{} ", x, y, edge);
-            LOGGER.debug("x/y:{}/{} Field:{}, index{} ", x, y, field, field.isPresent() ? field.get().getIndex() : "");
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            Optional<TestMapNode> node = demoMap.getNodeAt(x, y);
+            Optional<TestMapEdge> edge = demoMap.getEdgeAt(x, y);
+            Optional<TestMapField> field = demoMap.getFieldAt(x, y);
+            LOGGER.debug("x/y:{}/{}  Node:{}", x, y, node);
+            LOGGER.debug("x/y:{}/{}  Edge:{}", x, y, edge);
+            LOGGER.debug("x/y:{}/{} Field:{}", x, y, field);
 
+            String type = "???";
             if (field.isPresent()) {
                 LOGGER.debug("field.getFields().size()={}", field.get().getFields().size());
                 LOGGER.debug("field.getEdges().size()={}", field.get().getEdges().size());
-                LOGGER.debug("field.getPoints().size()={}", field.get().getPoints().size());
+                LOGGER.debug("field.getPoints().size()={}", field.get().getNodes().size());
+                type = "FIELD";
             }
-            edge.ifPresent(testMapField -> LOGGER.debug("edge.getFields().size()={}", testMapField.getFields().size()));
-
-            if (point.isPresent()) {
-                LOGGER.debug("point.getEdges().size={}", point.get().getEdges().size());
-                LOGGER.debug("point.getFields().size={}", point.get().getFields().size());
+            if (edge.isPresent()) {
+                LOGGER.debug("edge.getFields().size()={}", edge.get().getFields().size());
+                LOGGER.debug("edge.getEdges().size()={}", edge.get().getEdges().size());
+                LOGGER.debug("edge: {}, edges {}", edge.get(), edge.get().getEdges());
+                type = "EDGE";
+            }
+//
+            if (node.isPresent()) {
+                LOGGER.debug("point.getEdges().size={}", node.get().getEdges().size());
+                LOGGER.debug("point.getFields().size={}", node.get().getFields().size());
+                type = "NODE";
             }
 
+            LOGGER.debug("selected type: {}", type);
+//
             if (mouseEvent.getButton() == MouseButton.PRIMARY && field.isPresent()) {
                 start = field.get();
             }
@@ -81,7 +97,7 @@ public class App extends Application {
                 for (TestMapField any : demoMap.getFields()) {
                     any.getData().markAsPath(false);
                 }
-                List<TestMapField> path = demoMap.aStar(start, end, walker, 10);
+                List<TestMapField> path = demoMap.aStar(start, end, walker, 100);
                 LOGGER.debug("Path length = {}", path.size());
                 for (TestMapField pathField : path) {
                     pathField.getData().markAsPath(true);

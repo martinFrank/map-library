@@ -1,28 +1,27 @@
 package de.elite.games.maplib.map;
 
-import de.elite.games.geolib.GeoPoint;
-import de.elite.games.maplib.MapPartFactory;
-import de.elite.games.maplib.MapStyle;
-import de.elite.games.maplib.data.TestEdgeData;
-import de.elite.games.maplib.data.TestFieldData;
 import de.elite.games.maplib.data.TestMapData;
-import de.elite.games.maplib.data.TestPointData;
+import de.elite.games.maplib.data.TestMapEdgeData;
+import de.elite.games.maplib.data.TestMapFieldData;
+import de.elite.games.maplib.data.TestMapNodeData;
+import de.elite.games.maplib2.MapPartFactory;
+import de.elite.games.maplib2.MapStyle;
 
-public class TestMapPartFactory extends MapPartFactory<TestMap, TestMapField, TestMapEdge, TestMapPoint, TestMapWalker> {
+public class TestMapPartFactory extends MapPartFactory<TestMap, TestMapField, TestMapEdge, TestMapNode, TestMapWalker> {
 
     @Override
-    public TestMapPoint createMapPoint(int x, int y) {
-        return new TestMapPoint(x, y, new TestPointData());
+    public TestMapNode createMapNode() {
+        return new TestMapNode(new TestMapNodeData());
     }
 
     @Override
-    public TestMapEdge createMapEdge(TestMapPoint a, TestMapPoint b) {
-        return new TestMapEdge(a, b, new TestEdgeData());
+    public TestMapEdge createMapEdge() {
+        return new TestMapEdge(new TestMapEdgeData());
     }
 
     @Override
-    public TestMapField createMapField(GeoPoint index) {
-        return new TestMapField(index, new TestFieldData());
+    public TestMapField createMapField() {
+        return new TestMapField(new TestMapFieldData());
     }
 
     @Override

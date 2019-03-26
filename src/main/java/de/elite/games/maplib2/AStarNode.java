@@ -1,4 +1,4 @@
-package de.elite.games.maplib;
+package de.elite.games.maplib2;
 
 import de.elite.games.geolib.GeoPoint;
 
