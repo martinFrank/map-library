@@ -12,7 +12,7 @@ public abstract class MapPartFactory<M extends Map,
 
     public abstract F createMapField();
 
-    public abstract M createMap(int width, int height, MapStyle style);
+    public abstract M createMap(int columns, int rows, MapStyle style);
 
     public abstract W createWalker();
 }

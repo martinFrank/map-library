@@ -38,7 +38,7 @@ public abstract class Map<D,
     private MapEdges<?, F, E, N> edges;
     private MapNodes<?, F, E, N> nodes;
 
-    public Map(int rows, int columns, MapStyle style, D d) {
+    public Map(int columns, int rows, MapStyle style, D d) {
         aggregation = new Aggregation();
         fields = new ArrayList<>();
         edges = new MapEdges<>();
@@ -94,7 +94,7 @@ public abstract class Map<D,
         return aggregation.getTransformed();
     }
 
-    Optional<F> getField(int x, int y) {
+    public Optional<F> getField(int x, int y) {
         return fields.stream().filter(f -> f.isIndex(x, y)).findFirst();
     }
 

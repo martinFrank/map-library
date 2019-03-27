@@ -25,8 +25,8 @@ public class TestMapPartFactory extends MapPartFactory<TestMap, TestMapField, Te
     }
 
     @Override
-    public TestMap createMap(int width, int height, MapStyle style) {
-        return new TestMap(width, height, style, new TestMapData());
+    public TestMap createMap(int columns, int rows, MapStyle style) {
+        return new TestMap(columns, rows, style, new TestMapData());
     }
 
     @Override

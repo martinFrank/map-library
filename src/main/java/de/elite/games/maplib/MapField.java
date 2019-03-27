@@ -103,7 +103,7 @@ public abstract class MapField<D,
         return false;
     }
 
-    GeoPoint getIndex() {
+    public GeoPoint getIndex() {
         return index;
     }
 

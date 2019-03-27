@@ -20,8 +20,8 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
         fieldShaper = new MapFieldShaper<>(mapPartFactory);
     }
 
-    public M createMap(int width, int height, MapStyle style) {
-        M map = mapPartFactory.createMap(width, height, style);
+    public M createMap(int columns, int rows, MapStyle style) {
+        M map = mapPartFactory.createMap(columns, rows, style);
         MapNodes<?, F, E, N> mapNodes = new MapNodes<>();
         MapEdges<?, F, E, N> mapEdges = new MapEdges<>();
         createFields(map, mapNodes, mapEdges);
@@ -55,8 +55,8 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
     }
 
     private void createFields(M map, MapNodes<?, F, E, N> nodes, MapEdges<?, F, E, N> edges) {
-        for (int dy = 0; dy < map.getColumns(); dy++) {
-            for (int dx = 0; dx < map.getRows(); dx++) {
+        for (int dy = 0; dy < map.getRows(); dy++) {
+            for (int dx = 0; dx < map.getColumns(); dx++) {
                 F field = mapPartFactory.createMapField();
                 field.setShape(fieldShaper.createFieldShape(field, map.getStyle(), dx, dy, nodes, edges));
                 field.setIndex(new GeoPoint(dx, dy));

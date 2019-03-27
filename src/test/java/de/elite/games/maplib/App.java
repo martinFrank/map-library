@@ -36,11 +36,11 @@ public class App extends Application {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
         LOGGER.debug("starting creating map ");
-//        demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE_DIAMOND);
+        demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE_DIAMOND);
 //        demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE);
 //        demoMap = mapFactory.createMap(16, 16, MapStyle.TRIANGLE_VERTICAL);
 //        demoMap = mapFactory.createMap(2, 2, MapStyle.TRIANGLE_HORIZONTAL);
-        demoMap = mapFactory.createMap(5, 5, MapStyle.SQUARE_ISOMETRIC);
+//        demoMap = mapFactory.createMap(5, 5, MapStyle.SQUARE_ISOMETRIC);
 //        demoMap = mapFactory.createMap(2, 2, MapStyle.HEX_VERTICAL);
 //        demoMap = mapFactory.createMap(4, 3, MapStyle.HEX_VERTICAL);
 //        demoMap = mapFactory.createMap(48, 48, MapStyle.SQUARE);
@@ -57,11 +57,11 @@ public class App extends Application {
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
-            Optional<TestMapNode> node = demoMap.getNodeAt(x, y);
-            Optional<TestMapEdge> edge = demoMap.getEdgeAt(x, y);
+//            Optional<TestMapNode> node = demoMap.getNodeAt(x, y);
+//            Optional<TestMapEdge> edge = demoMap.getEdgeAt(x, y);
             Optional<TestMapField> field = demoMap.getFieldAt(x, y);
-            LOGGER.debug("x/y:{}/{}  Node:{}", x, y, node);
-            LOGGER.debug("x/y:{}/{}  Edge:{}", x, y, edge);
+//            LOGGER.debug("x/y:{}/{}  Node:{}", x, y, node);
+//            LOGGER.debug("x/y:{}/{}  Edge:{}", x, y, edge);
             LOGGER.debug("x/y:{}/{} Field:{}", x, y, field);
 
             String type = "???";
@@ -69,20 +69,21 @@ public class App extends Application {
                 LOGGER.debug("field.getFields().size()={}", field.get().getFields().size());
                 LOGGER.debug("field.getEdges().size()={}", field.get().getEdges().size());
                 LOGGER.debug("field.getPoints().size()={}", field.get().getNodes().size());
+                LOGGER.debug("field.index={}", field.get().getIndex());
                 type = "FIELD";
             }
-            if (edge.isPresent()) {
-                LOGGER.debug("edge.getFields().size()={}", edge.get().getFields().size());
-                LOGGER.debug("edge.getEdges().size()={}", edge.get().getEdges().size());
-                LOGGER.debug("edge: {}, edges {}", edge.get(), edge.get().getEdges());
-                type = "EDGE";
-            }
-//
-            if (node.isPresent()) {
-                LOGGER.debug("point.getEdges().size={}", node.get().getEdges().size());
-                LOGGER.debug("point.getFields().size={}", node.get().getFields().size());
-                type = "NODE";
-            }
+//            if (edge.isPresent()) {
+//                LOGGER.debug("edge.getFields().size()={}", edge.get().getFields().size());
+//                LOGGER.debug("edge.getEdges().size()={}", edge.get().getEdges().size());
+//                LOGGER.debug("edge: {}, edges {}", edge.get(), edge.get().getEdges());
+//                type = "EDGE";
+//            }
+////
+//            if (node.isPresent()) {
+//                LOGGER.debug("point.getEdges().size={}", node.get().getEdges().size());
+//                LOGGER.debug("point.getFields().size={}", node.get().getFields().size());
+//                type = "NODE";
+//            }
 
             LOGGER.debug("selected type: {}", type);
 //
