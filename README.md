@@ -91,7 +91,7 @@ all data types can be parametrized and have getters/setters for the customizable
 #### Example / Tutorial
 this screen shot is taken from the [example of the map-library](https://github.com/martinFrank/map-library-demo):
 
-![screenshot](https://user-images.githubusercontent.com/33021138/32279466-1fc971ca-bf19-11e7-8a17-2ba9f1ad5a71.png)
+![screenshot](https://github.com/martinFrank/map-library/blob/master/images/screenshot.png)
 
 ### Requirements:
  + [draw-library](https://github.com/martinFrank/draw-library)
