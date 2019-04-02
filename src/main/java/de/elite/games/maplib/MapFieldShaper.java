@@ -4,19 +4,20 @@ package de.elite.games.maplib;
 import de.elite.games.drawlib.Line;
 import de.elite.games.drawlib.Point;
 import de.elite.games.drawlib.Shape;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import java.util.stream.Collectors;
 
 class MapFieldShaper<F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
         N extends MapNode<?, F, E, N>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapFieldShaper.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(MapFieldShaper.class);
 
     private final MapPartFactory<?, F, E, N, ?> mapPartFactory;
 
@@ -180,7 +181,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     }
 
     private List<N> createTriangleHorizontal(Point center, int x, int y, MapNodes<?, F, E, N> nodes) {
-        LOGGER.debug("center: {}", center);
+//        LOGGER.debug("center: {}", center);
         boolean isUpside = false;
         if (y % 2 == 0) {
             isUpside = x % 2 == 0;
@@ -267,8 +268,17 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     }
 
     private Shape createShape(Point center, List<N> nodes, List<E> edges) {
-        List<Point> points = nodes.stream().map(N::getPoint).collect(Collectors.toList());
-        List<Line> lines = edges.stream().map(E::getLine).collect(Collectors.toList());
+//        List<Point> points = nodes.stream().map(N::getPoint).collect(Collectors.toList());
+//        List<Line> lines = edges.stream().map(E::getLine).collect(Collectors.toList());
+
+        List<Point> points = new ArrayList<>();
+        for (N node : nodes) {
+            points.add(node.getPoint());
+        }
+        List<Line> lines = new ArrayList<>();
+        for (E edge : edges) {
+            lines.add(edge.getLine());
+        }
         return new Shape(center, points, lines);
     }
 

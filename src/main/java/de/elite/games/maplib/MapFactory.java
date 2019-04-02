@@ -1,8 +1,8 @@
 package de.elite.games.maplib;
 
 import de.elite.games.geolib.GeoPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 public class MapFactory<M extends Map<?, F, E, N, W>,
         F extends MapField<?, F, E, N>,
@@ -10,7 +10,7 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
         N extends MapNode<?, F, E, N>,
         W extends MapWalker<F, E, N>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapFactory.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(MapFactory.class);
 
     private final MapPartFactory<M, F, E, N, W> mapPartFactory;
     private final MapFieldShaper<F, E, N> fieldShaper;
@@ -35,14 +35,25 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
         for (E edge : mapEdges.values()) {
             N na = edge.getNodes().get(0);
             N nb = edge.getNodes().get(1);
-            mapEdges.withNode(na).forEach(e -> {
+
+//            mapEdges.withNode(na).forEach(e -> {
+//                edge.addEdge(e);
+//                e.addEdge(edge);
+//            });
+//            mapEdges.withNode(nb).forEach(e -> {
+//                edge.addEdge(e);
+//                e.addEdge(edge);
+//            });
+
+            for (E e : mapEdges.withNode(na)) {
                 edge.addEdge(e);
                 e.addEdge(edge);
-            });
-            mapEdges.withNode(nb).forEach(e -> {
+            }
+
+            for (E e : mapEdges.withNode(nb)) {
                 edge.addEdge(e);
                 e.addEdge(edge);
-            });
+            }
 
             if (edge.getFields().size() == 2) {
                 F fa = edge.getFields().get(0);
