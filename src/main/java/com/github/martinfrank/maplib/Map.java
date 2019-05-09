@@ -31,8 +31,8 @@ public abstract class Map<D,
 
     //draw
     private final Aggregation aggregation;
-    private MapEdges<?, F, E, N> edges;
-    private MapNodes<?, F, E, N> nodes;
+    private MapEdges<F, E, N> edges;
+    private MapNodes<F, E, N> nodes;
 
     public Map(int columns, int rows, MapStyle style, D d) {
         aggregation = new Aggregation();
@@ -99,11 +99,11 @@ public abstract class Map<D,
         return null;
     }
 
-    void setNodes(MapNodes<?, F, E, N> nodes) {
+    void setNodes(MapNodes<F, E, N> nodes) {
         this.nodes = nodes;
     }
 
-    void setEdges(MapEdges<?, F, E, N> edges) {
+    void setEdges(MapEdges<F, E, N> edges) {
         this.edges = edges;
     }
 

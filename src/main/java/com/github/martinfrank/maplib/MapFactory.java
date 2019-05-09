@@ -18,8 +18,8 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
 
     public M createMap(int columns, int rows, MapStyle style) {
         M map = mapPartFactory.createMap(columns, rows, style);
-        MapNodes<?, F, E, N> mapNodes = new MapNodes<>();
-        MapEdges<?, F, E, N> mapEdges = new MapEdges<>();
+        MapNodes<F, E, N> mapNodes = new MapNodes<>();
+        MapEdges<F, E, N> mapEdges = new MapEdges<>();
         createFields(map, mapNodes, mapEdges);
         connectEdges(mapEdges);
         map.setNodes(mapNodes);
@@ -27,7 +27,7 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
         return map;
     }
 
-    private void connectEdges(MapEdges<?, F, E, N> mapEdges) {
+    private void connectEdges(MapEdges<F, E, N> mapEdges) {
         for (E edge : mapEdges.values()) {
             N na = edge.getNodes().get(0);
             N nb = edge.getNodes().get(1);
@@ -52,7 +52,7 @@ public class MapFactory<M extends Map<?, F, E, N, W>,
         }
     }
 
-    private void createFields(M map, MapNodes<?, F, E, N> nodes, MapEdges<?, F, E, N> edges) {
+    private void createFields(M map, MapNodes<F, E, N> nodes, MapEdges<F, E, N> edges) {
         for (int dy = 0; dy < map.getRows(); dy++) {
             for (int dx = 0; dx < map.getColumns(); dx++) {
                 F field = mapPartFactory.createMapField();

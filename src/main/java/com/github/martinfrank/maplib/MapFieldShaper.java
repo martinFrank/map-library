@@ -19,7 +19,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         this.mapPartFactory = mapPartFactory;
     }
 
-    Shape createFieldShape(F field, MapStyle style, int x, int y, MapNodes<?, F, E, N> nodes, MapEdges<?, F, E, N> edges) {
+    Shape createFieldShape(F field, MapStyle style, int x, int y, MapNodes<F, E, N> nodes, MapEdges<F, E, N> edges) {
         Point center = createCenter(style, x, y);
         List<N> shapeNodes = createShape(center, x, y, style, nodes);
         List<E> shapeEdges = createEdges(shapeNodes, edges);
@@ -131,7 +131,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return new Point(hx, hy);
     }
 
-    private List<N> createShape(Point center, int x, int y, MapStyle style, MapNodes<?, F, E, N> nodes) {
+    private List<N> createShape(Point center, int x, int y, MapStyle style, MapNodes<F, E, N> nodes) {
         switch (style) {
             case SQUARE:
                 return createSquares(center, nodes);
@@ -152,7 +152,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         }
     }
 
-    private List<N> createTriangleVertical(Point center, int x, int y, MapNodes<?, F, E, N> nodes) {
+    private List<N> createTriangleVertical(Point center, int x, int y, MapNodes<F, E, N> nodes) {
         boolean isPointingLeft;
         if (y % 2 == 0) {
             isPointingLeft = x % 2 != 0;
@@ -174,7 +174,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c);
     }
 
-    private List<N> createTriangleHorizontal(Point center, int x, int y, MapNodes<?, F, E, N> nodes) {
+    private List<N> createTriangleHorizontal(Point center, int x, int y, MapNodes<F, E, N> nodes) {
         boolean isUpside;
         if (y % 2 == 0) {
             isUpside = x % 2 == 0;
@@ -196,7 +196,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c);
     }
 
-    private List<N> createHexesVertical(Point center, MapNodes<?, F, E, N> nodes) {
+    private List<N> createHexesVertical(Point center, MapNodes<F, E, N> nodes) {
         N a = getDeltaNode(center, -2, -1, nodes);
         N b = getDeltaNode(center, 0, -2, nodes);
         N c = getDeltaNode(center, 2, -1, nodes);
@@ -206,7 +206,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c, d, e, f);
     }
 
-    private List<N> createHexesHorizontal(Point center, MapNodes<?, F, E, N> nodes) {
+    private List<N> createHexesHorizontal(Point center, MapNodes<F, E, N> nodes) {
         N a = getDeltaNode(center, -2, 0, nodes);
         N b = getDeltaNode(center, -1, -2, nodes);
         N c = getDeltaNode(center, 1, -2, nodes);
@@ -216,7 +216,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c, d, e, f);
     }
 
-    private List<N> createSquares(Point center, MapNodes<?, F, E, N> nodes) {
+    private List<N> createSquares(Point center, MapNodes<F, E, N> nodes) {
         N a = getDeltaNode(center, -1, -1, nodes);
         N b = getDeltaNode(center, 1, -1, nodes);
         N c = getDeltaNode(center, 1, 1, nodes);
@@ -225,7 +225,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     }
 
 
-    private List<N> createSquaresDiamond(Point center, MapNodes<?, F, E, N> nodes) {
+    private List<N> createSquaresDiamond(Point center, MapNodes<F, E, N> nodes) {
         N a = getDeltaNode(center, 0, -1, nodes);
         N b = getDeltaNode(center, 1, 0, nodes);
         N c = getDeltaNode(center, 0, 1, nodes);
@@ -233,7 +233,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c, d);
     }
 
-    private List<N> createSquaresIsometric(Point center, MapNodes<?, F, E, N> nodes) {
+    private List<N> createSquaresIsometric(Point center, MapNodes<F, E, N> nodes) {
         N a = getDeltaNode(center, 0, -1, nodes);
         N b = getDeltaNode(center, 2, 0, nodes);
         N c = getDeltaNode(center, 0, 1, nodes);
@@ -241,7 +241,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c, d);
     }
 
-    private List<E> createEdges(List<N> shapeNodes, MapEdges<?, F, E, N> edges) {
+    private List<E> createEdges(List<N> shapeNodes, MapEdges<F, E, N> edges) {
         List<E> edgeShapes = new ArrayList<>();
         for (int index = 0; index < shapeNodes.size(); index++) {
             N a = shapeNodes.get(index);
@@ -271,7 +271,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return new Shape(center, points, lines);
     }
 
-    private E createEdge(N a, N b, MapEdges<?, F, E, N> edges) {
+    private E createEdge(N a, N b, MapEdges<F, E, N> edges) {
         Line line = new Line(a.getPoint(), b.getPoint());
         E edge = mapPartFactory.createMapEdge();
         edge.setLine(line);
@@ -279,7 +279,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return edges.get(edge);
     }
 
-    private N getDeltaNode(Point center, int dx, int dy, MapNodes<?, F, E, N> nodes) {
+    private N getDeltaNode(Point center, int dx, int dy, MapNodes<F, E, N> nodes) {
         N node = mapPartFactory.createMapNode();
         node.setPoint(new Point(center.getX() + dx, center.getY() + dy));
         return nodes.get(node);
