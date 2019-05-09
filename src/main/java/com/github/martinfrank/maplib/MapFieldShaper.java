@@ -13,8 +13,6 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
         N extends MapNode<?, F, E, N>> {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(MapFieldShaper.class);
-
     private final MapPartFactory<?, F, E, N, ?> mapPartFactory;
 
     MapFieldShaper(MapPartFactory<?, F, E, N, ?> mapPartFactory) {
@@ -61,12 +59,12 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     private Point setCenterSquareDiamond(int x, int y) {
         boolean isEvenLine = y % 2 == 0;
         if (isEvenLine) {
-            double hx = 2 * x + 1;
-            double hy = y + 1;
+            int hx = 2 * x + 1;
+            int hy = y + 1;
             return new Point(hx, hy);
         } else {
-            double hx = 2 * (x + 1);
-            double hy = y + 1;
+            int hx = 2 * (x + 1);
+            int hy = y + 1;
             return new Point(hx, hy);
         }
     }
@@ -74,43 +72,43 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     private Point setCenterSquareIsometric(int x, int y) {
         boolean isEvenLine = y % 2 == 0;
         if (isEvenLine) {
-            double hx = 4 * x + 2;
-            double hy = y + 1;
+            int hx = 4 * x + 2;
+            int hy = y + 1;
             return new Point(hx, hy);
         } else {
-            double hx = 4 * (x + 1);
-            double hy = y + 1;
+            int hx = 4 * (x + 1);
+            int hy = y + 1;
             return new Point(hx, hy);
         }
     }
 
     private Point createCenterSquare(int x, int y) {
-        double cx = 1 + (2 * x);
-        double cy = 1 + (2 * y);
+        int cx = 1 + (2 * x);
+        int cy = 1 + (2 * y);
         return new Point(cx, cy);
     }
 
     private Point setCenterHexVertical(int x, int y) {
         boolean isEvenLine = y % 2 == 0;
         int offset = isEvenLine ? 4 : 2;
-        double hx = offset + 4 * x;
-        double hy = 2 + 3 * y;
+        int hx = offset + 4 * x;
+        int hy = 2 + 3 * y;
         return new Point(hx, hy);
     }
 
     private Point setCenterHexHorizontal(int x, int y) {
         boolean isEvenRow = x % 2 == 0;
         int offset = isEvenRow ? 2 : 4;
-        double hx = 2 + 3 * x;
-        double hy = offset + 4 * y;
+        int hx = 2 + 3 * x;
+        int hy = offset + 4 * y;
         return new Point(hx, hy);
     }
 
     private Point setCenterTriangleHorizontal(int x, int y) {
         boolean isEvenLine = y % 2 == 0;
         boolean isEvenRow = x % 2 == 0;
-        double hx = 2 + 2 * x;
-        double hy = 3 * y;
+        int hx = 2 + 2 * x;
+        int hy = 3 * y;
         if (isEvenLine) {
             hy = hy + (isEvenRow ? 2 : 1);
         } else {
@@ -122,8 +120,8 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     private Point setCenterTriangleVertical(int x, int y) {
         boolean isEvenLine = y % 2 == 0;
         boolean isEvenRow = x % 2 == 0;
-        double hx = 3 * x;
-        double hy = 2 + 2 * y;
+        int hx = 3 * x;
+        int hy = 2 + 2 * y;
 
         if (isEvenLine) {
             hx = hx + (isEvenRow ? 1 : 2);
@@ -177,8 +175,7 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     }
 
     private List<N> createTriangleHorizontal(Point center, int x, int y, MapNodes<?, F, E, N> nodes) {
-//        LOGGER.debug("center: {}", center);
-        boolean isUpside = false;
+        boolean isUpside;
         if (y % 2 == 0) {
             isUpside = x % 2 == 0;
         } else {
@@ -199,7 +196,6 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         return Arrays.asList(a, b, c);
     }
 
-    //
     private List<N> createHexesVertical(Point center, MapNodes<?, F, E, N> nodes) {
         N a = getDeltaNode(center, -2, -1, nodes);
         N b = getDeltaNode(center, 0, -2, nodes);
@@ -264,9 +260,6 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
     }
 
     private Shape createShape(Point center, List<N> nodes, List<E> edges) {
-//        List<Point> points = nodes.stream().map(N::getPoint).collect(Collectors.toList());
-//        List<Line> lines = edges.stream().map(E::getLine).collect(Collectors.toList());
-
         List<Point> points = new ArrayList<>();
         for (N node : nodes) {
             points.add(node.getPoint());

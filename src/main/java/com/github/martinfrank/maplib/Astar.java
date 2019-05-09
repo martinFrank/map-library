@@ -2,7 +2,6 @@ package com.github.martinfrank.maplib;
 
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Optional;
 
 /**
  * this is an astar shortestpath implemenetation for the map library. you must
@@ -62,7 +61,7 @@ class Astar<M extends Map<?, F, E, P, W>,
         // d) Beende den Prozess, falls:
         //    Du das Zielquadrat in die geschlossene Liste verschoben hast; in diesem Fall
         //    hast Du den Pfad ermittelt
-        //    kein Zielquadrat gefunden werden konnte und die offene Liste leer ist;
+        //    kein Zielquadrat gefunden werden konnte und die offene Liste leer ist
         //    in diesem Fall gibt es keinen Pfad.
         // 3) Sichere den Pfad. Der Pfad erschliesst sich, indem Du vom Zielquadrat aus
         //   Quadrat fuer Quadrat rueckwaerts schreitend das Startquadrat erreichst.
@@ -94,11 +93,6 @@ class Astar<M extends Map<?, F, E, P, W>,
         if (!noWayFound) {
             AStarNode n = end;
             while (n != null) {
-//                Optional<F> wayPoint = map.getField(n.x, n.y);
-//                if (wayPoint.isPresent()) {
-//                    path.add(wayPoint.get());
-//                    n = n.from;
-//                }
                 F wayPoint = map.getField(n.x, n.y);
                 if (wayPoint != null) {
                     path.add(wayPoint);
@@ -110,19 +104,6 @@ class Astar<M extends Map<?, F, E, P, W>,
     }
 
     private void expandNode(AStarNode current, M map, W walker, AStarNode end) {
-//        Optional<F> center = map.getField(current.x, current.y);
-//        if (center.isPresent()) {
-//            List<AStarNode> nodeList = getNeigbors(walker, center.get());
-//            for (AStarNode n : nodeList) {
-//                if (checkIsPassable(center.get(), n, walker, map)) {
-//                    Optional<F> to = map.getField(n.x, n.y);
-//                    if (to.isPresent()) {
-//                        int distance = walker.getEnterCosts(center.get(), to.get());
-//                        addIfRequired(n, current, end, distance);
-//                    }
-//                }
-//            }
-//        }
         F center = map.getField(current.x, current.y);
         if (center != null) {
             List<AStarNode> nodeList = getNeigbors(walker, center);
@@ -166,8 +147,6 @@ class Astar<M extends Map<?, F, E, P, W>,
     }
 
     private boolean checkIsPassable(F from, AStarNode n, W walker, M map) {
-//        Optional<F> into = map.getField(n.x, n.y);
-//        return into.filter(f -> walker.canEnter(from, f)).isPresent();
         F into = map.getField(n.x, n.y);
         return into != null && walker.canEnter(from, into);
     }
