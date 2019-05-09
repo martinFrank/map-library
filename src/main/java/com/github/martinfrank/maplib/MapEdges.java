@@ -24,14 +24,6 @@ public class MapEdges<D,
     }
 
     private void setNbgs(E edge) {
-//        List<E> aNbgs = nbgEdges.computeIfAbsent(edge.getLine().getA().hashCode(), k -> new ArrayList<>());
-//        if (!aNbgs.contains(edge)) {
-//            aNbgs.add(edge);
-//        }
-//        List<E> bNbgs = nbgEdges.computeIfAbsent(edge.getLine().getB().hashCode(), k -> new ArrayList<>());
-//        if (!bNbgs.contains(edge)) {
-//            bNbgs.add(edge);
-//        }
         int aHash = edge.getLine().getA().hashCode();
         List<E> aNbgs = nbgEdges.get(aHash);
         if (aNbgs == null) {

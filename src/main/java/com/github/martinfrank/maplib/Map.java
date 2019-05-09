@@ -9,17 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import java.util.Optional;
 
 public abstract class Map<D,
         F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
         N extends MapNode<?, F, E, N>,
         W extends MapWalker<F, E, N>> implements MapData<D>, Draw {
-
-//    private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
 
     //map
     private final int rows;
@@ -95,12 +90,7 @@ public abstract class Map<D,
         return aggregation.getTransformed();
     }
 
-//    public Optional<F> getField(int x, int y) {
-//        return fields.stream().filter(f -> f.isIndex(x, y)).findFirst();
-//    }
-
     public F getField(int x, int y) {
-//        return fields.stream().filter(f -> f.isIndex(x, y)).findFirst();
         for (F field : fields) {
             if (field.isIndex(x, y)) {
                 return field;
@@ -117,20 +107,6 @@ public abstract class Map<D,
         this.edges = edges;
     }
 
-//    public Optional<N> getNodeAt(double x, double y) {
-//        double radius = getRadiusForScale() / 4d;
-//        for (N node : nodes.values()) {
-//            Point point = node.getPoint().getTransformed();
-//            double px = x - point.getX();
-//            double py = y - point.getY();
-//            double distance = Math.sqrt(px * px + py * py);
-//            if (distance < radius) {
-//                return Optional.of(node);
-//            }
-//        }
-//        return Optional.empty();
-//    }
-
     public N getNodeAt(double x, double y) {
         double radius = getRadiusForScale() / 4d;
         for (N node : nodes.values()) {
@@ -144,20 +120,6 @@ public abstract class Map<D,
         }
         return null;
     }
-
-//    public Optional<E> getEdgeAt(double x, double y) {
-//        double radius = getRadiusForScale() / 2d;
-//        for (E edge : edges.values()) {
-//            Point point = edge.getLine().getCenter().getTransformed();
-//            double px = x - point.getX();
-//            double py = y - point.getY();
-//            double distance = Math.sqrt(px * px + py * py);
-//            if (distance < radius) {
-//                return Optional.of(edge);
-//            }
-//        }
-//        return Optional.empty();
-//    }
 
     public E getEdgeAt(double x, double y) {
         double radius = getRadiusForScale() / 2d;
@@ -173,19 +135,6 @@ public abstract class Map<D,
         return null;
     }
 
-    //    public Optional<F> getFieldAt(double x, double y) {
-//        double radius = getRadiusForScale();
-//        for (F field : fields) {
-//            Point point = field.getShape().getTransformed().getCenter();
-//            double px = x - point.getX();
-//            double py = y - point.getY();
-//            double distance = Math.sqrt(px * px + py * py);
-//            if (distance < radius) {
-//                return Optional.of(field);
-//            }
-//        }
-//        return Optional.empty();
-//    }
     public F getFieldAt(double x, double y) {
         double radius = getRadiusForScale();
         for (F field : fields) {

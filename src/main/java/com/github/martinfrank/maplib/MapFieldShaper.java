@@ -13,8 +13,6 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
         N extends MapNode<?, F, E, N>> {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(MapFieldShaper.class);
-
     private final MapPartFactory<?, F, E, N, ?> mapPartFactory;
 
     MapFieldShaper(MapPartFactory<?, F, E, N, ?> mapPartFactory) {

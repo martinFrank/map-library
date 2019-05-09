@@ -7,7 +7,6 @@ import com.github.martinfrank.geolib.GeoPoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-//import java.util.Optional;
 
 public abstract class MapField<D,
         F extends MapField<?, F, E, N>,
@@ -58,15 +57,12 @@ public abstract class MapField<D,
         return Collections.unmodifiableList(nodes);
     }
 
-    //    public Optional<E> getEdge(F to) {
     public E getEdge(F to) {
         for (E e : getEdges()) {
             if (e.getFields().contains(to)) {
-//                return Optional.of(e);
                 return e;
             }
         }
-//        return Optional.empty();
         return null;
     }
 
