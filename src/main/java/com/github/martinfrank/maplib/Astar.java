@@ -1,6 +1,7 @@
 package com.github.martinfrank.maplib;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ class Astar<M extends Map<?, F, E, P, W>,
 
     private final M map;
 
-    public Astar(M map) {
+    Astar(M map) {
         this.map = map;
     }
 
@@ -32,10 +33,9 @@ class Astar<M extends Map<?, F, E, P, W>,
      */
     private ArrayList<AStarNode> cList = new ArrayList<>();
 
-    ArrayList<F> getShortestPath(F startField, F targetField, W walker, int maxPathLength) {
-        ArrayList<F> path = new ArrayList<>();
+    List<F> getShortestPath(F startField, F targetField, W walker, int maxPathLength) {
         if (walker == null || startField == null || targetField == null) {
-            return path;
+            return Collections.emptyList();
         }
 
         // 1) Fuege das Startquadrat der offenen Liste hinzu.
@@ -74,12 +74,10 @@ class Astar<M extends Map<?, F, E, P, W>,
 
         oList.add(start);
 
-        boolean noWayFound = false;
         while (true) {
             AStarNode current = getLeastF(oList);
-            if (current == null || current.g > maxPathLength * 10) {
-                noWayFound = true;
-                break;
+            if (noWayFound(current, maxPathLength)) {
+                return Collections.emptyList();
             }
             if (current.isSamePos(end)) {
                 end.from = current.from;
@@ -90,17 +88,24 @@ class Astar<M extends Map<?, F, E, P, W>,
             expandNode(current, map, walker, end);
         }
 
-        if (!noWayFound) {
-            AStarNode n = end;
-            while (n != null) {
-                F wayPoint = map.getField(n.x, n.y);
-                if (wayPoint != null) {
-                    path.add(wayPoint);
-                    n = n.from;
-                }
+        return buildPath(end);
+    }
+
+    private List<F> buildPath(AStarNode end) {
+        AStarNode current = end;
+        ArrayList<F> path = new ArrayList<>();
+        while (current != null) {
+            F wayPoint = map.getField(current.x, current.y);
+            if (wayPoint != null) {
+                path.add(wayPoint);
+                current = current.from;
             }
         }
         return path;
+    }
+
+    private boolean noWayFound(AStarNode current, int maxPathLength) {
+        return current == null || current.g > maxPathLength * 10;
     }
 
     private void expandNode(AStarNode current, M map, W walker, AStarNode end) {
