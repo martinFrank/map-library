@@ -3,9 +3,8 @@ package com.github.martinfrank.maplib.map;
 import com.github.martinfrank.drawlib.Point;
 import com.github.martinfrank.drawlib.Shape;
 import com.github.martinfrank.maplib.MapField;
+import com.github.martinfrank.maplib.TestGraphics;
 import com.github.martinfrank.maplib.data.TestMapFieldData;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
@@ -24,16 +23,10 @@ public class TestMapField extends MapField<TestMapFieldData, TestMapField, TestM
 
     @Override
     public void draw(Object graphics) {
-        Color color = getData().isMarkedAsPath() ? Color.YELLOW : Color.WHITE;
-//        Color color = Color.BLACK;
-        GraphicsContext gc = (GraphicsContext) graphics;
-        gc.setFill(color);
+        TestGraphics gc = (TestGraphics) graphics;
 
         Shape transformed = getShape().getTransformed();
         transformed.getPoints();
-
-//        double[] xs = transformed.getPoints().stream().mapToDouble(Point::getX).toArray();
-//        double[] ys = transformed.getPoints().stream().mapToDouble(Point::getY).toArray();
 
         int amount = transformed.getPoints().size();
         double[] xs = new double[amount];
@@ -46,10 +39,7 @@ public class TestMapField extends MapField<TestMapFieldData, TestMapField, TestM
         }
 
 
-//        LOGGER.debug("amount: {}", amount);
-//        LOGGER.debug("xs {}", Arrays.toString(xs));
-//        LOGGER.debug("ys {}", Arrays.toString(ys));
-        gc.fillPolygon(xs, ys, amount);
+        gc.drawPolygon(xs, ys, amount);
 
         for (TestMapEdge e : getEdges()) {
             e.draw(graphics);
