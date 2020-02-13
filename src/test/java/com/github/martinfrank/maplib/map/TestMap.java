@@ -11,11 +11,10 @@ public class TestMap extends Map<TestMapData, TestMapField, TestMapEdge, TestMap
         super(width, height, style, testMapData);
     }
 
-    @Override
     public void draw(Object graphics) {
         for (TestMapField field : getFields()) {
 
-            field.draw(graphics);
+//            field.draw(graphics);
         }
 
     }

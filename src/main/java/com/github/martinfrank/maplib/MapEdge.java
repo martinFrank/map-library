@@ -1,6 +1,5 @@
 package com.github.martinfrank.maplib;
 
-import com.github.martinfrank.drawlib.Draw;
 import com.github.martinfrank.drawlib.Line;
 import com.github.martinfrank.drawlib.Point;
 
@@ -8,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class MapEdge<D,
+public class MapEdge<D,
         F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
-        N extends MapNode<?, F, E, N>> implements MapData<D>, Draw, Relation {
+        N extends MapNode<?, F, E, N>> implements MapData<D>,  Relation {
 
     //relation
     private final List<F> fields = new ArrayList<>();

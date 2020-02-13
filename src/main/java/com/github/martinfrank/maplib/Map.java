@@ -1,7 +1,6 @@
 package com.github.martinfrank.maplib;
 
 import com.github.martinfrank.drawlib.Aggregation;
-import com.github.martinfrank.drawlib.Draw;
 import com.github.martinfrank.drawlib.Point;
 import com.github.martinfrank.drawlib.Shape;
 
@@ -10,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 
-public abstract class Map<D,
+public class Map<D,
         F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
         N extends MapNode<?, F, E, N>,
-        W extends MapWalker<F, E, N>> implements MapData<D>, Draw {
+        W extends MapWalker<F, E, N>> implements MapData<D> {
 
     //map
     private final int rows;

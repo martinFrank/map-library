@@ -11,8 +11,6 @@ public class TestMapEdge extends MapEdge<TestMapEdgeData, TestMapField, TestMapE
         super(testEdgeData);
     }
 
-
-    @Override
     public void draw(Object graphics) {
         TestGraphics gc = (TestGraphics) graphics;
         Point a = getLine().getA().getTransformed();

@@ -9,7 +9,6 @@ public class TestMapNode extends MapNode<TestMapNodeData, TestMapField, TestMapE
         super(data);
     }
 
-    @Override
     public void draw(Object graphics) {
 
     }

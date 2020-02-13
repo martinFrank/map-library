@@ -1,6 +1,5 @@
 package com.github.martinfrank.maplib;
 
-import com.github.martinfrank.drawlib.Draw;
 import com.github.martinfrank.drawlib.Shape;
 import com.github.martinfrank.geolib.GeoPoint;
 
@@ -8,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class MapField<D,
+public class MapField<D,
         F extends MapField<?, F, E, N>,
         E extends MapEdge<?, F, E, N>,
-        N extends MapNode<?, F, E, N>> implements MapData<D>, Draw, Relation<F, E, N> {
+        N extends MapNode<?, F, E, N>> implements MapData<D>, Relation<F, E, N> {
 
 
     //relation

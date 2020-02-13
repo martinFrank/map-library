@@ -21,30 +21,30 @@ public class TestMapField extends MapField<TestMapFieldData, TestMapField, TestM
         super(testFieldData);
     }
 
-    @Override
-    public void draw(Object graphics) {
-        TestGraphics gc = (TestGraphics) graphics;
-
-        Shape transformed = getShape().getTransformed();
-        transformed.getPoints();
-
-        int amount = transformed.getPoints().size();
-        double[] xs = new double[amount];
-        double[] ys = new double[amount];
-
-        for (int i = 0; i < amount; i++) {
-            Point point = transformed.getPoints().get(i);
-            xs[i] = point.getX();
-            ys[i] = point.getY();
-        }
-
-
-        gc.drawPolygon(xs, ys, amount);
-
-        for (TestMapEdge e : getEdges()) {
-            e.draw(graphics);
-        }
-
-    }
+//    @Override
+//    public void draw(Object graphics) {
+//        TestGraphics gc = (TestGraphics) graphics;
+//
+//        Shape transformed = getShape().getTransformed();
+//        transformed.getPoints();
+//
+//        int amount = transformed.getPoints().size();
+//        double[] xs = new double[amount];
+//        double[] ys = new double[amount];
+//
+//        for (int i = 0; i < amount; i++) {
+//            Point point = transformed.getPoints().get(i);
+//            xs[i] = point.getX();
+//            ys[i] = point.getY();
+//        }
+//
+//
+//        gc.drawPolygon(xs, ys, amount);
+//
+//        for (TestMapEdge e : getEdges()) {
+//            e.draw(graphics);
+//        }
+//
+//    }
 
 }
