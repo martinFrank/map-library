@@ -37,11 +37,11 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
 
     private Point createCenter(MapStyle style, int x, int y) {
         switch (style) {
-            case SQUARE:
+            case SQUARE4:
                 return createCenterSquare(x, y);
-            case SQUARE_DIAMOND:
+            case SQUARE_DIAMOND4:
                 return setCenterSquareDiamond(x, y);
-            case SQUARE_ISOMETRIC:
+            case SQUARE_ISOMETRIC4:
                 return setCenterSquareIsometric(x, y);
             case HEX_VERTICAL:
                 return setCenterHexVertical(x, y);
@@ -133,11 +133,11 @@ class MapFieldShaper<F extends MapField<?, F, E, N>,
 
     private List<N> createShape(Point center, int x, int y, MapStyle style, MapNodes<F, E, N> nodes) {
         switch (style) {
-            case SQUARE:
+            case SQUARE4:
                 return createSquares(center, nodes);
-            case SQUARE_DIAMOND:
+            case SQUARE_DIAMOND4:
                 return createSquaresDiamond(center, nodes);
-            case SQUARE_ISOMETRIC:
+            case SQUARE_ISOMETRIC4:
                 return createSquaresIsometric(center, nodes);
             case HEX_VERTICAL:
                 return createHexesVertical(center, nodes);

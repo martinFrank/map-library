@@ -12,7 +12,7 @@ public class MapTest {
     public void testAStar() {
         TestMapPartFactory mapPartFactory = new TestMapPartFactory();
         TestMapFactory mapFactory = new TestMapFactory(mapPartFactory);
-        TestMap demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE_DIAMOND);
+        TestMap demoMap = mapFactory.createMap(16, 16, MapStyle.SQUARE_DIAMOND4);
         demoMap.scale(12f);
         demoMap.pan(10, 10);
         TestMapWalker walker = mapPartFactory.createWalker();
@@ -40,7 +40,8 @@ public class MapTest {
     private int getPathLengthForStyle(MapStyle style) {
         switch (style) {
             case HEX_VERTICAL: return 23;
-            case SQUARE: return 16;
+            case SQUARE4:
+                return 16;
             case TRIANGLE_HORIZONTAL: return 22;
             case TRIANGLE_VERTICAL: return 16;
             default: return 24;

@@ -65,6 +65,10 @@ public class MapField<D,
         return null;
     }
 
+    boolean isNeighbor(MapField nbg) {
+        return nbg.edges.contains(edges);
+    }
+
     @Override
     public D getData() {
         return d;

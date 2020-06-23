@@ -6,6 +6,7 @@ import com.github.martinfrank.drawlib.Shape;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -25,6 +26,8 @@ public class Map<D,
     //relation
     private final List<F> fields;
 
+    private final java.util.Map<F, List<F>> neighbors;
+
     //data
     private final D d;
 
@@ -38,7 +41,8 @@ public class Map<D,
         fields = new ArrayList<>();
         edges = new MapEdges<>();
         nodes = new MapNodes<>();
-        this.style = (style == null ? MapStyle.SQUARE : style);
+        neighbors = new HashMap<>();
+        this.style = (style == null ? MapStyle.SQUARE4 : style);
         this.rows = rows;
         this.columns = columns;
         this.d = d;
@@ -59,6 +63,21 @@ public class Map<D,
 
     public List<F> getFields() {
         return Collections.unmodifiableList(fields);
+    }
+
+    public List<F> getNeighbors(F center) {
+        List<F> neighbors = this.neighbors.get(center);
+        if (neighbors == null) {
+            List<F> candidates = new ArrayList<>();
+            for (F f : fields) {
+                if (!f.equals(center) && f.isNeighbor(center)) {
+                    candidates.add(f);
+                }
+            }
+            neighbors = Collections.unmodifiableList(candidates);
+            this.neighbors.put(center, neighbors);
+        }
+        return neighbors;
     }
 
     void addField(F field) {
@@ -160,5 +179,19 @@ public class Map<D,
 
     public List<F> aStar(F start, F end, W walker, int depth) {
         return astar.getShortestPath(start, end, walker, depth);
+    }
+
+    public F getTarget(F center, Direction dir) {
+        if (!style.getDirections().contains(dir)) {
+            throw new IllegalArgumentException("" + dir + " is not in " + style.getDirections());
+        }
+        int targetX = center.getIndex().getX() + dir.getDx();
+        int targetY = center.getIndex().getY() + dir.getDy();
+        for (F field : fields) {
+            if (field.isIndex(targetX, targetY)) {
+                return field;
+            }
+        }
+        return null;
     }
 }
